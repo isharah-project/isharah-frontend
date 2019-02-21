@@ -8,7 +8,8 @@ module.exports = {
     parser: 'babel-eslint'
   },
   extends: [
-    '@nuxtjs'
+    '@nuxtjs',
+    'standard'
   ],
   // add your custom rules here
   rules: {
