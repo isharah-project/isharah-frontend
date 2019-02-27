@@ -1,5 +1,6 @@
 <template>
   <section>
+    koko
   </section>
 </template>
 
