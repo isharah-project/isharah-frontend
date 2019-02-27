@@ -1,0 +1,40 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "name": "Alice"
+        }
+    ],
+    "datasetRequests": [
+        {
+            "userId": 1,
+            "minVideoCount": 50
+        }
+    ],
+    "gestures": [
+        {
+            "userId": 1,
+            "wordId": 1,
+            "chosenOne": true,
+            "state": 1
+        }
+    ],
+    "words": [
+        {
+            "id": 1,
+            "word_string": "cat"
+        }
+    ],
+    "categories": [
+        {
+            "id": 1,
+            "name": "Animals"
+        }
+    ],
+    "categories_words": [
+        {
+            "categoryId": 1,
+            "wordId": 1
+        }
+    ]
+}
