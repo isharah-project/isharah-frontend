@@ -19,8 +19,8 @@
     "@nuxtjs/pwa": "^2.6.0",
     "cross-env": "^5.2.0",
     "nuxt": "^2.4.0",
-    "video.js": "^7.4.1",
-    "videojs-record": "^3.4.3"
+    "recordrtc": "^5.5.4",
+    "video.js": "^7.4.1"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^0.0.1",

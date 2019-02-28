@@ -1,4 +1,3 @@
-import webpack from 'webpack'
 const pkg = require('./package')
 require('dotenv').config({ path: './.env' })
 
@@ -61,13 +60,6 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
-    plugins: [
-      new webpack.ProvidePlugin({
-        videojs: 'video.js/dist/video.cjs.js',
-        RecordRTC: 'recordrtc',
-        MediaStreamRecorder: ['recordrtc', 'MediaStreamRecorder']
-      })
-    ],
     extend (config, ctx) {
       // Run ESLint on save
       if (ctx.isDev && ctx.isClient) {
@@ -78,7 +70,6 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-      config.resolve.alias.videojs = 'video.js'
     }
   }
 }

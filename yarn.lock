@@ -8351,7 +8351,7 @@ realpath-native@^1.0.0:
   dependencies:
     util.promisify "^1.0.0"
 
-recordrtc@>=5.5.4:
+recordrtc@^5.5.4:
   version "5.5.4"
   resolved "https://registry.yarnpkg.com/recordrtc/-/recordrtc-5.5.4.tgz#45c0d797a03f576573ae7a0b8ec31940bf35465d"
   integrity sha512-V4Cs7HQuhRrvTkdYSvNEeeYnWoftKxXRjWLI8D2gLn5ECMPBZTcAQIoyM2xITxeSYxcQcabuamH3AW0ZqElLGg==
@@ -8647,13 +8647,6 @@ rsvp@^3.3.3:
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-3.6.2.tgz#2e96491599a96cde1b515d5674a8f7a91452926a"
   integrity sha512-OfWGQTb9vnwRjwtA2QwpG2ICclHC3pgXZO5xt8H2EfgDquO0qVdSb5T88L4qJVAEugbS56pAuV4XZM58UX8ulw==
 
-rtcpeerconnection-shim@^1.2.15:
-  version "1.2.15"
-  resolved "https://registry.yarnpkg.com/rtcpeerconnection-shim/-/rtcpeerconnection-shim-1.2.15.tgz#e7cc189a81b435324c4949aa3dfb51888684b243"
-  integrity sha512-C6DxhXt7bssQ1nHb154lqeL0SXz5Dx4RczXZu2Aa/L1NJFnEVDxFwCBo3fqtuljhHIGceg5JKBV4XJ0gW5JKyw==
-  dependencies:
-    sdp "^2.6.0"
-
 run-async@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/run-async/-/run-async-2.3.0.tgz#0371ab4ae0bdd720d4166d7dfda64ff7a445a6c0"
@@ -8735,11 +8728,6 @@ schema-utils@^1.0.0:
     ajv "^6.1.0"
     ajv-errors "^1.0.0"
     ajv-keywords "^3.1.0"
-
-sdp@^2.6.0, sdp@^2.9.0:
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/sdp/-/sdp-2.9.0.tgz#2eed2d9c0b26c81ff87593107895c68d6fb9a0a6"
-  integrity sha512-XAVZQO4qsfzVTHorF49zCpkdxiGmPNjA8ps8RcJGtGP3QJ/A8I9/SVg/QnkAFDMXIyGbHZBBFwYBw6WdnhT96w==
 
 semver-diff@^2.0.0:
   version "2.1.0"
@@ -9900,7 +9888,7 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-video.js@>=6.0.0, video.js@>=6.2.7, "video.js@^6.8.0 || ^7.0.0", video.js@^7.4.1:
+"video.js@^6.8.0 || ^7.0.0", video.js@^7.4.1:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/video.js/-/video.js-7.4.1.tgz#41349d3b0ca40fa281c6f906381a0a41b75bd04e"
   integrity sha512-UmTHiJWcil8YN65M1t/d63X6ofLtQwnvJoYEN4VKzkECYIHbgzvMRgOmrf5bNtVeDC6JsFKLZQXJ7s6Au2jgcQ==
@@ -9919,30 +9907,12 @@ videojs-font@3.1.0:
   resolved "https://registry.yarnpkg.com/videojs-font/-/videojs-font-3.1.0.tgz#ac33be9b517fe19299f61cccd2b3c7d75a1c6960"
   integrity sha512-rxB68SVgbHD+kSwoNWNCHicKJuR2ga3bGfvGxmB+8fupsiLbnyCwTBVtrZUq4bZnD64mrKP1DxHiutxwrs59pQ==
 
-videojs-record@^3.4.3:
-  version "3.4.3"
-  resolved "https://registry.yarnpkg.com/videojs-record/-/videojs-record-3.4.3.tgz#0b90106e7e847bbf46172e9686bf9cd78a8f60d6"
-  integrity sha512-Uy7hkJJlRu1kSK1BGkWJadJMmF3D0wDxznFt2cjy4y+BfsERGslmJ7A17LtG4TCXI/dFkRczCCucjathMbuZ9g==
-  dependencies:
-    recordrtc ">=5.5.4"
-    video.js ">=6.2.7"
-    videojs-wavesurfer ">=2.7.0"
-    webrtc-adapter ">=7.2.0"
-
 videojs-vtt.js@0.14.1:
   version "0.14.1"
   resolved "https://registry.yarnpkg.com/videojs-vtt.js/-/videojs-vtt.js-0.14.1.tgz#da583eb1fc9c81c826a9432b706040e8dea49911"
   integrity sha512-YxOiywx6N9t3J5nqsE5WN2Sw4CSqVe3zV+AZm2T4syOc2buNJaD6ZoexSdeszx2sHLU/RRo2r4BJAXFDQ7Qo2Q==
   dependencies:
     global "^4.3.1"
-
-videojs-wavesurfer@>=2.7.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/videojs-wavesurfer/-/videojs-wavesurfer-2.7.0.tgz#4e014c45b2f47de152a8c6ad2e9641179a09c2c6"
-  integrity sha512-NKV/fW1YdKZyQnnjltTENVVWgW2oYnAEYw0y16haiiI6okq9sUSWc771p3nORSDBCxs3dWwaa502TP4o44kDwg==
-  dependencies:
-    video.js ">=6.0.0"
-    wavesurfer.js ">=2.1.3"
 
 vm-browserify@0.0.4:
   version "0.0.4"
@@ -10091,11 +10061,6 @@ watchpack@^1.5.0:
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
 
-wavesurfer.js@>=2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/wavesurfer.js/-/wavesurfer.js-2.1.3.tgz#8b587133457d87d67a07bd15842283919d732763"
-  integrity sha512-OGVWQ5kuIa8GA246EjZuKhlLEVUevdHLTjUh9qYqEn9CbhrJOQdrMU57kS7Nk6B0QmpFwKHL0Z48Zj9qbcHYrA==
-
 webidl-conversions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.2.tgz#a855980b1f0b6b359ba1d5d9fb39ae941faa63ad"
@@ -10203,14 +10168,6 @@ webpackbar@^3.1.5:
     std-env "^2.2.1"
     text-table "^0.2.0"
     wrap-ansi "^4.0.0"
-
-webrtc-adapter@>=7.2.0:
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/webrtc-adapter/-/webrtc-adapter-7.2.1.tgz#8ad21bfd0c2950b06c5c26e66165fddc95fce12a"
-  integrity sha512-Mrhy+tL1OHHBf/40rVFoEEvJ0VSxqmGVR65e5PSpFLky1A0bjO1oWbEWp09Udh7KPaoZ/GK+z38tuYmdrhQBxQ==
-  dependencies:
-    rtcpeerconnection-shim "^1.2.15"
-    sdp "^2.9.0"
 
 whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3:
   version "1.0.5"
