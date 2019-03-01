@@ -34,6 +34,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '~/plugins/axios'
   ],
 
   /*
@@ -43,8 +44,25 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    '@nuxtjs/dotenv'
+    '@nuxtjs/dotenv',
+    '@nuxtjs/auth'
   ],
+  /*
+  ** Auth module
+   */
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: '/auth/sign_in/', method: 'post', propertyName: 'auth.data' },
+          logout: { url: '/auth/sign_out/', method: 'delete' },
+          user: { url: '/auth/validate_token/', method: 'get' }
+        }
+        // tokenRequired: true,
+        // tokenType: 'bearer',
+      }
+    }
+  },
   /*
   ** Axios module configuration
   */
