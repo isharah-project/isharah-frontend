@@ -15,7 +15,10 @@ module.exports = {
       { hid: 'description', name: 'description', content: pkg.description }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons'
+      }
     ]
   },
 
@@ -34,7 +37,9 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/axios'
+    '~/plugins/axios',
+    '~/plugins/vuetify',
+    '~/plugins/vue-i18n'
   ],
 
   /*
@@ -58,8 +63,6 @@ module.exports = {
           logout: { url: '/auth/sign_out/', method: 'delete' },
           user: { url: '/auth/validate_token/', method: 'get' }
         }
-        // tokenRequired: true,
-        // tokenType: 'bearer',
       }
     }
   },
@@ -88,6 +91,10 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-    }
+    },
+    loaders: [{
+      test: /\.styl$/,
+      loader: 'css-loader!stylus-loader?paths=node_modules/bootstrap-stylus/stylus/'
+    }]
   }
 }

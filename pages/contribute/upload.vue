@@ -96,9 +96,9 @@ export default {
     },
     stopRecording () {
       this.recorder.stopRecording(() => {
-        let blob = this.recorder.getBlob()
+        this.videoBlob = this.recorder.getBlob()
         this.videojsRef.src([
-          { src: URL.createObjectURL(blob), type: 'video/webm' }
+          { src: URL.createObjectURL(this.videoBlob), type: 'video/webm' }
         ])
         this.currentState = this.states.PLAYBACK
       })
