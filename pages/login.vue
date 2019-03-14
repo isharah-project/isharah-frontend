@@ -3,10 +3,24 @@
     <v-btn @click="register">
       Register
     </v-btn>
-    <v-btn @click="login">
+    <v-btn
+      :ripple="false"
+      dark
+      flat
+      round
+      class="blue-cyan-gradient"
+      @click="login"
+    >
       Login
     </v-btn>
-    <v-btn @click="logout">
+    <v-btn
+      :ripple="false"
+      dark
+      flat
+      round
+      class="red-gradient fixed-size-btn"
+      @click="logout"
+    >
       Logout
     </v-btn>
   </div>

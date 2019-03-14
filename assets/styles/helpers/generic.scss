@@ -1,5 +1,25 @@
 @import "colors";
 
-.blue-border {
-  border:solid 2px $primary;
+.blue-border-btn {
+  border:solid 2px $blue;
+}
+.red-border-btn {
+  border: solid 2px $red;
+}
+.fixed-size-btn {
+  width: 180px;
+  height: 40px;
+}
+
+.red-gradient {
+  background: linear-gradient(90deg, rgba(175,15,15,1) 0%, rgba(87,0,0,1) 100%);
+}
+.orange-gradient {
+  background:  linear-gradient(90deg, rgba(175,72,15,1) 0%, rgba(222,108,29,1) 100%);
+}
+.blue-cyan-gradient {
+  background: linear-gradient(90deg, rgba(15,147,195,1) 0%, rgba(0,200,163,1) 100%);
+}
+.red-black-gradient {
+  background: linear-gradient(90deg, rgba(36,0,0,1) 0%, rgba(186,0,0,1) 100%);
 }

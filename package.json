@@ -52,5 +52,6 @@
     "style-loader": "^0.23.1",
     "vue-jest": "^3.0.2",
     "vue-loader": "^15.7.0"
-  }
+  },
+  "browserslist": [">= 0.5%"]
 }

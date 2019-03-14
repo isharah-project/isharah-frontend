@@ -32,6 +32,7 @@ module.exports = {
   */
   css: [
     'vuetify/src/stylus/app.styl',
+    'vuetify/src/stylus/main.styl',
     '~/assets/styles/main.scss'
   ],
 

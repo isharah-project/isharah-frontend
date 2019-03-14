@@ -60,7 +60,7 @@
             {{ link.text }}
           </v-btn>
           <v-menu v-else :key="link.path" offset-y open-on-hover>
-            <template v-slot:activator="{ on }" >
+            <template v-slot:activator="{ on }">
               <v-btn
                 flat
                 v-on="on"
@@ -82,7 +82,7 @@
         </template>
       </v-toolbar-items>
       <v-spacer></v-spacer>
-      <v-btn :ripple="false" class="blue-border" href="/login" flat round>
+      <v-btn :ripple="false" class="blue-border-btn" href="/login" flat round>
         تسجيل الدخول
       </v-btn>
     </v-toolbar>
