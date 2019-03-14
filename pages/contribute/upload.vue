@@ -1,21 +1,21 @@
 <template>
   <section>
     <input ref="fileInput" type="file">
-    <div v-show="isState([states.PLAYBACK, states.UPLOAD])">
-      <video ref="videoPlayer" class="video-js vjs-default-skin"></video>
+    <div v-show="isState([states.PLAYBACK, states.UPLOAD])" style="width: 50%">
+      <video ref="videoPlayer" class="video-js vjs-default-skin vjs-big-play-centered"></video>
     </div>
-    <div v-show="isState([states.LIVE_PREVIEW, states.RECORD_STARTED])">
+    <div v-show="isState([states.LIVE_PREVIEW, states.RECORD_STARTED])" style="width: 50%">
       <video ref="livePreview" class="live-preview-video"></video>
     </div>
-    <button v-if="isState([states.UPLOAD, states.PLAYBACK])" @click="requestUserMedia">
+    <v-btn v-if="isState([states.UPLOAD, states.PLAYBACK])" class="primary" @click="requestUserMedia">
       Record
-    </button>
-    <button v-if="isState(states.LIVE_PREVIEW)" @click="startRecording">
+    </v-btn>
+    <v-btn v-if="isState(states.LIVE_PREVIEW)" class="primary" @click="startRecording">
       Start
-    </button>
-    <button v-if="isState(states.RECORD_STARTED)" @click="stopRecording">
+    </v-btn>
+    <v-btn v-if="isState(states.RECORD_STARTED)" class="primary" @click="stopRecording">
       End
-    </button>
+    </v-btn>
   </section>
 </template>
 
@@ -23,6 +23,8 @@
 import videojs from 'video.js'
 import RecordRTC from 'recordrtc'
 import 'video.js/dist/video-js.css'
+import '~/assets/rangeslider-videojs/rangeslider.css'
+// require('~/assets/rangeslider-videojs/rangeslider.js')
 
 export default {
   data () {
@@ -47,6 +49,7 @@ export default {
     }
   },
   mounted () {
+    // window.videojs = videojs
     this.initVideoJs(this.$refs.videoPlayer)
     this.addFileInputListener()
     this.currentState = this.states.UPLOAD
@@ -59,6 +62,7 @@ export default {
           ' and recordrtc ' + RecordRTC.version
         videojs.log(msg)
       })
+      // this.videojsRef.rangeslider()
     },
     setVideoJsSource (src, type) {
       this.videojsRef.src([{ src, type }])

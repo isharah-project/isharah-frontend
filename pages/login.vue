@@ -1,14 +1,14 @@
 <template>
   <div>
-    <button @click="register">
+    <v-btn @click="register">
       Register
-    </button>
-    <button @click="login">
+    </v-btn>
+    <v-btn @click="login">
       Login
-    </button>
-    <button @click="logout">
+    </v-btn>
+    <v-btn @click="logout">
       Logout
-    </button>
+    </v-btn>
   </div>
 </template>
 

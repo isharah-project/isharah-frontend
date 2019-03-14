@@ -55,15 +55,42 @@
         EgSl
       </v-toolbar-title>
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn v-for="link in links" :key="link.path" :href="link.path" flat>
-          {{ link.text }}
-        </v-btn>
+        <template v-for="link in links">
+          <v-btn v-if="!link.children" :key="link.path" :href="!link.children ? link.path : ''" flat>
+            {{ link.text }}
+          </v-btn>
+          <v-menu v-else :key="link.path" offset-y open-on-hover>
+            <template v-slot:activator="{ on }" >
+              <v-btn
+                flat
+                v-on="on"
+              >
+                {{ link.text }}
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-tile
+                v-for="(child, i) in link.children"
+                :key="i"
+              >
+                <v-btn class="ma-0 pa-0" :href="child.path" flat>
+                  {{ child.text }}
+                </v-btn>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
+        </template>
       </v-toolbar-items>
       <v-spacer></v-spacer>
-      <v-btn class="blue-border" flat round>
+      <v-btn :ripple="false" class="blue-border" href="/login" flat round>
         تسجيل الدخول
       </v-btn>
     </v-toolbar>
+    <v-content>
+      <v-container fluid>
+        <nuxt />
+      </v-container>
+    </v-content>
   </v-app>
 </template>
 
@@ -74,6 +101,7 @@ export default {
       navigationDrawer: {
         isOpened: false
       },
+      koko: null,
       links: [
         { path: '/', text: 'الرئيسية', icon: 'home' },
         { path: '/dictionary', text: 'القاموس', icon: 'library_books' },
