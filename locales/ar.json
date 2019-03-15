@@ -1,6 +1,6 @@
 {
   "$vuetify": {
-    "test": "تست"
+    "noDataText": "لا يوجد بيانات"
   },
   "test": "تست"
 }

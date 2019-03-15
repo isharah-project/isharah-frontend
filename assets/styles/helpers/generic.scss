@@ -1,5 +1,14 @@
 @import "colors";
 
+$light-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.05);
+
+.round-corners {
+  border-radius: 8px;
+}
+.full-width {
+  width: 100%;
+}
+
 .blue-border-btn {
   border:solid 2px $blue;
 }
@@ -22,4 +31,34 @@
 }
 .red-black-gradient {
   background: linear-gradient(90deg, rgba(36,0,0,1) 0%, rgba(186,0,0,1) 100%);
+}
+
+
+.input-hidden-underline .v-input__slot::before,
+.input-hidden-underline .v-input__slot::after {
+  display: none;
+}
+.round-input.theme--light > .v-input__control > .v-input__slot,
+.round-input.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
+  @extend .round-corners;
+}
+.light-shadow-input.theme--light > .v-input__control > .v-input__slot,
+.light-shadow-input.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
+  box-shadow: $light-shadow;
+}
+
+
+.round-pagination .v-pagination__item {
+  border-radius: 10px;
+}
+.flat-pagination .v-pagination__navigation,
+.flat-pagination .v-pagination__item ,
+.flat-pagination .v-pagination__item.v-pagination__item--active {
+  box-shadow: none;
+  outline: none;
+}
+
+
+.light-box-shadow {
+  box-shadow: $light-shadow;
 }
