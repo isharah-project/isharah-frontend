@@ -1,6 +1,49 @@
 <template>
-  <div>
-    <v-btn @click="register">
+  <v-container grid-list-md text-xs-center>
+    <v-layout row wrap class="justify-center pt-5">
+      <v-flex xs4>
+        <v-card v-bind:class="{ [`elevation-${8}`]: true }">
+          <v-card-text v-if="signin">تسجيل الدخول</v-card-text>
+          <v-card-text v-else>إنشاء حساب</v-card-text>
+          <v-form class="mx-5">
+            <v-text-field label = "اسم المستخدم" v-if="!signin"></v-text-field>
+            <v-text-field label="البريد الالكتروني"></v-text-field>
+            <v-text-field label = "رقم التليفون" v-if="!signin" type= "number"></v-text-field>
+            <v-text-field label = "تاريخ الميلاد" v-if="!signin" type = "date" value = "2000-12-30"></v-text-field>
+            <v-text-field label="كلمة السر" type="password"></v-text-field>
+            <v-text-field label = "تأكيد كلمة السر" v-if="!signin" type = "password"></v-text-field>
+          </v-form>
+          <v-btn
+            :ripple="false"
+            dark
+            flat
+            round
+            class="blue-cyan-gradient"
+            @click="login"
+            v-if="signin"
+          >
+            دخول
+          </v-btn>
+          <v-btn
+            :ripple="false"
+            dark
+            flat
+            round
+            class="blue-cyan-gradient"
+            @click="register"
+            v-else
+          >
+            انشاء
+          </v-btn>
+          <v-card-text v-if="signin">
+            ليس لديك حساب؟
+          <v-card-text @click="signup" class="blue--text" :style="{ cursor: 'pointer'}"> إنشاء حساب </v-card-text>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
+    <!-- <v-btn @click="register">
       Register
     </v-btn>
     <v-btn
@@ -22,13 +65,20 @@
       @click="logout"
     >
       Logout
-    </v-btn>
-  </div>
+    </v-btn> -->
 </template>
 
 <script>
 export default {
+  data () {
+    return {
+      signin: true
+    }
+  },
   methods: {
+    signup () {
+      this.signin = false
+    },
     register () {
       this.$axios.$post('auth', {
         'email': 'tarek.alqaddy@gmail.com',
