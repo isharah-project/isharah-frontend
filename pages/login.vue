@@ -1,17 +1,18 @@
+
 <template>
   <v-container grid-list-md text-xs-center>
-    <v-layout row wrap class="justify-center pt-5">
-      <v-flex xs4>
-        <v-card v-bind:class="{ [`elevation-${8}`]: true }">
+    <v-layout row wrap class="justify-center pt-4">
+      <v-flex xs12 sm6 md4 >
+        <v-card v-bind:class="{ [`elevation-${8}`]: true }" class="py-4" >
           <v-card-text v-if="signin">تسجيل الدخول</v-card-text>
           <v-card-text v-else>إنشاء حساب</v-card-text>
           <v-form class="mx-5">
-            <v-text-field label = "اسم المستخدم" v-if="!signin"></v-text-field>
-            <v-text-field label="البريد الالكتروني"></v-text-field>
+            <v-text-field required label="البريد الالكتروني" :rules="emailRules"></v-text-field>
+            <v-text-field required label="كلمة السر" type="password" :rules="textRules"></v-text-field>
+            <v-text-field required label = "تأكيد كلمة السر" :rules="textRules" v-if="!signin" type = "password"></v-text-field>
+            <v-text-field label = "اسم المستخدم" :rules="textRules" v-if="!signin"></v-text-field>
             <v-text-field label = "رقم التليفون" v-if="!signin" type= "number"></v-text-field>
             <v-text-field label = "تاريخ الميلاد" v-if="!signin" type = "date" value = "2000-12-30"></v-text-field>
-            <v-text-field label="كلمة السر" type="password"></v-text-field>
-            <v-text-field label = "تأكيد كلمة السر" v-if="!signin" type = "password"></v-text-field>
           </v-form>
           <v-btn
             :ripple="false"
@@ -37,8 +38,18 @@
           </v-btn>
           <v-card-text v-if="signin">
             ليس لديك حساب؟
-          <v-card-text @click="signup" class="blue--text" :style="{ cursor: 'pointer'}"> إنشاء حساب </v-card-text>
+            <v-btn @click="signup" flat class="blue--text">
+            إنشاء حساب
+            </v-btn>
           </v-card-text>
+          <v-btn color="#3b5998" dark round>
+            تسجيل الدخول عن طريق فيسبوك
+            <v-icon light left>$vuetify.icons.facebook</v-icon>
+          </v-btn>
+          <v-btn color="#D44638" dark round>
+            تسجيل الدخول عن طريق جوجل
+            <v-icon light left>$vuetify.icons.gmail</v-icon>
+          </v-btn>
         </v-card>
       </v-flex>
     </v-layout>
@@ -72,7 +83,14 @@
 export default {
   data () {
     return {
-      signin: true
+      signin: true,
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+..+./.test(v) || 'E-mail must be valid'
+      ],
+      textRules: [
+        v => !!v || 'Field is required'
+      ]
     }
   },
   methods: {
