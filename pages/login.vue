@@ -19,7 +19,7 @@
             dark
             flat
             round
-            class="blue-cyan-gradient"
+            class="blue-cyan-gradient fixed-size-btn"
             @click="login"
             v-if="signin"
           >
@@ -30,7 +30,7 @@
             dark
             flat
             round
-            class="blue-cyan-gradient"
+            class="blue-cyan-gradient fixed-size-btn"
             @click="register"
             v-else
           >
@@ -85,11 +85,11 @@ export default {
     return {
       signin: true,
       emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+..+./.test(v) || 'E-mail must be valid'
+        v => !!v || 'الايميل مطلوب',
+        v => /.+@.+..+./.test(v) || 'يجب ان يكون الايميل بالشكل الصحيح'
       ],
       textRules: [
-        v => !!v || 'Field is required'
+        v => !!v || 'الخانة مطلوبة'
       ]
     }
   },
