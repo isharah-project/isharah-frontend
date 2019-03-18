@@ -13,8 +13,8 @@
     <v-layout row wrap justify-space-between>
       <v-flex xs12 sm5 md5 lg2>
         <v-select
-          v-model="query.type"
-          :items="wordTypes"
+          v-model="query.part_of_speech"
+          :items="partOfSpeechTypes"
           class="round-input light-shadow-input"
           menu-props="auto"
           label="إختر نوع الكلمة"
@@ -25,7 +25,7 @@
       </v-flex>
       <v-flex xs12 sm5 md5 lg2 :class="{ 'mt-2': $vuetify.breakpoint.xsOnly }">
         <v-select
-          v-model="query.categories"
+          v-model="query.category"
           :items="categories"
           :multiple="true"
           item-text="name"
@@ -37,7 +37,17 @@
           single-line
           chips
           solo
-        ></v-select>
+        >
+          <template v-slot:selection="{ item, index }">
+            <v-chip v-if="index === 0">
+              <span>{{ item.name }}</span>
+            </v-chip>
+            <span
+              v-if="index === 1"
+              class="grey--text caption"
+            >(+{{ query.category.length - 1 }} أخرى)</span>
+          </template>
+        </v-select>
       </v-flex>
       <v-flex
         xs12
@@ -63,8 +73,8 @@
                 v-on="on"
               >
                 الأبجدية
-                <span v-if="arabicLetters.includes(query.first_letter)" class="font-weight-bold">
-                  {{ `(${query.first_letter})` }}
+                <span v-if="arabicLetters.includes(query.q)" class="font-weight-bold">
+                  {{ `(${query.q})` }}
                 </span>
                 <v-icon>filter_list</v-icon>
               </v-btn>
@@ -74,7 +84,7 @@
               <v-layout row wrap class="pa-1 arabic-letters-container">
                 <v-flex v-for="letter in arabicLetters" :key="letter" class="text-xs-center" xs2>
                   <v-btn
-                    :color="letter === query.first_letter ? 'primary' : ''"
+                    :color="letter === query.q ? 'primary' : ''"
                     icon
                     class="title pa-0 ma-0"
                     @click="setFirstLetter(letter)"
@@ -83,7 +93,7 @@
                   </v-btn>
                 </v-flex>
                 <v-flex xs12>
-                  <v-btn class="red-gradient" dark round block>
+                  <v-btn class="red-gradient" dark round block @click="removeFirstLetterFilter()">
                     إلغاء
                   </v-btn>
                 </v-flex>
@@ -110,7 +120,7 @@
             v-model="pageNumber"
             class="flat-pagination round-pagination"
             :length="6"
-            :total-visible="5"
+            :total-visible="paginationVisibleCount"
           ></v-pagination>
         </v-flex>
       </v-flex>
@@ -124,7 +134,12 @@
         sm4
         md3
       >
-        {{ word.name }}
+        {{ word.attributes.name }}
+      </v-flex>
+      <v-flex v-if="words.length === 0" class="text-xs-center">
+        <div class="pa-2 headline">
+          لا يوجد كلمات
+        </div>
       </v-flex>
     </v-layout>
   </v-container>
@@ -136,18 +151,18 @@ export default {
     return {
       arabicLetters: ['أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س',
         'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'هـ', 'و', 'ي'],
-      wordTypes: [
-        { text: 'إسم', value: 'إسم' },
+      partOfSpeechTypes: [
+        { text: 'اسم', value: 'اسم' },
         { text: 'فعل', value: 'فعل' },
-        { text: 'حرف', value: 'حرف' },
-        { text: 'جملة', value: 'جملة' }
+        { text: 'حرف', value: 'حرف' }
       ],
       categories: [],
       query: {
-        type: null,
-        categories: null,
-        first_letter: null
+        part_of_speech: null,
+        category: null,
+        q: null
       },
+      lastQuery: null,
       pageNumber: 1,
       loading: true,
       words: [],
@@ -155,10 +170,26 @@ export default {
       menu: null
     }
   },
+  computed: {
+    paginationVisibleCount () {
+      if (this.$vuetify.breakpoint.xsOnly) return 4
+      else if (this.$vuetify.breakpoint.smAndDown) return 5
+      else return 6
+    }
+  },
   watch: {
     query: {
       handler: function () {
         this.loading = true
+        this.setUrlQuery()
+        this.fetchData(this.buildApiQuery())
+      },
+      deep: true
+    },
+    '$route.query': {
+      handler: function () {
+        this.cloneRouteQuery()
+        this.validateQueryKeys()
         this.setUrlQuery()
         this.fetchData(this.buildApiQuery())
       },
@@ -175,15 +206,20 @@ export default {
     }
   },
   created () {
-    this.query.type = this.$route.query.type
-    this.query.categories = this.$route.query.categories ? this.$route.query.categories.split(',') : null
-    this.query.first_letter = this.$route.query.first_letter
+    this.cloneRouteQuery()
     this.validateQueryKeys()
+    if (!Object.keys(this.$route.query).length) {
+      // No query so query watcher will not get triggered
+      this.fetchData()
+    }
   },
   methods: {
-    fetchData (query) {
-      this.$axios.$get(`/words/${query}`).then((response) => {
-        this.words = response
+    fetchData (query = '') {
+      // prevent multiple requests to the same query due to watcher
+      if (this.lastQuery === query) return
+      this.lastQuery = query
+      this.$axios.$get(`/words${query}`).then((response) => {
+        this.words = response.data
         this.loading = false
       }).catch((error) => {
         // TODO
@@ -193,7 +229,7 @@ export default {
     buildApiQuery () {
       let result = '?'
       Object.keys(this.query).forEach((key) => {
-        if (key === 'categories' && this.query[key] && this.query[key].length) {
+        if (key === 'category' && this.query[key] && this.query[key].length) {
           result += `${key}=${this.query[key].join(',')}&`
         } else if (this.query[key]) {
           result += `${key}=${this.query[key]}&`
@@ -203,26 +239,37 @@ export default {
     },
     setUrlQuery () {
       let query = {}
-      if (this.query.type) {
-        query.type = this.query.type
+      if (this.query.part_of_speech) {
+        query.part_of_speech = this.query.part_of_speech
       }
-      if (this.query.categories && this.query.categories.length) {
-        query.categories = this.query.categories.join(',')
+      if (this.query.category && this.query.category.length) {
+        query.category = this.query.category.join(',')
       }
-      if (this.query.first_letter) {
-        query.first_letter = this.query.first_letter
+      if (this.query.q) {
+        query.q = this.query.q
       }
       this.$router.push({ query })
     },
+    cloneRouteQuery () {
+      if (this.$route.query.part_of_speech) {
+        this.query.part_of_speech = this.$route.query.part_of_speech
+      }
+      if (this.$route.query.category) {
+        this.query.category = this.$route.query.category.split(',')
+      }
+      if (this.$route.query.q) {
+        this.query.q = this.$route.query.q
+      }
+    },
     validateQueryKeys () {
       return Object.keys(this.query).forEach((key) => {
-        if (key === 'type' &&
-          !this.validateValueInList(this.query[key], this.wordTypes, 'value')) {
+        if (key === 'part_of_speech' &&
+          !this.validateValueInList(this.query[key], this.partOfSpeechTypes, 'value')) {
           this.query[key] = null
-        } else if (key === 'categories' &&
-          !this.validateRequestedCategories(this.query[key])) {
+        } else if (key === 'category' &&
+          !this.validateListSubsetOfList(this.query[key], this.categories, 'name')) {
           this.query[key] = null
-        } else if (key === 'first_letter' &&
+        } else if (key === 'q' &&
           !this.validateValueInList(this.query[key], this.arabicLetters)) {
           this.query[key] = null
         }
@@ -234,14 +281,17 @@ export default {
         return prop ? listValue[prop] === value : listValue === value
       })
     },
-    validateRequestedCategories (requested) {
-      if (!requested || !requested.length) return false
-      return requested.every((category) => {
-        return this.validateValueInList(category, this.categories, 'name')
+    validateListSubsetOfList (subsetList, fullList, prop = null) {
+      if (!subsetList || !subsetList.length) return false
+      return subsetList.every((listItem) => {
+        return this.validateValueInList(listItem, fullList, prop)
       })
     },
     setFirstLetter (letter) {
-      this.query.first_letter = letter
+      this.query.q = letter
+    },
+    removeFirstLetterFilter () {
+      this.query.q = null
     }
   }
 }
@@ -252,8 +302,10 @@ export default {
   font-size: inherit;
 }
 
-.arabic-letters-container {
-  width: 300px;
+@media all and (min-width: 400px) {
+  .arabic-letters-container {
+    width: 300px;
+  }
 }
 
 .flex-wrap {
