@@ -87,7 +87,7 @@
                     :color="letter === query.q ? 'primary' : ''"
                     icon
                     class="title pa-0 ma-0"
-                    @click="setFirstLetter(letter)"
+                    @click="setFirstLetterFilter(letter)"
                   >
                     {{ letter }}
                   </v-btn>
@@ -287,7 +287,7 @@ export default {
         return this.validateValueInList(listItem, fullList, prop)
       })
     },
-    setFirstLetter (letter) {
+    setFirstLetterFilter (letter) {
       this.query.q = letter
     },
     removeFirstLetterFilter () {
