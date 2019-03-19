@@ -50,7 +50,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-toolbar class="elevation-0" color="white" app>
+    <v-toolbar class="app-toolbar" color="white" app>
       <v-toolbar-title>
         EgSl
       </v-toolbar-title>
@@ -126,5 +126,8 @@ export default {
 
 #app {
   background: $app-grey;
+}
+.app-toolbar {
+  box-shadow: $toolbar-shadow !important;
 }
 </style>

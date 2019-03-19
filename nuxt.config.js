@@ -17,8 +17,9 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
-        rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons'
-      }
+        rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Material+Icons'
+      },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Cairo:300,400,700' }
     ]
   },
 
@@ -32,7 +33,7 @@ module.exports = {
   */
   css: [
     'vuetify/src/stylus/app.styl',
-    'vuetify/src/stylus/main.styl',
+    '~/assets/styles/main.styl',
     '~/assets/styles/main.scss'
   ],
 

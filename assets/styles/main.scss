@@ -1,5 +1,11 @@
 @import "helpers/index";
 
-html {
-  font-family: "Roboto", sans-serif;
+.app-toolbar .v-toolbar__content {
+  @media only screen and (min-width: 960px) {
+    max-width: 900px;
+    margin: auto;
+  }
+  @media only screen and (min-width: 1264px) {
+    max-width: 1185px;
+  }
 }

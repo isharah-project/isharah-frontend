@@ -2,8 +2,8 @@
   <v-container>
     <v-layout class="mb-4">
       <v-flex>
-        <h1 class="display-1 font-weight-medium">
-          <v-icon class="heading-icon">
+        <h1 class="display-1 font-weight-medium d-inline-flex">
+          <v-icon class="heading-icon mx-2">
             library_books
           </v-icon>
           القاموس
