@@ -117,10 +117,11 @@
         </v-flex>
         <v-flex xs12 class="text-xs-center" :class="{ 'mt-3': $vuetify.breakpoint.xsOnly }">
           <v-pagination
-            v-model="pageNumber"
+            v-model="page.current"
             class="flat-pagination round-pagination"
-            :length="6"
+            :length="page.total"
             :total-visible="paginationVisibleCount"
+            @input="changeCurrentPage($event)"
           ></v-pagination>
         </v-flex>
       </v-flex>
@@ -146,6 +147,8 @@
 </template>
 
 <script>
+import _ from 'lodash'
+
 export default {
   data () {
     return {
@@ -157,13 +160,9 @@ export default {
         { text: 'حرف', value: 'حرف' }
       ],
       categories: [],
-      query: {
-        part_of_speech: null,
-        category: null,
-        q: null
-      },
-      lastQuery: null,
-      pageNumber: 1,
+      query: {},
+      page: {},
+      queryChangedHere: false,
       loading: true,
       words: [],
       searchText: null,
@@ -181,45 +180,57 @@ export default {
     query: {
       handler: function () {
         this.loading = true
+        // TODO: reset pagination
+        // this.resetPagination()
         this.setUrlQuery()
         this.fetchData(this.buildApiQuery())
       },
       deep: true
     },
     '$route.query': {
+      // For browser back and forward
       handler: function () {
         this.cloneRouteQuery()
         this.validateQueryKeys()
-        this.setUrlQuery()
         this.fetchData(this.buildApiQuery())
       },
       deep: true
     }
   },
-  async asyncData ({ $axios }) {
+  async asyncData ({ app, $axios, route }) {
     try {
       let categories = (await $axios.get('/categories')).data
-      return { categories }
+      let query = {}
+      let page = {
+        perPage: 5,
+        total: 5,
+        current: 1
+      }
+      if (route.query.q) query.q = route.query.q
+      if (route.query.category) query.category = route.query.category.split(',')
+      if (route.query.part_of_speech) query.part_of_speech = route.query.part_of_speech
+      if (route.query.page) page.current = Number(route.query.page)
+      let routerQuery = _.cloneDeep(query)
+      routerQuery.page = page.current
+      app.router.replace({ query: routerQuery })
+      // TODO: validate query here
+      return { categories, query, page }
     } catch (e) {
       // TODO
       console.log(e)
     }
   },
   created () {
-    this.cloneRouteQuery()
-    this.validateQueryKeys()
-    if (!Object.keys(this.$route.query).length) {
-      // No query so query watcher will not get triggered
-      this.fetchData()
-    }
+    this.fetchData(this.buildApiQuery())
   },
   methods: {
     fetchData (query = '') {
-      // prevent multiple requests to the same query due to watcher
-      if (this.lastQuery === query) return
-      this.lastQuery = query
       this.$axios.$get(`/words${query}`).then((response) => {
+        if (this.page.current > response.page_meta.total_pages) {
+          this.changeCurrentPage(1)
+        }
         this.words = response.data
+        this.page.total = response.page_meta.total_pages || 1
         this.loading = false
       }).catch((error) => {
         // TODO
@@ -235,10 +246,13 @@ export default {
           result += `${key}=${this.query[key]}&`
         }
       })
-      return result.slice(0, -1)
+      result += `page=${this.page.current}`
+      result += `&per_page=${this.page.perPage}`
+      return result
     },
     setUrlQuery () {
       let query = {}
+      query.page = this.page.current
       if (this.query.part_of_speech) {
         query.part_of_speech = this.query.part_of_speech
       }
@@ -260,9 +274,12 @@ export default {
       if (this.$route.query.q) {
         this.query.q = this.$route.query.q
       }
+      if (this.$route.query.page) {
+        this.page.current = Number(this.$route.query.page)
+      }
     },
     validateQueryKeys () {
-      return Object.keys(this.query).forEach((key) => {
+      Object.keys(this.query).forEach((key) => {
         if (key === 'part_of_speech' &&
           !this.validateValueInList(this.query[key], this.partOfSpeechTypes, 'value')) {
           this.query[key] = null
@@ -286,6 +303,13 @@ export default {
       return subsetList.every((listItem) => {
         return this.validateValueInList(listItem, fullList, prop)
       })
+    },
+    changeCurrentPage (pageNumber) {
+      this.page.current = pageNumber
+      this.setUrlQuery()
+    },
+    resetPagination () {
+      this.page.current = 1
     },
     setFirstLetterFilter (letter) {
       this.query.q = letter
