@@ -160,8 +160,17 @@ export default {
         { text: 'حرف', value: 'حرف' }
       ],
       categories: [],
-      query: {},
-      page: {},
+      query: {
+        part_of_speech: null,
+        category: null,
+        q: null
+      },
+      page: {
+        perPage: 5,
+        current: 1,
+        total: null
+      },
+      lastQuery: null,
       queryChangedHere: false,
       loading: true,
       words: [],
@@ -189,7 +198,7 @@ export default {
     },
     '$route.query': {
       // For browser back and forward
-      handler: function () {
+      handler: function (val) {
         this.cloneRouteQuery()
         this.validateQueryKeys()
         this.fetchData(this.buildApiQuery())
@@ -197,37 +206,33 @@ export default {
       deep: true
     }
   },
-  async asyncData ({ app, $axios, route }) {
+  async asyncData ({ app, $axios }) {
     try {
       let categories = (await $axios.get('/categories')).data
-      let query = {}
-      let page = {
-        perPage: 5,
-        total: 5,
-        current: 1
-      }
-      if (route.query.q) query.q = route.query.q
-      if (route.query.category) query.category = route.query.category.split(',')
-      if (route.query.part_of_speech) query.part_of_speech = route.query.part_of_speech
-      if (route.query.page) page.current = Number(route.query.page)
-      let routerQuery = _.cloneDeep(query)
-      routerQuery.page = page.current
-      app.router.replace({ query: routerQuery })
-      // TODO: validate query here
-      return { categories, query, page }
+      return { categories }
     } catch (e) {
       // TODO
       console.log(e)
     }
   },
   created () {
-    this.fetchData(this.buildApiQuery())
+    this.cloneRouteQuery()
+    this.validateQueryKeys()
+    if (!this.$route.query.page) {
+      this.replaceRouterPage(1)
+    }
+    if (!Object.keys(this.$route.query).length) {
+      // No query so query watcher will not get triggered
+      this.fetchData(this.buildApiQuery())
+    }
   },
   methods: {
     fetchData (query = '') {
+      if (query === this.lastQuery) return
+      this.lastQuery = query
       this.$axios.$get(`/words${query}`).then((response) => {
         if (this.page.current > response.page_meta.total_pages) {
-          this.changeCurrentPage(1)
+          this.replaceRouterPage(1)
         }
         this.words = response.data
         this.page.total = response.page_meta.total_pages || 1
@@ -265,6 +270,11 @@ export default {
       this.$router.push({ query })
     },
     cloneRouteQuery () {
+      this.query = {
+        part_of_speech: null,
+        category: null,
+        q: null
+      }
       if (this.$route.query.part_of_speech) {
         this.query.part_of_speech = this.$route.query.part_of_speech
       }
@@ -307,6 +317,11 @@ export default {
     changeCurrentPage (pageNumber) {
       this.page.current = pageNumber
       this.setUrlQuery()
+    },
+    replaceRouterPage (pageNumber) {
+      let query = _.cloneDeep(this.$route.query)
+      query.page = pageNumber
+      this.$router.replace({ query })
     },
     resetPagination () {
       this.page.current = 1
