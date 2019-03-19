@@ -153,7 +153,7 @@ export default {
   data () {
     return {
       arabicLetters: ['أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س',
-        'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'هـ', 'و', 'ي'],
+        'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي'],
       partOfSpeechTypes: [
         { text: 'اسم', value: 'اسم' },
         { text: 'فعل', value: 'فعل' },
@@ -197,10 +197,10 @@ export default {
       deep: true
     },
     '$route.query': {
-      // For browser back and forward
-      handler: function (val) {
+      // For browser navigation
+      handler: function () {
         this.cloneRouteQuery()
-        this.validateQueryKeys()
+        this.validateQueryParams()
         this.fetchData(this.buildApiQuery())
       },
       deep: true
@@ -217,7 +217,7 @@ export default {
   },
   created () {
     this.cloneRouteQuery()
-    this.validateQueryKeys()
+    this.validateQueryParams()
     if (!this.$route.query.page) {
       this.replaceRouterPage(1)
     }
@@ -288,30 +288,30 @@ export default {
         this.page.current = Number(this.$route.query.page)
       }
     },
-    validateQueryKeys () {
-      Object.keys(this.query).forEach((key) => {
-        if (key === 'part_of_speech' &&
-          !this.validateValueInList(this.query[key], this.partOfSpeechTypes, 'value')) {
-          this.query[key] = null
-        } else if (key === 'category' &&
-          !this.validateListSubsetOfList(this.query[key], this.categories, 'name')) {
-          this.query[key] = null
-        } else if (key === 'q' &&
-          !this.validateValueInList(this.query[key], this.arabicLetters)) {
-          this.query[key] = null
-        }
-      })
+    validateQueryParams () {
+      if (this.query.part_of_speech &&
+        !this.assertValueInList(this.query.part_of_speech, this.partOfSpeechTypes, 'value')) {
+        this.query.part_of_speech = null
+      }
+      if (this.query.category &&
+        !this.assertSubsetOfList(this.query.category, this.categories, 'name')) {
+        this.query.category = null
+      }
+      if (this.query.q &&
+        !this.assertValueInList(this.query.q, this.arabicLetters)) {
+        this.query.q = null
+      }
     },
-    validateValueInList (value, list, prop) {
+    assertValueInList (value, list, prop) {
       if (!list || !list.length) return false
       return list.some((listValue) => {
         return prop ? listValue[prop] === value : listValue === value
       })
     },
-    validateListSubsetOfList (subsetList, fullList, prop = null) {
+    assertSubsetOfList (subsetList, fullList, prop = null) {
       if (!subsetList || !subsetList.length) return false
       return subsetList.every((listItem) => {
-        return this.validateValueInList(listItem, fullList, prop)
+        return this.assertValueInList(listItem, fullList, prop)
       })
     },
     changeCurrentPage (pageNumber) {
