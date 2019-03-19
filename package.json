@@ -6,7 +6,6 @@
   "private": true,
   "scripts": {
     "dev": "nuxt -p 4567",
-    "api": "json-server db.json -p 4568",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
