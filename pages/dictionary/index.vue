@@ -1,15 +1,6 @@
 <template>
   <v-container>
-    <v-layout class="mb-4">
-      <v-flex>
-        <h1 class="display-1 font-weight-medium d-inline-flex">
-          <v-icon class="heading-icon mx-2">
-            library_books
-          </v-icon>
-          القاموس
-        </h1>
-      </v-flex>
-    </v-layout>
+    <PageHeader icon="library_books" text="القاموس" />
     <v-layout row wrap justify-space-between>
       <v-flex xs12 sm5 md5 lg2>
         <v-select
@@ -148,8 +139,10 @@
 
 <script>
 import _ from 'lodash'
+import PageHeader from '~/components/generic/PageHeader'
 
 export default {
+  components: { PageHeader },
   data () {
     return {
       arabicLetters: ['أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س',
@@ -337,9 +330,6 @@ export default {
 </script>
 
 <style scoped>
-.heading-icon {
-  font-size: inherit;
-}
 
 @media all and (min-width: 400px) {
   .arabic-letters-container {
