@@ -123,10 +123,16 @@
         :key="word.name"
         class="headline pa-1"
         xs6
-        sm4
-        md3
+        sm3
+        md2
       >
-        {{ word.attributes.name }}
+        <v-btn
+          flat
+          class="headline"
+          @click="$router.push({ path: `dictionary/${word.attributes.name}` })"
+        >
+          {{ word.attributes.name }}
+        </v-btn>
       </v-flex>
       <v-flex v-if="words.length === 0" class="text-xs-center">
         <div class="pa-2 headline">
@@ -209,11 +215,11 @@ export default {
     }
   },
   created () {
-    this.cloneRouteQuery()
-    this.validateQueryParams()
     if (!this.$route.query.page) {
       this.replaceRouterPage(1)
     }
+    this.cloneRouteQuery()
+    this.validateQueryParams()
     if (!Object.keys(this.$route.query).length) {
       // No query so query watcher will not get triggered
       this.fetchData(this.buildApiQuery())

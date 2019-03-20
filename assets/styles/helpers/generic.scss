@@ -5,11 +5,18 @@ $light-shadow: 0 5px 35px rgba(0, 0, 0, 0.03);
 $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 
 
+.grey-text {
+  color: $dark-grey-text;
+}
+
 .toolbar-shadow {
   background: $toolbar-shadow;
 }
-.round-corners {
+.small-round-corners {
   border-radius: 8px;
+}
+.medium-round-corners {
+  border-radius: 10px;
 }
 .full-width {
   width: 100%;
@@ -50,7 +57,7 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 }
 .round-input.theme--light > .v-input__control > .v-input__slot,
 .round-input.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
-  @extend .round-corners;
+  @extend .small-round-corners;
 }
 .light-shadow-input.theme--light > .v-input__control > .v-input__slot,
 .light-shadow-input.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {

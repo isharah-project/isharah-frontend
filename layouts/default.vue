@@ -104,7 +104,7 @@ export default {
       koko: null,
       links: [
         { path: '/', text: 'الرئيسية', icon: 'home' },
-        { path: '/dictionary', text: 'القاموس', icon: 'library_books' },
+        { path: '/dictionary?page=1', text: 'القاموس', icon: 'library_books' },
         { path: '/contribute',
           text: 'شارك معنا',
           icon: 'accessibility',
