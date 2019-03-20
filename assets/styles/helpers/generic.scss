@@ -1,5 +1,20 @@
 @import "colors";
 
+$toolbar-shadow: 0 3px 46px rgba(0, 0, 0, 0.03);
+$light-shadow: 0 5px 35px rgba(0, 0, 0, 0.03);
+$btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
+
+
+.toolbar-shadow {
+  background: $toolbar-shadow;
+}
+.round-corners {
+  border-radius: 8px;
+}
+.full-width {
+  width: 100%;
+}
+
 .blue-border-btn {
   border:solid 2px $blue;
 }
@@ -12,14 +27,47 @@
 }
 
 .red-gradient {
-  background: linear-gradient(90deg, rgba(175,15,15,1) 0%, rgba(87,0,0,1) 100%);
+  background-image: linear-gradient(to right, #e52d27 0%, #b31217 100%);
 }
 .orange-gradient {
-  background:  linear-gradient(90deg, rgba(175,72,15,1) 0%, rgba(222,108,29,1) 100%);
+  background-image: linear-gradient(to right, #f46b45 0%, #eea849 100%);
 }
 .blue-cyan-gradient {
   background: linear-gradient(90deg, rgba(15,147,195,1) 0%, rgba(0,200,163,1) 100%);
 }
 .red-black-gradient {
   background: linear-gradient(90deg, rgba(36,0,0,1) 0%, rgba(186,0,0,1) 100%);
+}
+.btn-shadow {
+  box-shadow: $btn-shadow;
+}
+
+
+.input-hidden-underline .v-input__slot::before,
+.input-hidden-underline .v-input__slot::after {
+  display: none;
+}
+.round-input.theme--light > .v-input__control > .v-input__slot,
+.round-input.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
+  @extend .round-corners;
+}
+.light-shadow-input.theme--light > .v-input__control > .v-input__slot,
+.light-shadow-input.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
+  box-shadow: $light-shadow;
+}
+
+
+.round-pagination .v-pagination__item {
+  border-radius: 10px;
+}
+.flat-pagination .v-pagination__navigation,
+.flat-pagination .v-pagination__item ,
+.flat-pagination .v-pagination__item.v-pagination__item--active {
+  box-shadow: none;
+  outline: none;
+}
+
+
+.light-box-shadow {
+  box-shadow: $light-shadow;
 }

@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <v-container>
     <input ref="fileInput" type="file">
     <div v-show="isState([states.PLAYBACK, states.UPLOAD])" style="width: 50%">
       <video ref="videoPlayer" class="video-js vjs-default-skin vjs-big-play-centered"></video>
@@ -16,7 +16,7 @@
     <v-btn v-if="isState(states.RECORD_STARTED)" class="primary" @click="stopRecording">
       End
     </v-btn>
-  </section>
+  </v-container>
 </template>
 
 <script>
