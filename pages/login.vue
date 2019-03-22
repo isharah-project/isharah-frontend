@@ -174,6 +174,9 @@ export default {
     changeState (page) {
       this.errors = []
       this.state = page
+      if (page === 'signup') {
+        this.user.email = this.user.password = ''
+      }
     },
     genderSelect () {
       if (this.user.gender === 'ذكر') {
