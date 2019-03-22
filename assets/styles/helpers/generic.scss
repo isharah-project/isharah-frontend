@@ -71,3 +71,13 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 .light-box-shadow {
   box-shadow: $light-shadow;
 }
+
+.card-size {
+  width: 350px
+}
+
+@media screen and (max-width: 380px) {
+  .less-font-size {
+    font-size: 10px ;
+  }
+}
