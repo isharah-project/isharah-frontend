@@ -1,4 +1,3 @@
-
 <template>
   <v-layout row wrap class="justify-center pt-4">
     <v-card class="py-4 light-box-shadow text-xs-center card-size">
@@ -120,13 +119,13 @@
         </v-form>
         <v-card-text v-if="state === 'signin'">
           ليس لديك حساب؟
-          <v-btn flat class="blue--text" @click="changeState('signup')">
+          <v-btn flat round class="blue--text" @click="changeState('signup')">
             إنشاء حساب
           </v-btn>
         </v-card-text>
         <v-card-text v-if="state === 'signup'">
           لديك حساب؟
-          <v-btn flat class="blue--text" @click="changeState('signin')">
+          <v-btn flat round class="blue--text" @click="changeState('signin')">
             تسجيل الدخول
           </v-btn>
         </v-card-text>
