@@ -17,8 +17,20 @@
           </h2>
         </v-card-text>
         <v-form v-if="state === 'signin'" ref="loginForm" class="mx-5" @submit.prevent="login">
-          <v-text-field v-model="user.email" label="البريد الالكتروني" :rules="validationRules.emailRules"></v-text-field>
-          <v-text-field v-model="user.password" label="كلمة السر" type="password" :rules="validationRules.required"></v-text-field>
+          <v-text-field
+            v-model="user.email"
+            label="البريد الالكتروني"
+            type="email"
+            :rules="[...validationRules.required, ...validationRules.emailRules]"
+          >
+          </v-text-field>
+          <v-text-field
+            v-model="user.password"
+            label="كلمة السر"
+            type="password"
+            :rules="[...validationRules.required, validationRules.passwordLengthCheck]"
+          >
+          </v-text-field>
           <div v-for="error in errors" :key="error" class="red--text">
             {{ error }}
           </div>
@@ -34,20 +46,36 @@
           </v-btn>
         </v-form>
         <v-form v-if="state==='signup'" ref="signupForm" class="mx-5" @submit.prevent="register">
-          <v-text-field v-model="user.first_name" label="الأسم الأول" :rules="validationRules.required"></v-text-field>
-          <v-text-field v-model="user.last_name" label="الأسم الأخير" :rules="validationRules.required"></v-text-field>
-          <v-text-field v-model="user.email" label="البريد الالكتروني" :rules="validationRules.emailRules"></v-text-field>
+          <v-text-field
+            v-model="user.first_name"
+            label="الأسم الأول"
+            :rules="validationRules.required"
+          >
+          </v-text-field>
+          <v-text-field
+            v-model="user.last_name"
+            label="الأسم الأخير"
+            :rules="validationRules.required"
+          >
+          </v-text-field>
+          <v-text-field
+            v-model="user.email"
+            label="البريد الالكتروني"
+            type="email"
+            :rules="[...validationRules.required, ...validationRules.emailRules]"
+          >
+          </v-text-field>
           <v-text-field
             v-model="user.password"
             label="كلمة السر"
             type="password"
-            :rules="validationRules.passwordLengthCheck()"
+            :rules="[...validationRules.required, validationRules.passwordLengthCheck]"
           ></v-text-field>
           <v-text-field
             v-model="user.password_confirmation"
             label="تأكيد كلمة السر"
             type="password"
-            :rules="validationRules.passwordCheck()"
+            :rules="[...validationRules.required, validationRules.passwordConfirmation]"
           ></v-text-field>
           <v-select label="النوع" :items="gender_list" :rules="validationRules.required"></v-select>
           <v-menu
@@ -160,30 +188,27 @@ export default {
       let self = this
       return {
         emailRules: [
-          v => !!v || 'البريد الالكتروني مطلوب',
           v => /(?!\.)[\w.-]+@[a-z0-9.-]+\.[a-z]{2,4}/.test(v) || 'يجب ان يكون البريد الالكتروني بالشكل الصحيح'
         ],
         required: [
           v => !!v || 'الخانة مطلوبة'
         ],
-        passwordCheck () {
-          if (self.user.password === '' || self.user.password_confirmation === '') {
-            return []
-          }
-          if (self.user.password_confirmation && self.user.password && self.user.password !== self.user.password_confirmation) {
-            return ['كلمة السر و تأكيد كلمة السر غير متطابقين']
-          } else if (!self.user.password || !self.user.password_confirmation) {
-            return ['الخانة مطلوبة']
+        passwordConfirmation () {
+          if (
+            self.user.password &&
+            self.user.password_confirmation &&
+            self.user.password !== self.user.password_confirmation
+          ) {
+            return 'كلمة السر و تأكيد كلمة السر غير متطابقين'
           } else {
-            return []
+            return true
           }
         },
         passwordLengthCheck () {
           if (self.user.password && self.user.password.length < 6) {
-            return ['الحد الادني لكلمة السر 6 خانات']
-          }
-          if (self.user.password === '' || !self.user.password) {
-            return ['الخانة مطلوبة']
+            return 'الحد الادني لكلمة السر 6 خانات'
+          } else {
+            return true
           }
         }
       }
