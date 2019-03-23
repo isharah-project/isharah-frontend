@@ -41,15 +41,13 @@
             v-model="user.password"
             label="كلمة السر"
             type="password"
-            :error-messages="validationRules.passwordLengthCheck()"
-            :rules="validationRules.required"
+            :rules="validationRules.passwordLengthCheck()"
           ></v-text-field>
           <v-text-field
             v-model="user.password_confirmation"
             label="تأكيد كلمة السر"
             type="password"
-            :error-messages="validationRules.passwordCheck()"
-            :rules="validationRules.required"
+            :rules="validationRules.passwordCheck()"
           ></v-text-field>
           <v-select label="النوع" :items="gender_list" :rules="validationRules.required"></v-select>
           <v-menu
@@ -172,17 +170,20 @@ export default {
           if (self.user.password === '' || self.user.password_confirmation === '') {
             return []
           }
-          if (self.user.password_confirmation && self.user.password && self.user.password === self.user.password_confirmation) {
-            return []
-          } else {
+          if (self.user.password_confirmation && self.user.password && self.user.password !== self.user.password_confirmation) {
             return ['كلمة السر و تأكيد كلمة السر غير متطابقين']
+          } else if (!self.user.password || !self.user.password_confirmation) {
+            return ['الخانة مطلوبة']
+          } else {
+            return []
           }
         },
         passwordLengthCheck () {
-          if (self.user.password) {
-            if (self.user.password.length < 6) {
-              return ['الحد الادني لكلمة السر 6 خانات']
-            }
+          if (self.user.password && self.user.password.length < 6) {
+            return ['الحد الادني لكلمة السر 6 خانات']
+          }
+          if (self.user.password === '' || !self.user.password) {
+            return ['الخانة مطلوبة']
           }
         }
       }
@@ -198,8 +199,8 @@ export default {
       this.$refs.menu.save(date)
     },
     minAge () {
-      this.maxYear = this.today.substr(0, 4) - 18
-      return this.maxYear + this.today.substr(4, 6)
+      this.maxYear = Number(this.today.substr(0, 4)) - 18
+      return `${this.maxYear}${this.today.substr(4, 6)}`
     },
     changeState (page) {
       this.errors = []
@@ -229,7 +230,7 @@ export default {
           'country': 'Egypt',
           'date_of_birth': this.user.date_of_birth,
           'confirm_success_url': process.env.FRONTEND_URL + '/login'
-        }).then((r) => {
+        }).then(() => {
           this.errors = []
           this.changeState('email-confirmation')
         }).catch((e) => {
@@ -245,10 +246,10 @@ export default {
             email: this.user.email,
             password: this.user.password
           }
-        }).then((r) => {
+        }).then(() => {
           this.errors = []
           this.$router.push({ path: '/' })
-        }).catch((e) => {
+        }).catch(() => {
           this.errors = []
           this.errors.push('خطأ في البريد الالكتروني او كلمة السر')
         })
