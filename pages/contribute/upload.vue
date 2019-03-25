@@ -5,7 +5,6 @@
       <v-flex
         xs12
         class="text-xs-center"
-        :class="{ 'mb-4': isParentState('UPLOAD') && isState(states.UPLOAD.INIT) }"
       >
         <v-btn
           class="orange-gradient video-method-btn btn-shadow title mx-2"
@@ -32,7 +31,7 @@
       <v-flex
         ref="dragZone"
         :class="{ 'expanded': isParentState('UPLOAD') && isState(states.UPLOAD.INIT) }"
-        class="text-xs-center drag-zone round-corners"
+        class="text-xs-center drag-zone round-corners mt-3"
         xs12
         @drag.prevent.stop
         @dragstart.prevent.stop
@@ -70,37 +69,38 @@
           </v-flex>
           <v-flex md4 lg4 xs12>
             <v-form class="px-2 word-data-form" @submit.prevent="submitVideo">
-              <div>
-                <v-btn
-                  v-if="isParentState('UPLOAD') && isState(states.UPLOAD.PLAYBACK)"
-                  class="blue-cyan-gradient btn-shadow upload-btn"
-                  flat
-                  dark
-                  round
-                  @click="triggerFileInput"
-                >
-                  {{ videoBlob.name }}
-                </v-btn>
-              </div>
-              <div v-if="isParentState('RECORD')">
-                <v-btn
-                  class="recording-btn red-gradient"
-                  round
-                  flat
-                  dark
-                  @click="startRecording"
-                >
-                  تسجيل
-                </v-btn>
-                <v-btn
-                  class="recording-btn red-border-btn"
-                  round
-                  flat
-                  @click="stopRecording"
-                >
-                  وقف
-                </v-btn>
-              </div>
+              <transition name="fade" mode="out-in">
+                <div v-if="isParentState('UPLOAD') && isState(states.UPLOAD.PLAYBACK)" key="0">
+                  <v-btn
+                    class="blue-cyan-gradient btn-shadow upload-btn"
+                    flat
+                    dark
+                    round
+                    @click="triggerFileInput"
+                  >
+                    {{ videoBlob.name }}
+                  </v-btn>
+                </div>
+                <div v-if="isParentState('RECORD')" key="1">
+                  <v-btn
+                    class="recording-btn red-gradient"
+                    round
+                    flat
+                    dark
+                    @click="startRecording"
+                  >
+                    تسجيل
+                  </v-btn>
+                  <v-btn
+                    class="recording-btn red-border-btn"
+                    round
+                    flat
+                    @click="stopRecording"
+                  >
+                    وقف
+                  </v-btn>
+                </div>
+              </transition>
               <div>
                 <!-- TODO make autocomplete component -->
                 <v-autocomplete
@@ -322,7 +322,16 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .5s 0.8s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
 
 .btn-active {
   transform: translateY(5px);
@@ -336,8 +345,8 @@ export default {
 .drag-zone {
   height: 0;
   overflow: hidden;
-  /*border-width: 0;*/
   opacity: 0;
+  border: 1px solid #c7c7c7;
   transition: height 0.5s ease-out 0.5s, opacity 0.5s ease-out 0.5s;
 }
 .drag-zone.expanded {
