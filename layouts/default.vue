@@ -1,6 +1,6 @@
 <template>
   <v-app id="app" light>
-    <v-navigation-drawer v-model="navigationDrawer.isOpened" right disable-route-watcher app>
+    <v-navigation-drawer v-model="navigationDrawer.isOpened" right disable-route-watcher disable-resize-watcher app>
       <v-toolbar flat>
         <v-list>
           <v-list-tile>

@@ -2,14 +2,18 @@
   <v-container>
     <PageHeader icon="videocam" text="سجل فيديو" class="mb-0" />
     <v-layout row wrap>
-      <v-flex xs12 class="text-xs-center mb-4">
+      <v-flex
+        xs12
+        class="text-xs-center"
+        :class="{ 'mb-4': isParentState('UPLOAD') && isState(states.UPLOAD.INIT) }"
+      >
         <v-btn
           class="orange-gradient video-method-btn btn-shadow title mx-2"
           :class="{ 'btn-active': isParentState('UPLOAD') }"
           flat
           dark
           round
-          @click="state = states.UPLOAD.INIT"
+          @click="setParentState('UPLOAD')"
         >
           إرفع
         </v-btn>
@@ -19,12 +23,28 @@
           flat
           dark
           round
-          @click="state = states.RECORD.INIT"
+          @click="setParentState('RECORD')"
         >
           سجل
         </v-btn>
       </v-flex>
-      <v-flex v-if="isParentState('UPLOAD')" :class="{ 'video-chosen': videoBlob }" xs12>
+      <input ref="fileInput" type="file" :accept="videoTypes.join(',')" class="d-none">
+      <v-flex
+        ref="dragZone"
+        :class="{ 'expanded': isParentState('UPLOAD') && isState(states.UPLOAD.INIT) }"
+        class="text-xs-center drag-zone round-corners"
+        xs12
+        @drag.prevent.stop
+        @dragstart.prevent.stop
+        @dragenter.prevent.stop="changeDragState(true)"
+        @dragover.prevent.stop="changeDragState(true)"
+        @dragleave.prevent.stop="changeDragState(false)"
+        @dragend.prevent.stop="changeDragState(false)"
+        @drop.prevent.stop="handleDroppedFiles($event)"
+      >
+        <p class="mt-4 drag-zone-phrase">
+          السحب والإسقاط في اي مكان للتحميل
+        </p>
         <v-btn
           class="orange-gradient btn-shadow fixed-size-btn upload-btn"
           flat
@@ -32,21 +52,8 @@
           round
           @click="triggerFileInput"
         >
-          {{ videoBlob ? videoBlob.name : 'أو اختار الملف' }}
+          أو اختر الملف
         </v-btn>
-        <!--<span v-if="videoBlob" class="video-name">{{ videoBlob.name }}</span>-->
-      </v-flex>
-      <input ref="fileInput" type="file" accept="video/*" class="d-none">
-      <v-flex
-        v-if="isParentState('UPLOAD')"
-        class="text-xs-center upload-zone round-corners"
-        :class="{ 'shrink': videoBlob }"
-        xs12
-      >
-        <p class="ma-0 upload-zone-phrase">
-          السحب والإسقاط في اي مكان للتحميل
-        </p>
-        <br>
       </v-flex>
       <v-flex xs12 class="mt-3">
         <v-layout row wrap>
@@ -60,18 +67,21 @@
             <div v-show="isState([states.RECORD.LIVE_PREVIEW, states.RECORD.RECORDING])" class="round-corners overflow-hidden">
               <video ref="livePreview" class="live-preview-video"></video>
             </div>
-            <!--<v-btn class="primary" @click="requestUserMedia">-->
-            <!--Record-->
-            <!--</v-btn>-->
-            <!--<v-btn class="primary" @click="startRecording">-->
-            <!--Start-->
-            <!--</v-btn>-->
-            <!--<v-btn class="primary" @click="stopRecording">-->
-            <!--End-->
-            <!--</v-btn>-->
           </v-flex>
           <v-flex md4 lg4 xs12>
-            <v-form class="px-2 word-data-form">
+            <v-form class="px-2 word-data-form" @submit.prevent="submitVideo">
+              <div>
+                <v-btn
+                  v-if="isParentState('UPLOAD') && isState(states.UPLOAD.PLAYBACK)"
+                  class="blue-cyan-gradient btn-shadow upload-btn"
+                  flat
+                  dark
+                  round
+                  @click="triggerFileInput"
+                >
+                  {{ videoBlob.name }}
+                </v-btn>
+              </div>
               <div v-if="isParentState('RECORD')">
                 <v-btn
                   class="recording-btn red-gradient"
@@ -149,8 +159,7 @@ import PageHeader from '~/components/generic/PageHeader'
 import videojs from 'video.js'
 import RecordRTC from 'recordrtc'
 import 'video.js/dist/video-js.css'
-import '~/assets/rangeslider-videojs/rangeslider.css'
-// require('~/assets/rangeslider-videojs/rangeslider.js')
+window.videojs = videojs
 
 export default {
   components: { PageHeader },
@@ -215,7 +224,6 @@ export default {
           ' and recordrtc ' + RecordRTC.version
         videojs.log(msg)
       })
-      // this.videojsRef.rangeslider()
     },
     setVideoJsSource (src, type) {
       this.videojsRef.src([{ src, type }])
@@ -229,7 +237,7 @@ export default {
         }
       }
     },
-    requestUserMedia () {
+    requestUserMedia (callback) {
       navigator.mediaDevices.getUserMedia({
         video: true
       }).then((stream) => {
@@ -239,7 +247,7 @@ export default {
         this.recorder = RecordRTC(stream, {
           type: 'video'
         })
-        this.state = this.states.RECORD.LIVE_PREVIEW
+        if (callback) callback()
       }).catch((e) => {
         if (e.name === 'NotAllowedError') {
           // TODO: ask user to accept permission
@@ -263,6 +271,40 @@ export default {
     triggerFileInput () {
       this.$refs.fileInput.click()
     },
+    changeDragState (isDragging) {
+      let dragZone = this.$refs.dragZone
+      isDragging ? dragZone.classList.add('is-dragging') : dragZone.classList.remove('is-dragging')
+    },
+    handleDroppedFiles (event) {
+      let dragZone = this.$refs.dragZone
+      dragZone.classList.remove('is-dragging')
+      if (event.dataTransfer && event.dataTransfer.files.length) {
+        let file = event.dataTransfer.files[0]
+        if (this.videoTypes.indexOf(file.type) !== -1) {
+          this.state = this.states.UPLOAD.PLAYBACK
+          this.videoBlob = file
+          this.setVideoJsSource(URL.createObjectURL(this.videoBlob), this.videoBlob.type)
+        } else {
+          console.log('not supported video type')
+          // TODO: show video type support error message
+        }
+      } else {
+        // TODO: show drag & drop not support error
+      }
+    },
+    setParentState (parent) {
+      if (this.isParentState(parent)) return
+      if (parent === 'RECORD') {
+        this.requestUserMedia(() => {
+          this.state = this.states.RECORD.LIVE_PREVIEW
+        })
+      } else if (parent === 'UPLOAD') {
+        this.state = this.states.UPLOAD.INIT
+        if (this.stream) {
+          this.stream.getTracks()[0].stop()
+        }
+      }
+    },
     isParentState (parent) {
       return Object.values(this.states[parent]).some(state => state === this.state)
     },
@@ -272,12 +314,15 @@ export default {
       } else {
         return this.state === testState
       }
+    },
+    submitVideo () {
+      // TODO
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 
 .btn-active {
   transform: translateY(5px);
@@ -288,42 +333,21 @@ export default {
   }
 }
 
-.upload-zone {
+.drag-zone {
+  height: 0;
+  overflow: hidden;
+  /*border-width: 0;*/
+  opacity: 0;
+  transition: height 0.5s ease-out 0.5s, opacity 0.5s ease-out 0.5s;
+}
+.drag-zone.expanded {
   height: 130px;
   border: 1px solid #c7c7c7;
-  padding-top: 25px;
-  transition: 0.5s ease-in 0.8s;
-  transform-origin: top;
-}
-.upload-zone > p {
   opacity: 1;
-  transition: 0.3s ease-in 0.2s;
 }
-.upload-zone.shrink {
-  height: 0;
-  padding: 0;
-  border: 0;
-}
-.upload-zone.shrink > p {
-  opacity: 0;
-}
-.upload-btn {
-  margin-bottom: -190px;
-  margin-right: 50%;
-  transform: translateX(50%);
-  transition: 0.5s ease-in 0.8s;
-  overflow: hidden;
-}
-.video-name {
-  opacity: 0;
-  transition: 0.3s ease-in 1.3s;
-}
-.video-chosen .upload-btn {
-  margin: 0;
-  transform: translateX(0);
-}
-.video-chosen .video-name {
-  opacity: 1;
+.drag-zone.is-dragging {
+  background: #d8d8d8;
+  border: 2px dashed #000;
 }
 
 .live-preview-video {
