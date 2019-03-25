@@ -1,5 +1,8 @@
+import { deserialize } from 'jsonapi-deserializer'
+
 export const state = () => ({
-  user: null
+  user: null,
+  deserialize
 })
 
 export const mutations = {
