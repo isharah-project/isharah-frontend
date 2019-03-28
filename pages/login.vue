@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap class="justify-center pt-4">
-    <v-card class="py-4 light-box-shadow text-xs-center card-size">
+    <v-card class="py-4 light-box-shadow text-xs-center card-size round-corners">
       <v-card-text v-if="state === 'email-confirmation'">
         تم ارسال رسالة على البريد الالكتروني لتأكيد حسابك
       </v-card-text>
