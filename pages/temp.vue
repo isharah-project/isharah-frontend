@@ -2,15 +2,8 @@
     <v-container grid-list-md>
         <v-layout row wrap>
             <v-flex xs4>
-                <VideoCard
-                    category="فعل"
-                    word="الكلمة"
-                    time="03-19-2019 15:30"
-                    >
+                <VideoCard :gesture = "gestures[0]">
                 </VideoCard>
-                <v-card-text>
-                    {{ gestures.included }}
-                </v-card-text>
             </v-flex>
         </v-layout>
     </v-container>
@@ -18,6 +11,7 @@
 
 <script>
 import VideoCard from '~/components/review/VideoCard'
+import { deserialize } from 'jsonapi-deserializer'
 export default {
   data () {
     return {
@@ -27,11 +21,9 @@ export default {
   components: { VideoCard },
   async asyncData ({ app, $axios }) {
     try {
-      let gestures = (await $axios.get('/gestures/unreviewed')).data
-      console.log(gestures)
+      let gestures = deserialize((await $axios.get('/gestures/unreviewed')).data)
       return { gestures }
     } catch (e) {
-      // TODO
       console.log(e)
     }
   }
