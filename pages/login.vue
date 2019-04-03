@@ -5,134 +5,147 @@
         تم ارسال رسالة على البريد الالكتروني لتأكيد حسابك
       </v-card-text>
       <div v-else>
-        <v-card-text v-if="state === 'signin'">
-          <h2>
-            تسجيل الدخول
-          </h2>
-        </v-card-text>
-        <v-card-text v-if="state === 'signup'">
-          <h2>
-            إنشاء حساب
-          </h2>
-        </v-card-text>
-        <v-form v-if="state === 'signin'" ref="loginForm" class="mx-5" @submit.prevent="login">
-          <v-text-field
-            v-model="user.email"
-            label="البريد الالكتروني"
-            type="email"
-            :rules="[...validationRules.required, ...validationRules.emailRules]"
-          >
-          </v-text-field>
-          <v-text-field
-            v-model="user.password"
-            label="كلمة السر"
-            type="password"
-            :rules="[...validationRules.required, validationRules.passwordLengthCheck]"
-          >
-          </v-text-field>
-          <div v-for="error in errors" :key="error" class="red--text">
-            {{ error }}
-          </div>
-          <v-btn
-            :ripple="false"
-            dark
-            flat
-            round
-            class="blue-cyan-gradient fixed-size-btn btn-shadow"
-            type="submit"
-          >
-            دخول
-          </v-btn>
-        </v-form>
-        <v-form v-if="state==='signup'" ref="signupForm" class="mx-5" @submit.prevent="register">
-          <v-text-field
-            v-model="user.first_name"
-            label="الأسم الأول"
-            :rules="validationRules.required"
-          >
-          </v-text-field>
-          <v-text-field
-            v-model="user.last_name"
-            label="الأسم الأخير"
-            :rules="validationRules.required"
-          >
-          </v-text-field>
-          <v-text-field
-            v-model="user.email"
-            label="البريد الالكتروني"
-            type="email"
-            :rules="[...validationRules.required, ...validationRules.emailRules]"
-          >
-          </v-text-field>
-          <v-text-field
-            v-model="user.password"
-            label="كلمة السر"
-            type="password"
-            :rules="[...validationRules.required, validationRules.passwordLengthCheck]"
-          ></v-text-field>
-          <v-text-field
-            v-model="user.password_confirmation"
-            label="تأكيد كلمة السر"
-            type="password"
-            :rules="[...validationRules.required, validationRules.passwordConfirmation]"
-          ></v-text-field>
-          <v-select label="النوع" :items="gender_list" :rules="validationRules.required"></v-select>
-          <v-menu
-            ref="menu"
-            v-model="menu"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            lazy
-            transition="scale-transition"
-          >
-            <template v-slot:activator="{ on }">
+        <transition name="slide-fade" mode="out-in">
+          <div v-if="state === 'signin'" key="0">
+            <v-card-text>
+              <h2>
+                تسجيل الدخول
+              </h2>
+            </v-card-text>
+            <v-form ref="loginForm" class="mx-5" @submit.prevent="login">
               <v-text-field
-                v-model="user.date_of_birth"
-                label="تاريخ الميلاد"
-                prepend-icon="event"
-                readonly
-                :rules="validationRules.required"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              ref="picker"
-              v-model="user.date_of_birth"
-              :max="minAge()"
-              min="1950-01-01"
-              @change="saveDate"
-            ></v-date-picker>
-          </v-menu>
-          <v-btn
-            :ripple="false"
-            dark
-            flat
-            round
-            class="blue-cyan-gradient fixed-size-btn btn-shadow"
-            type="submit"
-          >
-            إنشاء
-          </v-btn>
-          <div v-for="error in errors" :key="error" class="red--text">
-            - {{ error }}
+                v-model="user.email"
+                label="البريد الالكتروني"
+                type="email"
+                validate-on-blur
+                :rules="[...validationRules.required, ...validationRules.emailRules]"
+              >
+              </v-text-field>
+              <v-text-field
+                v-model="user.password"
+                label="كلمة السر"
+                type="password"
+                validate-on-blur
+                :rules="[...validationRules.required, validationRules.passwordLengthCheck]"
+              >
+              </v-text-field>
+              <div v-for="error in errors" :key="error" class="red--text">
+                {{ error }}
+              </div>
+              <v-btn
+                :ripple="false"
+                dark
+                flat
+                round
+                class="blue-cyan-gradient fixed-size-btn btn-shadow"
+                type="submit"
+              >
+                دخول
+              </v-btn>
+            </v-form>
+            <v-card-text>
+              ليس لديك حساب؟
+              <v-btn flat round class="blue--text" @click="changeState('signup')">
+                إنشاء حساب
+              </v-btn>
+            </v-card-text>
           </div>
-        </v-form>
-        <v-card-text v-if="state === 'signin'">
-          ليس لديك حساب؟
-          <v-btn flat round class="blue--text" @click="changeState('signup')">
-            إنشاء حساب
-          </v-btn>
-        </v-card-text>
-        <v-card-text v-if="state === 'signup'">
-          لديك حساب؟
-          <v-btn flat round class="blue--text" @click="changeState('signin')">
-            تسجيل الدخول
-          </v-btn>
-        </v-card-text>
-        <v-btn dark flat round class="less-font-size btn-shadow facebook-color">
+          <div v-if="state === 'signup'">
+            <v-card-text>
+              <h2>
+                إنشاء حساب
+              </h2>
+            </v-card-text>
+            <v-form ref="signupForm" class="mx-5" @submit.prevent="register">
+              <v-text-field
+                v-model="user.first_name"
+                label="الأسم الأول"
+                validate-on-blur
+                :rules="validationRules.required"
+              >
+              </v-text-field>
+              <v-text-field
+                v-model="user.last_name"
+                label="الأسم الأخير"
+                validate-on-blur
+                :rules="validationRules.required"
+              >
+              </v-text-field>
+              <v-text-field
+                v-model="user.email"
+                label="البريد الالكتروني"
+                type="email"
+                validate-on-blur
+                :rules="[...validationRules.required, ...validationRules.emailRules]"
+              >
+              </v-text-field>
+              <v-text-field
+                v-model="user.password"
+                label="كلمة السر"
+                type="password"
+                validate-on-blur
+                :rules="[...validationRules.required, validationRules.passwordLengthCheck]"
+              ></v-text-field>
+              <v-text-field
+                v-model="user.password_confirmation"
+                label="تأكيد كلمة السر"
+                type="password"
+                validate-on-blur
+                :rules="[...validationRules.required, validationRules.passwordConfirmation]"
+              ></v-text-field>
+              <v-menu
+                ref="menu"
+                v-model="menu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                lazy
+                transition="scale-transition"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="user.date_of_birth"
+                    label="تاريخ الميلاد"
+                    prepend-icon="event"
+                    readonly
+                    validate-on-blur
+                    :rules="validationRules.required"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  ref="picker"
+                  v-model="user.date_of_birth"
+                  :max="minAge()"
+                  min="1950-01-01"
+                  @change="saveDate"
+                ></v-date-picker>
+              </v-menu>
+              <v-btn
+                :ripple="false"
+                dark
+                flat
+                round
+                class="blue-cyan-gradient fixed-size-btn btn-shadow"
+                type="submit"
+              >
+                إنشاء
+              </v-btn>
+              <div v-for="error in errors" :key="error" class="red--text">
+                - {{ error }}
+              </div>
+            </v-form>
+            <v-card-text>
+              لديك حساب؟
+              <v-btn flat round class="blue--text" @click="changeState('signin')">
+                تسجيل الدخول
+              </v-btn>
+            </v-card-text>
+          </div>
+        </transition>
+        <v-btn flat round class="less-font-size btn-shadow">
           تسجيل الدخول عن طريق فيسبوك
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="5 0 30 30" width="30px" height="25px">
-            <path style="fill:#FFFFFF" d="M24,4H6C4.895,4,4,4.895,4,6v18c0,1.105,0.895,2,2,2h10v-9h-3v-3h3v-1.611C16,9.339,17.486,8,20.021,8 c1.214,0,1.856,0.09,2.16,0.131V11h-1.729C19.376,11,19,11.568,19,12.718V14h3.154l-0.428,3H19v9h5c1.105,0,2-0.895,2-2V6 C26,4.895,25.104,4,24,4z" />
+            <path style="fill:#3b5998" d="M24,4H6C4.895,4,4,4.895,4,6v18c0,1.105,0.895,2,2,2h10v-9h-3v-3h3v-1.611C16,9.339,17.486,8,20.021,8 c1.214,0,1.856,0.09,2.16,0.131V11h-1.729C19.376,11,19,11.568,19,12.718V14h3.154l-0.428,3H19v9h5c1.105,0,2-0.895,2-2V6 C26,4.895,25.104,4,24,4z" />
           </svg>
         </v-btn>
         <v-btn color="#000000" dark flat round class="less-font-size btn-shadow">
@@ -174,7 +187,6 @@ export default {
         country: '',
         date_of_birth: ''
       },
-      gender_list: ['ذكر', 'انثى'],
       date: null,
       today: new Date().toISOString(),
       maxYear: 0,
@@ -235,12 +247,6 @@ export default {
         this.$refs.signupForm.reset()
       }
     },
-    genderSelect () {
-      if (this.user.gender === 'ذكر') {
-        return 'male'
-      }
-      return 'female'
-    },
     register () {
       if (this.$refs.signupForm.validate()) {
         this.$axios.$post('auth', {
@@ -249,7 +255,6 @@ export default {
           'password_confirmation': this.user.password_confirmation,
           'first_name': this.user.first_name,
           'last_name': this.user.last_name,
-          'gender': this.genderSelect(),
           'city': 'Cairo',
           'country': 'Egypt',
           'date_of_birth': this.user.date_of_birth,
@@ -286,6 +291,14 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all .3s ease;
+}
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(10px);
+  opacity: 0;
+}
 </style>

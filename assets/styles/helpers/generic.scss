@@ -81,10 +81,13 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 }
 
 .card-size {
-  width: 350px
+  width: 400px
 }
 
 
-.facebook-color {
-  background-color: #3b5998
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }

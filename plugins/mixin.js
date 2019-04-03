@@ -27,7 +27,7 @@ Vue.mixin({
     validationRules () {
       return {
         required: [
-          v => !!v || 'هذا الحقل مطلوب'
+          v => !!v || 'الخانة مطلوبة'
         ],
         atLeastOne: [
           v => (v && v.length >= 1) || 'يجب اختيار واحدة على الأقل'
