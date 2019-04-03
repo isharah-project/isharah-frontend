@@ -182,7 +182,6 @@ export default {
         password_confirmation: '',
         first_name: '',
         last_name: '',
-        gender: '',
         city: '',
         country: '',
         date_of_birth: ''
