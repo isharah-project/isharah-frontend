@@ -4,38 +4,35 @@
       <v-flex xs12 class="medium-round-corners light-box-shadow video-container">
         <video class="full-width d-block" controls poster="">
           <source
-            src="~/assets/video.mp4"
+            :src="word.gesture.video_url"
             type="video/mp4"
           >
         </video>
       </v-flex>
     </v-layout>
-    <v-layout>
-      <v-flex>
-        <h2 class="display-2 py-4 grey-text">
-          {{ word.attributes.name }}
-        </h2>
-      </v-flex>
+    <v-layout :column="$vuetify.breakpoint.xsOnly" justify-space-between align-center>
+      <h2 class="display-2 py-4 grey-text">
+        {{ word.name }}
+      </h2>
+      <div class="d-flex">
+        <v-chip v-for="category in word.categories" :key="category" class="btn-shadow">
+          {{ category }}
+        </v-chip>
+      </div>
     </v-layout>
     <v-layout>
-      <v-flex>
-        <v-list two-line class="user-list">
-          <v-list-tile avatar class="user-list-tile">
-            <v-list-tile-avatar class="light-box-shadow" :size="80">
-              <img src="~/assets/images/placeholder-user.png" alt="">
-            </v-list-tile-avatar>
-
-            <v-list-tile-content class="pa-2">
-              <v-list-tile-title class="user-title headline grey-text">
-                طارق محمد
-              </v-list-tile-title>
-              <v-list-tile-sub-title class="user-subtitle">
-                مصر - الأسكندرية
-              </v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-flex>
+      <v-btn
+        class="fixed-size-btn btn-shadow blue-cyan-gradient"
+        dark
+        flat
+        round
+        @click="goToUploadPage"
+      >
+        تدرب على الكلمة
+        <v-icon class="mx-1">
+          videocam
+        </v-icon>
+      </v-btn>
     </v-layout>
   </v-container>
 </template>
@@ -47,13 +44,19 @@ export default {
       word: null
     }
   },
-  async asyncData ({ $axios, route }) {
+  async asyncData ({ $axios, route, store }) {
     try {
-      let word = (await $axios.get(`words/${route.params.word}`)).data.data
+      let response = (await $axios.get(`words/${route.params.word}`)).data
+      let word = store.state.deserialize(response)
       return { word }
     } catch (e) {
       console.log(e)
-      // TODO
+      // TODO: show error msg
+    }
+  },
+  methods: {
+    goToUploadPage () {
+      this.$router.push({ path: `/contribute/upload?word=${this.word.name}` })
     }
   }
 }
@@ -62,15 +65,5 @@ export default {
 <style scoped>
 .video-container {
   overflow: hidden;
-}
-.user-list {
-  background: transparent;
-}
-.user-list >>> .v-list__tile.v-list__tile--avatar.theme--light {
-  padding: 0;
-}
-.user-list .user-title {
-  height: 35px;
-  line-height: 35px;
 }
 </style>
