@@ -46,7 +46,8 @@ module.exports = {
   plugins: [
     '~/plugins/axios',
     '~/plugins/vuetify',
-    '~/plugins/vue-i18n'
+    '~/plugins/vue-i18n',
+    '~/plugins/mixin'
   ],
 
   /*
