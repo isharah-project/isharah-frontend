@@ -151,13 +151,6 @@ export default {
   components: { PageHeader },
   data () {
     return {
-      arabicLetters: ['أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س',
-        'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي'],
-      partOfSpeechTypes: [
-        { text: 'اسم', value: 'اسم' },
-        { text: 'فعل', value: 'فعل' },
-        { text: 'حرف', value: 'حرف' }
-      ],
       categories: [],
       query: {
         part_of_speech: null,
@@ -205,9 +198,10 @@ export default {
       deep: true
     }
   },
-  async asyncData ({ app, $axios }) {
+  async asyncData ({ app, $axios, store }) {
     try {
-      let categories = (await $axios.get('/categories')).data
+      let response = (await $axios.get('/categories')).data
+      let categories = store.state.deserialize(response)
       return { categories }
     } catch (e) {
       // TODO
