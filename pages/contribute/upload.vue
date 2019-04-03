@@ -14,7 +14,7 @@
           round
           @click="setParentState('UPLOAD')"
         >
-          إرفع
+          ارفع
         </v-btn>
         <v-btn
           class="red-gradient video-method-btn btn-shadow title mx-2"
