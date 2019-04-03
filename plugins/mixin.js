@@ -6,7 +6,7 @@ Vue.mixin({
     return {
       deserialize,
       arabicLetters: ['أ', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س',
-        'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'هـ', 'و', 'ي'],
+        'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي'],
       partOfSpeechTypes: [
         { text: 'اسم', value: 'اسم' },
         { text: 'فعل', value: 'فعل' },
@@ -21,6 +21,18 @@ Vue.mixin({
         'video/x-ms-wmv', //  .wmv
         'video/quicktime' //  .mov
       ]
+    }
+  },
+  computed: {
+    validationRules () {
+      return {
+        required: [
+          v => !!v || 'هذا الحقل مطلوب'
+        ],
+        atLeastOne: [
+          v => (v && v.length >= 1) || 'يجب اختيار واحدة على الأقل'
+        ]
+      }
     }
   },
   methods: {
