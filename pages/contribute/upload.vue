@@ -68,7 +68,7 @@
             </div>
           </v-flex>
           <v-flex md4 lg4 xs12>
-            <v-form class="px-2 word-data-form" @submit.prevent="submitVideo">
+            <v-form ref="videoForm" v-model="validForm" class="px-2 word-data-form" @submit.prevent="submitVideo">
               <transition name="fade" mode="out-in">
                 <div v-if="isParentState('UPLOAD') && isState(states.UPLOAD.PLAYBACK)" key="0">
                   <v-btn
@@ -87,6 +87,7 @@
                     round
                     flat
                     dark
+                    :disabled="isState(states.RECORD.RECORDING)"
                     @click="startRecording"
                   >
                     تسجيل
@@ -95,6 +96,7 @@
                     class="recording-btn red-border-btn"
                     round
                     flat
+                    :disabled="!isState(states.RECORD.RECORDING)"
                     @click="stopRecording"
                   >
                     وقف
@@ -108,41 +110,46 @@
                   :items="wordSearchResults"
                   :loading="false"
                   :search-input.sync="wordSearchQuery"
-                  class="round-input light-shadow-input full-width my-3"
+                  class="round-input light-shadow-input full-width"
                   chips
                   clearable
-                  hide-details
-                  hide-selected
                   label="الكلمة"
                   solo
                 ></v-autocomplete>
                 <v-select
                   v-model="word.part_of_speech"
                   :items="partOfSpeechTypes"
-                  class="round-input light-shadow-input full-width my-3"
+                  :rules="validationRules.required"
+                  class="round-input light-shadow-input full-width"
                   menu-props="auto"
                   label="إختر نوع الكلمة"
-                  hide-details
                   single-line
                   solo
                 ></v-select>
                 <v-select
                   v-model="word.category"
                   :items="categories"
+                  :rules="validationRules.atLeastOne"
                   :multiple="true"
                   item-text="name"
                   item-value="name"
-                  class="round-input light-shadow-input full-width my-3"
+                  class="round-input light-shadow-input full-width"
                   menu-props="auto"
                   label="إختر فئة الكلمة"
-                  hide-details
                   single-line
                   chips
                   solo
                 ></v-select>
               </div>
               <div>
-                <v-btn type="submit" class="orange-gradient btn-shadow fixed-size-btn" round flat dark>
+                <v-btn
+                  type="submit"
+                  class="orange-gradient btn-shadow fixed-size-btn"
+                  :disabled="!validForm || !videoBlob"
+                  round
+                  flat
+                  dark
+                >
                   حفظ
                 </v-btn>
               </div>
@@ -183,21 +190,21 @@ export default {
         }
       },
       state: 0,
-      selectedState: 0,
       videoOptions: {
         controls: true,
         autoplay: 'auto',
         fluid: true
       },
       word: {
-        name: null,
+        name: 'أحمر',
         part_of_speech: null,
         category: null
       },
       categories: [],
       wordSearchResults: [],
       wordSearchQuery: null,
-      selectedWord: null
+      selectedWord: null,
+      validForm: false
     }
   },
   async asyncData ({ app, store, $axios }) {
@@ -316,7 +323,18 @@ export default {
       }
     },
     submitVideo () {
-      // TODO
+      if (this.$refs.videoForm.validate() && this.videoBlob) {
+        let formData = new FormData()
+        formData.append('word', this.word.name)
+        formData.append('video', this.videoBlob)
+        this.$axios.post('gestures', formData).then(() => {
+          this.$refs.videoForm.reset()
+          // TODO: show msg of success
+        }).catch((e) => {
+          console.log(e)
+          // TODO
+        })
+      }
     }
   }
 }
