@@ -99,8 +99,7 @@
             :selectable="false"
             apiEndPoint="words"
             @itemChanged="goToWord"
-          >
-          </AutoComplete>
+          />
         </v-flex>
         <v-flex xs12 class="text-xs-center" :class="{ 'mt-3': $vuetify.breakpoint.xsOnly }">
           <v-pagination

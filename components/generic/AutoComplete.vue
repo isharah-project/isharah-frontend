@@ -8,8 +8,9 @@
     :item-text="itemText"
     :hide-no-data="getHideNoData"
     :search-input.sync="query"
+    :prepend-icon="prependIcon"
+    class="auto-complete"
     append-icon=""
-    prepend-icon="search"
     hide-selected
     return-object
     hide-details
@@ -28,12 +29,10 @@
     <template v-slot:selection="{ item, selected }">
       <v-chip
         :selected="selected"
-        color="blue-grey"
-        class="white--text"
       >
-        <v-icon left>
-          mdi-coin
-        </v-icon>
+        <v-avatar class="white--text">
+          {{ item[itemText].slice(0, 1).toUpperCase() }}
+        </v-avatar>
         <span>{{ item[itemText] }}</span>
       </v-chip>
     </template>
@@ -81,10 +80,15 @@ export default {
       required: false,
       default: false
     },
-    queryMinCharsToRequest: {
+    queryMinCharsCount: {
       type: Number,
       required: false,
       default: 2
+    },
+    prependIcon: {
+      type: String,
+      required: false,
+      default: 'search'
     }
   },
   data () {
@@ -98,34 +102,37 @@ export default {
   computed: {
     getHideNoData () {
       if (this.hideNoData) return true
-      return !this.query || this.query.length < this.queryMinCharsToRequest
+      return !this.query || this.query.length < this.queryMinCharsCount
     }
   },
   watch: {
     query: {
       handler: function (value) {
-        if (value && value.length >= this.queryMinCharsToRequest) {
+        if (value && value.length >= this.queryMinCharsCount) {
           _.debounce(this.fetchItems, 400)(value)
         }
       }
     },
     selectedItem: {
       handler: function (value) {
-        if (value) {
-          this.$emit('itemChanged', value)
-          if (!this.selectable) {
-            this.$nextTick(() => {
-              this.$refs.autocomplete.reset()
-            })
-          }
+        if (value && !this.selectable) {
+          this.$nextTick(() => {
+            this.$refs.autocomplete.reset()
+          })
+        } else if (value) {
+          this.$nextTick(() => {
+            this.$refs.autocomplete.blur()
+          })
         }
+        this.$emit('itemChanged', value)
       }
     }
   },
   methods: {
     fetchItems (query) {
       this.loading = true
-      this.$axios.get(`${this.apiEndPoint}?q=${query}`).then((response) => {
+      this.$axios.get(`${this.apiEndPoint}?q=${query}`,
+        { progress: false }).then((response) => {
         this.loading = false
         this.items = this.deserialize(response.data)
       }).catch((e) => {
@@ -138,8 +145,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "~/assets/styles/helpers/generic.scss";
+@import "~/assets/styles/helpers/colors.scss";
 
+.auto-complete .v-avatar {
+  background: $blue-cyan-gradient;
+}
 .search-list-avatar > .v-avatar {
   background: $blue-cyan-gradient;
 }
