@@ -107,16 +107,24 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 /******* ANIMATION *******/
 /*************************/
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity .5s;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 
-.page-enter-active, .page-leave-active {
-  transition: opacity .5s;
+.page-enter-active,
+.page-leave-active {
+  transition: all .6s;
 }
-.page-enter, .page-leave-to {
+.page-enter {
   opacity: 0;
+  transform: translateX(5px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateX(-5px);
 }

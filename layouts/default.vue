@@ -89,9 +89,17 @@
         </template>
       </v-toolbar-items>
       <v-spacer></v-spacer>
-      <v-btn :ripple="false" class="blue-border-btn" href="/login" flat round>
+      <nuxt-link
+        is="v-btn"
+        :ripple="false"
+        :class="{ 'blue-border-btn': $route.path !== '/login' }"
+        active-class="blue-cyan-gradient white--text"
+        to="/login"
+        flat
+        round
+      >
         تسجيل الدخول
-      </v-btn>
+      </nuxt-link>
     </v-toolbar>
     <v-content>
       <v-container fluid>
