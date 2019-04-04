@@ -56,9 +56,16 @@
       </v-toolbar-title>
       <v-toolbar-items class="hidden-sm-and-down">
         <template v-for="link in links">
-          <v-btn v-if="!link.children" :key="link.path" :href="!link.children ? link.path : ''" flat>
+          <nuxt-link
+            is="v-btn"
+            v-if="!link.children"
+            :key="link.path"
+            :to="link.path"
+            active-class="blue-cyan-gradient white--text"
+            flat
+          >
             {{ link.text }}
-          </v-btn>
+          </nuxt-link>
           <v-menu v-else :key="link.path" offset-y open-on-hover>
             <template v-slot:activator="{ on }">
               <v-btn
@@ -73,9 +80,9 @@
                 v-for="(child, i) in link.children"
                 :key="i"
               >
-                <v-btn class="ma-0 pa-0" :href="child.path" flat>
+                <nuxt-link is="v-btn" class="ma-0 pa-0" :to="child.path" active-class="blue-cyan-gradient white--text" flat>
                   {{ child.text }}
-                </v-btn>
+                </nuxt-link>
               </v-list-tile>
             </v-list>
           </v-menu>

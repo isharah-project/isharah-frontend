@@ -4,35 +4,27 @@ $toolbar-shadow: 0 3px 46px rgba(0, 0, 0, 0.03);
 $light-shadow: 0 5px 35px rgba(0, 0, 0, 0.03);
 $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 
+/***********************/
+/******* GENERAL *******/
+/***********************/
 
-.grey-text {
-  color: $dark-grey-text;
+.full-width {
+  width: 100%;
+}
+.card-size {
+  width: 400px
 }
 
-.toolbar-shadow {
-  background: $toolbar-shadow;
-}
 .small-round-corners {
   border-radius: 8px;
 }
 .medium-round-corners {
   border-radius: 10px;
 }
-.full-width {
-  width: 100%;
-}
 
-.blue-border-btn {
-  border:solid 2px $blue;
-}
-.red-border-btn {
-  border: solid 2px $red;
-}
-
-.fixed-size-btn {
-  width: 180px;
-  height: 40px;
-}
+/**********************/
+/******* COLORS *******/
+/**********************/
 
 .red-gradient {
   background: $red-gradient;
@@ -46,10 +38,28 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 .red-black-gradient {
   background: $red-black-gradient;
 }
+
+.grey-text {
+  color: $dark-grey-text;
+}
+
+/***********************/
+/******* SHADOWS *******/
+/***********************/
+
+.toolbar-shadow {
+  background: $toolbar-shadow;
+}
 .btn-shadow {
   box-shadow: $btn-shadow;
 }
+.light-box-shadow {
+  box-shadow: $light-shadow;
+}
 
+/**********************/
+/******* INPUTS *******/
+/**********************/
 
 .input-hidden-underline .v-input__slot::before,
 .input-hidden-underline .v-input__slot::after {
@@ -64,6 +74,24 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
   box-shadow: $light-shadow;
 }
 
+/***********************/
+/******* BUTTONS *******/
+/***********************/
+
+.blue-border-btn {
+  border:solid 2px $blue;
+}
+.red-border-btn {
+  border: solid 2px $red;
+}
+.fixed-size-btn {
+  width: 180px;
+  height: 40px;
+}
+
+/**************************/
+/******* PAGINATION *******/
+/**************************/
 
 .round-pagination .v-pagination__item {
   border-radius: 10px;
@@ -75,19 +103,20 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
   outline: none;
 }
 
-
-.light-box-shadow {
-  box-shadow: $light-shadow;
-}
-
-.card-size {
-  width: 400px
-}
-
+/*************************/
+/******* ANIMATION *******/
+/*************************/
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;
 }
 .fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.page-enter-active, .page-leave-active {
+  transition: opacity .5s;
+}
+.page-enter, .page-leave-to {
   opacity: 0;
 }
