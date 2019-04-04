@@ -326,7 +326,6 @@ export default {
       }
     },
     setSelectedWord (word) {
-      console.log(word)
       if (word) {
         this.word = word
         this.disableWordFields = true
