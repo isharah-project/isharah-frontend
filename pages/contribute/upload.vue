@@ -104,22 +104,20 @@
                 </div>
               </transition>
               <div>
-                <!-- TODO make autocomplete component -->
-                <v-autocomplete
-                  v-model="selectedWord"
-                  :items="wordSearchResults"
-                  :loading="false"
-                  :search-input.sync="wordSearchQuery"
-                  class="round-input light-shadow-input full-width"
-                  chips
-                  clearable
-                  label="الكلمة"
-                  solo
-                ></v-autocomplete>
+                <AutoComplete
+                  label="البحث عن الكلمة ..."
+                  itemText="name"
+                  :selectable="true"
+                  apiEndPoint="words"
+                  prependIcon=""
+                  class="round-input light-shadow-input full-width mb-4"
+                  @itemChanged="setSelectedWord"
+                />
                 <v-select
                   v-model="word.part_of_speech"
                   :items="partOfSpeechTypes"
                   :rules="validationRules.required"
+                  :disabled="disableWordFields"
                   class="round-input light-shadow-input full-width"
                   menu-props="auto"
                   label="إختر نوع الكلمة"
@@ -127,16 +125,17 @@
                   solo
                 ></v-select>
                 <v-select
-                  v-model="word.category"
+                  v-model="word.categories"
                   :items="categories"
                   :rules="validationRules.atLeastOne"
-                  :multiple="true"
+                  :disabled="disableWordFields"
                   item-text="name"
                   item-value="name"
                   class="round-input light-shadow-input full-width"
                   menu-props="auto"
                   label="إختر فئة الكلمة"
                   single-line
+                  multiple
                   chips
                   solo
                 ></v-select>
@@ -163,13 +162,17 @@
 
 <script>
 import PageHeader from '~/components/generic/PageHeader'
+import AutoComplete from '~/components/generic/AutoComplete'
 import videojs from 'video.js'
 import RecordRTC from 'recordrtc'
 import 'video.js/dist/video-js.css'
 window.videojs = videojs
 
 export default {
-  components: { PageHeader },
+  components: {
+    PageHeader,
+    AutoComplete
+  },
   data () {
     return {
       videojsRef: null,
@@ -198,12 +201,12 @@ export default {
       word: {
         name: 'أحمر',
         part_of_speech: null,
-        category: null
+        categories: null
       },
       categories: [],
       wordSearchResults: [],
       wordSearchQuery: null,
-      selectedWord: null,
+      disableWordFields: false,
       validForm: false
     }
   },
@@ -320,6 +323,21 @@ export default {
         return Object.values(testState).some(s => s === this.state)
       } else {
         return this.state === testState
+      }
+    },
+    setSelectedWord (word) {
+      if (word) {
+        this.word = word
+        this.disableWordFields = true
+        // freeze selections
+      } else {
+        this.word = {
+          name: null,
+          part_of_speech: null,
+          categories: null
+        }
+        this.disableWordFields = false
+        this.$refs.videoForm.reset()
       }
     },
     submitVideo () {

@@ -45,7 +45,7 @@
         sm12
         md12
         lg7
-        class="d-flex align-center white light-box-shadow round-corners"
+        class="d-flex align-center white light-box-shadow small-round-corners"
         :class="{ 'flex-wrap': $vuetify.breakpoint.xsOnly,
                   'my-2 pa-1': $vuetify.breakpoint.mdAndDown }"
       >
@@ -59,13 +59,13 @@
             <template v-slot:activator="{ on }">
               <v-btn
                 :class="{ 'full-width': $vuetify.breakpoint.xsOnly }"
-                class="ma-0 round-corners"
+                class="ma-0 small-round-corners"
                 flat
                 v-on="on"
               >
                 الأبجدية
                 <span v-if="arabicLetters.includes(query.q)" class="font-weight-bold">
-                  {{ `(${query.q})` }}
+                  &nbsp; {{ `(${query.q})` }}
                 </span>
                 <v-icon>filter_list</v-icon>
               </v-btn>
@@ -93,18 +93,13 @@
           </v-menu>
         </v-flex>
         <v-flex xs12>
-          <v-autocomplete
-            :loading="false"
-            :items="[]"
-            :search-input.sync="searchText"
-            cache-items
-            class="mx-3 pt-0 input-hidden-underline"
-            flat
-            hide-no-data
-            hide-details
-            label="بحث"
-            prepend-icon="search"
-          ></v-autocomplete>
+          <AutoComplete
+            label="البحث عن الكلمة ..."
+            itemText="name"
+            :selectable="false"
+            apiEndPoint="words"
+            @itemChanged="goToWord"
+          />
         </v-flex>
         <v-flex xs12 class="text-xs-center" :class="{ 'mt-3': $vuetify.breakpoint.xsOnly }">
           <v-pagination
@@ -117,7 +112,7 @@
         </v-flex>
       </v-flex>
     </v-layout>
-    <v-layout row wrap class="white light-box-shadow round-corners pa-2 mt-4">
+    <v-layout row wrap class="white light-box-shadow small-round-corners pa-2 mt-4">
       <v-flex
         v-for="word in words"
         :key="word.name"
@@ -129,9 +124,9 @@
         <v-btn
           flat
           class="headline"
-          @click="$router.push({ path: `dictionary/${word.attributes.name}` })"
+          @click="goToWord(word)"
         >
-          {{ word.attributes.name }}
+          {{ word.name }}
         </v-btn>
       </v-flex>
       <v-flex v-if="words.length === 0" class="text-xs-center">
@@ -146,9 +141,13 @@
 <script>
 import _ from 'lodash'
 import PageHeader from '~/components/generic/PageHeader'
+import AutoComplete from '~/components/generic/AutoComplete'
 
 export default {
-  components: { PageHeader },
+  components: {
+    PageHeader,
+    AutoComplete
+  },
   data () {
     return {
       categories: [],
@@ -200,8 +199,8 @@ export default {
   },
   async asyncData ({ app, $axios, store }) {
     try {
-      let response = (await $axios.get('/categories')).data
-      let categories = store.state.deserialize(response)
+      let response = await $axios.get('/categories')
+      let categories = store.state.deserialize(response.data)
       return { categories }
     } catch (e) {
       // TODO
@@ -227,7 +226,7 @@ export default {
         if (this.page.current > response.page_meta.total_pages) {
           this.replaceRouterPage(1)
         }
-        this.words = response.data
+        this.words = this.deserialize(response)
         this.page.total = response.page_meta.total_pages || 1
         this.loading = false
       }).catch((error) => {
@@ -318,6 +317,11 @@ export default {
     },
     resetPagination () {
       this.page.current = 1
+    },
+    goToWord (word) {
+      if (word) {
+        this.$router.push({ path: `dictionary/${word.name}` })
+      }
     },
     setFirstLetterFilter (letter) {
       this.query.q = letter
