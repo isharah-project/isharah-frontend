@@ -35,16 +35,16 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 }
 
 .red-gradient {
-  background-image: linear-gradient(to right, #e52d27 0%, #b31217 100%);
+  background: $red-gradient;
 }
 .orange-gradient {
-  background-image: linear-gradient(to right, #f46b45 0%, #eea849 100%);
+  background: $orange-gradient;
 }
 .blue-cyan-gradient {
-  background: linear-gradient(90deg, rgba(15,147,195,1) 0%, rgba(0,200,163,1) 100%);
+  background: $blue-cyan-gradient;
 }
 .red-black-gradient {
-  background: linear-gradient(90deg, rgba(36,0,0,1) 0%, rgba(186,0,0,1) 100%);
+  background: $red-black-gradient;
 }
 .btn-shadow {
   box-shadow: $btn-shadow;
