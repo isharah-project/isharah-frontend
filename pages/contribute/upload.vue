@@ -104,7 +104,6 @@
                 </div>
               </transition>
               <div>
-                <!-- TODO make autocomplete component -->
                 <AutoComplete
                   label="البحث عن الكلمة ..."
                   itemText="name"
