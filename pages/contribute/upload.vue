@@ -226,6 +226,9 @@ export default {
     this.addFileInputListener()
     this.state = this.states.UPLOAD.INIT
   },
+  beforeDestroy () {
+    this.releaseUserMedia()
+  },
   methods: {
     initVideoJs (el) {
       let options = { ...this.videoOptions }
@@ -264,6 +267,11 @@ export default {
         }
         console.log(e)
       })
+    },
+    releaseUserMedia () {
+      if (this.stream) {
+        this.stream.getTracks()[0].stop()
+      }
     },
     startRecording () {
       this.recorder.startRecording()
@@ -310,9 +318,7 @@ export default {
         })
       } else if (parent === 'UPLOAD') {
         this.state = this.states.UPLOAD.INIT
-        if (this.stream) {
-          this.stream.getTracks()[0].stop()
-        }
+        this.releaseUserMedia()
       }
     },
     isParentState (parent) {

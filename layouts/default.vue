@@ -15,7 +15,13 @@
 
       <v-list dense class="pt-0">
         <template v-for="link in links">
-          <v-list-tile v-if="!link.children" :key="link.path" @click="$router.push(link.path)">
+          <nuxt-link
+            is="v-list-tile"
+            v-if="!link.children"
+            :key="link.path"
+            :to="link.path"
+            @click="setNavDrawer(false)"
+          >
             <v-list-tile-action>
               <v-icon>{{ link.icon }}</v-icon>
             </v-list-tile-action>
@@ -23,7 +29,7 @@
             <v-list-tile-content>
               <v-list-tile-title>{{ link.text }}</v-list-tile-title>
             </v-list-tile-content>
-          </v-list-tile>
+          </nuxt-link>
           <v-list-group
             v-else
             :key="link.path"
@@ -35,22 +41,25 @@
                 <v-list-tile-title>{{ link.text }}</v-list-tile-title>
               </v-list-tile>
             </template>
-            <v-list-tile
+            <nuxt-link
+              is="v-list-tile"
               v-for="(child, i) in link.children"
               :key="i"
-              @click="$router.push(child.path)"
+              :to="child.path"
+              @click="setNavDrawer(false)"
             >
               <v-list-tile-action>
                 <v-icon>{{ child.icon }}</v-icon>
               </v-list-tile-action>
               <v-list-tile-title>{{ child.text }}</v-list-tile-title>
-            </v-list-tile>
+            </nuxt-link>
           </v-list-group>
         </template>
       </v-list>
     </v-navigation-drawer>
 
     <v-toolbar class="app-toolbar" color="white" app>
+      <v-toolbar-side-icon v-if="$vuetify.breakpoint.smAndDown" @click="setNavDrawer(true)"></v-toolbar-side-icon>
       <v-toolbar-title>
         EgSl
       </v-toolbar-title>
@@ -61,7 +70,6 @@
             v-if="!link.children"
             :key="link.path"
             :to="link.path"
-            active-class="blue-cyan-gradient white--text"
             flat
           >
             {{ link.text }}
@@ -70,6 +78,7 @@
             <template v-slot:activator="{ on }">
               <v-btn
                 flat
+                :class="{ 'v-btn--active': chickChildrenPathsMatch(link) }"
                 v-on="on"
               >
                 {{ link.text }}
@@ -80,7 +89,7 @@
                 v-for="(child, i) in link.children"
                 :key="i"
               >
-                <nuxt-link is="v-btn" class="ma-0 pa-0" :to="child.path" active-class="blue-cyan-gradient white--text" flat>
+                <nuxt-link is="v-btn" class="ma-0 pa-0" :to="child.path" flat>
                   {{ child.text }}
                 </nuxt-link>
               </v-list-tile>
@@ -93,7 +102,6 @@
         is="v-btn"
         :ripple="false"
         :class="{ 'blue-border-btn': $route.path !== '/login' }"
-        active-class="blue-cyan-gradient white--text"
         to="/login"
         flat
         round
@@ -131,6 +139,14 @@ export default {
         { path: '/contact_us', text: 'تواصل معنا', icon: 'contact_mail' },
         { path: '/for_developers', text: 'للمطورين', icon: 'code' }
       ]
+    }
+  },
+  methods: {
+    setNavDrawer (value) {
+      this.navigationDrawer.isOpened = value
+    },
+    chickChildrenPathsMatch (link) {
+      return link.children.some(child => child.path === this.$route.path)
     }
   }
 }
