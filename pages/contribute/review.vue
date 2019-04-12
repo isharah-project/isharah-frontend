@@ -12,7 +12,7 @@
         </v-layout>
         <v-layout :column="$vuetify.breakpoint.xsOnly" justify-space-between align-center>
           <h2 class="display-2 py-4 grey-text">
-            {{ selectedGesture.word.name }}
+            {{ selectedGesture.word.name }} <small>[{{ selectedGesture.word.part_of_speech }}]</small>
           </h2>
           <div class="d-flex">
             <v-chip v-for="category in selectedGesture.word.categories" :key="category.name" class="btn-shadow">
@@ -28,7 +28,7 @@
             <v-btn class="blue-cyan-gradient btn-shadow full-width ma-0 review-btn" round dark flat>
               صحيحة
               <v-icon class="mr-1">
-                check_circle
+                check
               </v-icon>
             </v-btn>
           </v-flex>
@@ -36,26 +36,42 @@
             <v-btn class="red-gradient btn-shadow full-width ma-0 review-btn" round dark flat>
               خاطئة
               <v-icon class="mr-1">
-                cancel
+                clear
               </v-icon>
             </v-btn>
           </v-flex>
         </v-layout>
       </v-flex>
     </v-layout>
-    <v-layout class="mt-5">
-      <v-flex xs12 class="gestures-list-wrapper">
-        <v-card v-for="i in 9" :key="i" class="light-box-shadow small-round-corners mx-3 gesture">
+    <h2 class="display-1 mt-4 mb-3">
+      المزيد
+    </h2>
+    <v-layout class="mt-">
+      <v-flex xs12 class="gestures-list-wrapper py-3">
+        <v-card
+          v-for="gesture in gestures"
+          :key="gesture.id"
+          class="light-box-shadow small-round-corners mx-3 gesture"
+          @click="selectGesture(gesture)"
+        >
           <v-img src="https://cdn.vuetifyjs.com/images/cards/desert.jpg"></v-img>
-          <v-card-title primary-title>
-            <div>
-              <h3 class="headline mb-0">
-                Valley Safari
-              </h3>
-              <div></div>
-            </div>
-          </v-card-title>
+          <v-card-text primary-title>
+            <h3 class="word-text headline mb-0">
+              {{ gesture.word.name }}
+            </h3>
+          </v-card-text>
         </v-card>
+      </v-flex>
+    </v-layout>
+    <v-layout class="py-4" justify-center>
+      <v-flex class="text-xs-center">
+        <v-pagination
+          v-model="page.current"
+          class="round-pagination"
+          :length="page.total"
+          :total-visible="$vuetify.breakpoint.xsOnly ? 4 : 6"
+          @input="changeCurrentPage($event)"
+        />
       </v-flex>
     </v-layout>
   </v-container>
@@ -76,17 +92,27 @@ export default {
         accepted: null,
         comment: null
       },
-      page: 1
+      page: null
     }
   },
   async asyncData ({ store, $axios }) {
     try {
-      let response = (await $axios.get('gestures/unreviewed?page=1&per_page=20')).data
+      let response = (await $axios.get('gestures/unreviewed?page=2&per_page=3')).data
       let gestures = store.state.deserialize(response)
       let selectedGesture = gestures.length ? gestures[0] : null
-      return { gestures, selectedGesture }
+      let page = {
+        current: 1,
+        total: response.page_meta.total_pages
+      }
+      return { gestures, selectedGesture, page }
     } catch (e) {
       // TODO: show err message
+    }
+  },
+  methods: {
+    changeCurrentPage (page) {
+    },
+    selectGesture () {
     }
   }
 }
@@ -103,8 +129,19 @@ export default {
   overflow-x: auto;
   white-space: nowrap;
 }
+.gestures-list-wrapper::-webkit-scrollbar {
+  height: 5px;
+}
+.gestures-list-wrapper::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border-radius: 10px;
+}
 .gestures-list-wrapper .gesture {
   width: 200px;
   display: inline-block;
+  cursor: pointer;
+}
+.gestures-list-wrapper .word-text {
+  white-space: normal;
 }
 </style>

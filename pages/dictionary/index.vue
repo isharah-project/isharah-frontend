@@ -108,7 +108,7 @@
             :length="page.total"
             :total-visible="paginationVisibleCount"
             @input="changeCurrentPage($event)"
-          ></v-pagination>
+          />
         </v-flex>
       </v-flex>
     </v-layout>
