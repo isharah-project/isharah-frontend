@@ -5,7 +5,7 @@
     :items="items"
     :label="label"
     :loading="loading"
-    :item-text="itemText"
+    :item-text="getItemText"
     :hide-no-data="getHideNoData"
     :search-input.sync="query"
     :prepend-icon="prependIcon"
@@ -31,19 +31,19 @@
         :selected="selected"
       >
         <v-avatar class="white--text">
-          {{ item[itemText].slice(0, 1).toUpperCase() }}
+          {{ getItemText(item).slice(0, 1).toUpperCase() }}
         </v-avatar>
-        <span>{{ item[itemText] }}</span>
+        <span>{{ getItemText(item) }}</span>
       </v-chip>
     </template>
     <template v-slot:item="{ item }">
       <v-list-tile-avatar
         class="title font-weight-light white--text search-list-avatar"
       >
-        {{ item ? item[itemText].charAt(0) : '' }}
+        {{ item ? getItemText(item).charAt(0) : '' }}
       </v-list-tile-avatar>
       <v-list-tile-content>
-        <v-list-tile-title>{{ item[itemText] }}</v-list-tile-title>
+        <v-list-tile-title>{{ getItemText(item) }}</v-list-tile-title>
         <!--<v-list-tile-sub-title v-text="item.symbol"></v-list-tile-sub-title>-->
       </v-list-tile-content>
       <v-list-tile-action>
@@ -63,10 +63,14 @@ export default {
       required: true
     },
     itemText: {
-      type: String,
+      type: [String, Boolean],
       required: true
     },
     selectable: {
+      type: Boolean,
+      required: true
+    },
+    deserializeResults: {
       type: Boolean,
       required: true
     },
@@ -134,11 +138,20 @@ export default {
       this.$axios.get(`${this.apiEndPoint}?q=${query}`,
         { progress: false }).then((response) => {
         this.loading = false
-        this.items = this.deserialize(response.data)
+        if (this.deserializeResults) {
+          console.log(12)
+          this.items = this.deserialize(response.data)
+        } else {
+          this.items = response.data
+        }
       }).catch((e) => {
         console.log(e)
         // TODO: show error msg
       })
+    },
+    getItemText (item) {
+      if (this.itemText) return item[this.itemText]
+      else return item
     }
   }
 }

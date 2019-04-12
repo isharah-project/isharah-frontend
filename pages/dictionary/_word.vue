@@ -4,7 +4,7 @@
       <v-flex xs12 class="medium-round-corners light-box-shadow video-container">
         <video class="full-width d-block" controls poster="">
           <source
-            :src="word.gesture.video_url"
+            :src="word.primary_dictionary_gesture.video_url"
             type="video/mp4"
           >
         </video>

@@ -4,7 +4,7 @@
     <v-layout v-if="!gestures.length">
       <v-flex>
         <div class="headline text-xs-center">
-          ﻷ توجد إشارات للمراجعة الاّن..
+          ﻷ توجد إشارات للتقيم الاّن..
         </div>
       </v-flex>
     </v-layout>

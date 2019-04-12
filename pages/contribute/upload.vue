@@ -106,9 +106,10 @@
               <div>
                 <AutoComplete
                   label="البحث عن الكلمة ..."
-                  itemText="name"
+                  :itemText="false"
                   :selectable="true"
-                  apiEndPoint="words"
+                  :deserializeResults="false"
+                  apiEndPoint="autocomplete/words"
                   prependIcon=""
                   class="round-input light-shadow-input full-width mb-4"
                   @itemChanged="setSelectedWord"
@@ -333,8 +334,8 @@ export default {
     },
     setSelectedWord (word) {
       if (word) {
-        this.word = word
-        this.disableWordFields = true
+        this.word.name = word
+        // this.disableWordFields = true
         // freeze selections
       } else {
         this.word = {

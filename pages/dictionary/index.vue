@@ -97,6 +97,7 @@
             label="البحث عن الكلمة ..."
             itemText="name"
             :selectable="false"
+            :deserializeResults="true"
             apiEndPoint="words"
             @itemChanged="goToWord"
           />
