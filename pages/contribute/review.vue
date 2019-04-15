@@ -126,7 +126,7 @@ export default {
   },
   async asyncData ({ store, $axios }) {
     try {
-      let response = (await $axios.get('gestures/unreviewed?page=1&per_page=3')).data
+      let response = (await $axios.get('gestures/unreviewed?page=1&per_page=10')).data
       let gestures = store.state.deserialize(response)
       let selectedGesture = gestures.length ? gestures[0] : null
       let page = {
@@ -140,7 +140,7 @@ export default {
   },
   methods: {
     fetchGestures (page, callback) {
-      this.$axios.get(`gestures/unreviewed?page=${page}&per_page=3`).then((response) => {
+      this.$axios.get(`gestures/unreviewed?page=${page}&per_page=10`).then((response) => {
         this.gestures = this.deserialize(response.data)
         if (callback) callback()
       }).catch((e) => {

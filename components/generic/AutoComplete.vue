@@ -145,6 +145,7 @@ export default {
           this.items = response.data
         }
       }).catch((e) => {
+        this.loading = false
         console.log(e)
         // TODO: show error msg
       })

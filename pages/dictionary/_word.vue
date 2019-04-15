@@ -10,13 +10,18 @@
         </video>
       </v-flex>
     </v-layout>
-    <v-layout :column="$vuetify.breakpoint.xsOnly" justify-space-between align-center>
-      <h2 class="display-2 py-4 grey-text">
-        {{ word.name }}
-      </h2>
+    <v-layout justify-space-between align-center>
+      <v-layout justify-start align-baseline>
+        <h2 class="display-2 py-4 pl-2 grey-text">
+          {{ word.name }}
+        </h2>
+        <div class="grey--text">
+          [{{ word.part_of_speech }}]
+        </div>
+      </v-layout>
       <div class="d-flex">
-        <v-chip v-for="category in word.categories" :key="category" class="btn-shadow">
-          {{ category }}
+        <v-chip v-for="category in word.categories" :key="category.id" class="btn-shadow">
+          {{ category.name }}
         </v-chip>
       </div>
     </v-layout>
