@@ -1,5 +1,8 @@
+import { deserialize } from 'jsonapi-deserializer'
+
 export const state = () => ({
-  user: null
+  user: null,
+  deserialize
 })
 
 export const mutations = {
@@ -7,6 +10,8 @@ export const mutations = {
     state.user = user
   },
   clearUser (state) {
+    this.$auth.logout()
+    this.$router.push({ path: '/' })
     state.user = null
   }
 }

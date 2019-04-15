@@ -97,7 +97,6 @@ import videojs from 'video.js'
 
         console.log("Loaded Plugin RangeSlider");
     }
-    console.log(videojs)
     videojs.plugin('rangeslider', RangeSlider_);
 
 

@@ -1,6 +1,6 @@
 <template>
   <v-app id="app" light>
-    <v-navigation-drawer v-model="navigationDrawer.isOpened" right disable-route-watcher app>
+    <v-navigation-drawer v-model="navigationDrawer.isOpened" right disable-route-watcher disable-resize-watcher app>
       <v-toolbar flat>
         <v-list>
           <v-list-tile>
@@ -56,9 +56,16 @@
       </v-toolbar-title>
       <v-toolbar-items class="hidden-sm-and-down">
         <template v-for="link in links">
-          <v-btn v-if="!link.children" :key="link.path" :href="!link.children ? link.path : ''" flat>
+          <nuxt-link
+            is="v-btn"
+            v-if="!link.children"
+            :key="link.path"
+            :to="link.path"
+            active-class="blue-cyan-gradient white--text"
+            flat
+          >
             {{ link.text }}
-          </v-btn>
+          </nuxt-link>
           <v-menu v-else :key="link.path" offset-y open-on-hover>
             <template v-slot:activator="{ on }">
               <v-btn
@@ -73,18 +80,51 @@
                 v-for="(child, i) in link.children"
                 :key="i"
               >
-                <v-btn class="ma-0 pa-0" :href="child.path" flat>
+                <nuxt-link is="v-btn" class="ma-0 pa-0" :to="child.path" active-class="blue-cyan-gradient white--text" flat>
                   {{ child.text }}
-                </v-btn>
+                </nuxt-link>
               </v-list-tile>
             </v-list>
           </v-menu>
         </template>
       </v-toolbar-items>
       <v-spacer></v-spacer>
-      <v-btn :ripple="false" class="blue-border-btn" href="/login" flat round>
+      <nuxt-link
+        is="v-btn"
+        v-if="!loggedIn()"
+        :ripple="false"
+        :class="{ 'blue-border-btn': $route.path !== '/login' }"
+        active-class="blue-cyan-gradient white--text"
+        to="/login"
+        flat
+        round
+      >
         تسجيل الدخول
-      </v-btn>
+      </nuxt-link>
+      <div v-else class="text-xs-center">
+        <v-menu offset-y open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              flat
+              v-on="on"
+            >
+              {{ $store.state.user.first_name }} {{ $store.state.user.last_name }}
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-tile>
+              <nuxt-link is="v-btn" class="ma-0 pa-2 mx-2" to="/profile" flat>
+                الصفحة الشخصية
+              </nuxt-link>
+            </v-list-tile>
+            <v-list-tile>
+              <nuxt-link is="v-btn" class="my-0 pa-2 mx-3" flat @click="logout()">
+                تسجيل الخروج
+              </nuxt-link>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+      </div>
     </v-toolbar>
     <v-content>
       <v-container fluid>
@@ -104,7 +144,7 @@ export default {
       koko: null,
       links: [
         { path: '/', text: 'الرئيسية', icon: 'home' },
-        { path: '/dictionary', text: 'القاموس', icon: 'library_books' },
+        { path: '/dictionary?page=1', text: 'القاموس', icon: 'library_books' },
         { path: '/contribute',
           text: 'شارك معنا',
           icon: 'accessibility',
@@ -116,6 +156,18 @@ export default {
         { path: '/contact_us', text: 'تواصل معنا', icon: 'contact_mail' },
         { path: '/for_developers', text: 'للمطورين', icon: 'code' }
       ]
+    }
+  },
+  methods: {
+    loggedIn () {
+      if (this.$store.state.user) {
+        return true
+      } else {
+        return false
+      }
+    },
+    logout () {
+      this.$store.commit('clearUser', this.$store.state)
     }
   }
 }

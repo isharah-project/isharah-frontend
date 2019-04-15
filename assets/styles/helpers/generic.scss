@@ -4,45 +4,73 @@ $toolbar-shadow: 0 3px 46px rgba(0, 0, 0, 0.03);
 $light-shadow: 0 5px 35px rgba(0, 0, 0, 0.03);
 $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 
+/***********************/
+/******* GENERAL *******/
+/***********************/
+
+.full-width {
+  width: 100%;
+}
+.card-size {
+  width: 400px
+}
+
+.small-round-corners {
+  border-radius: 8px;
+}
+.medium-round-corners {
+  border-radius: 10px;
+}
+.full-round-corners {
+  border-radius: 15px
+}
+
+.absolute-position {
+  position: absolute
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+/**********************/
+/******* COLORS *******/
+/**********************/
+
+.red-gradient {
+  background: $red-gradient;
+}
+.orange-gradient {
+  background: $orange-gradient;
+}
+.blue-cyan-gradient {
+  background: $blue-cyan-gradient;
+}
+.red-black-gradient {
+  background: $red-black-gradient;
+}
+
+.grey-text {
+  color: $dark-grey-text;
+}
+
+/***********************/
+/******* SHADOWS *******/
+/***********************/
 
 .toolbar-shadow {
   background: $toolbar-shadow;
 }
-.round-corners {
-  border-radius: 8px;
-}
-.full-width {
-  width: 100%;
-}
-
-.blue-border-btn {
-  border:solid 2px $blue;
-}
-.red-border-btn {
-  border: solid 2px $red;
-}
-
-.fixed-size-btn {
-  width: 180px;
-  height: 40px;
-}
-
-.red-gradient {
-  background-image: linear-gradient(to right, #e52d27 0%, #b31217 100%);
-}
-.orange-gradient {
-  background-image: linear-gradient(to right, #f46b45 0%, #eea849 100%);
-}
-.blue-cyan-gradient {
-  background: linear-gradient(90deg, rgba(15,147,195,1) 0%, rgba(0,200,163,1) 100%);
-}
-.red-black-gradient {
-  background: linear-gradient(90deg, rgba(36,0,0,1) 0%, rgba(186,0,0,1) 100%);
-}
 .btn-shadow {
   box-shadow: $btn-shadow;
 }
+.light-box-shadow {
+  box-shadow: $light-shadow;
+}
 
+/**********************/
+/******* INPUTS *******/
+/**********************/
 
 .input-hidden-underline .v-input__slot::before,
 .input-hidden-underline .v-input__slot::after {
@@ -50,13 +78,31 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 }
 .round-input.theme--light > .v-input__control > .v-input__slot,
 .round-input.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
-  @extend .round-corners;
+  @extend .small-round-corners;
 }
 .light-shadow-input.theme--light > .v-input__control > .v-input__slot,
 .light-shadow-input.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
   box-shadow: $light-shadow;
 }
 
+/***********************/
+/******* BUTTONS *******/
+/***********************/
+
+.blue-border-btn {
+  border:solid 2px $blue;
+}
+.red-border-btn {
+  border: solid 2px $red;
+}
+.fixed-size-btn {
+  width: 180px;
+  height: 40px;
+}
+
+/**************************/
+/******* PAGINATION *******/
+/**************************/
 
 .round-pagination .v-pagination__item {
   border-radius: 10px;
@@ -68,27 +114,27 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
   outline: none;
 }
 
+/*************************/
+/******* ANIMATION *******/
+/*************************/
 
-.light-box-shadow {
-  box-shadow: $light-shadow;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .5s;
 }
-
-.card-size {
-  width: 350px
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
-
-.absolute-position {
-  position: absolute
+.page-enter-active,
+.page-leave-active {
+  transition: all .6s;
 }
-
-.color-opacity {
-  opacity: 0.65
+.page-enter {
+  opacity: 0;
+  transform: translateX(5px);
 }
-
-.full-round-corners {
-  border-radius: 15px
-}
-
-.facebook-color {
-  background-color: #3b5998
+.page-leave-to {
+  opacity: 0;
+  transform: translateX(-5px);
 }

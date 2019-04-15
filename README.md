@@ -13,6 +13,7 @@ $ yarn install
 create `.env` file in the root with the corresponding env vars
 ```
 API_ENDPOINT=https://api.example.com
+FRONTEND_URL=https://example.com
 ```
 
 ``` bash
