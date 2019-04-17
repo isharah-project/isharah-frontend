@@ -174,7 +174,7 @@ export default {
   },
   methods: {
     logout () {
-      this.$store.commit('logout', this.$store.state)
+      this.$store.commit('logout')
     },
     setNavDrawer (value) {
       this.navigationDrawer.isOpened = value
