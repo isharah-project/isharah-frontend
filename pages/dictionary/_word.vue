@@ -31,7 +31,7 @@
         dark
         flat
         round
-        @click="goToUploadPage"
+        @click="goToPracticePage"
       >
         تدرب على الكلمة
         <v-icon class="mx-1">
@@ -60,8 +60,8 @@ export default {
     }
   },
   methods: {
-    goToUploadPage () {
-      this.$router.push({ path: `/contribute/upload?word=${this.word.name}` })
+    goToPracticePage () {
+      this.$router.push({ path: `/contribute/practice?word=${this.word.name}` })
     }
   }
 }

@@ -30,7 +30,7 @@
   </v-card>
 </template>
 <script>
-import image from '~/assets/images/image.jpg'
+import image from '~/assets/images/card_placeholder.jpg'
 import moment from 'moment'
 
 export default {

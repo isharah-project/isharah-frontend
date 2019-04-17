@@ -231,6 +231,11 @@ export default {
       validForm: false
     }
   },
+  created () {
+    if (this.$route.params.parentState) {
+      this.setParentState(this.$route.params.parentState)
+    }
+  },
   mounted () {
     // window.videojs = videojs
     this.initVideoJs(this.$refs.videoPlayer)
