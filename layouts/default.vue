@@ -100,6 +100,7 @@
       <v-spacer></v-spacer>
       <nuxt-link
         is="v-btn"
+        v-if="!loggedIn"
         :ripple="false"
         :class="{ 'blue-border-btn': $route.path !== '/login' }"
         to="/login"
@@ -108,6 +109,30 @@
       >
         تسجيل الدخول
       </nuxt-link>
+      <div v-else class="text-xs-center">
+        <v-menu offset-y open-on-hover>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              flat
+              v-on="on"
+            >
+              {{ $store.state.user.first_name }} {{ $store.state.user.last_name }}
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-tile>
+              <nuxt-link is="v-btn" class="ma-0 pa-2 mx-2" to="/profile" flat>
+                الصفحة الشخصية
+              </nuxt-link>
+            </v-list-tile>
+            <v-list-tile>
+              <v-btn class="my-0 pa-2 mx-2" flat @click="logout()">
+                تسجيل الخروج
+              </v-btn>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+      </div>
     </v-toolbar>
     <v-content>
       <v-container fluid>
@@ -141,7 +166,16 @@ export default {
       ]
     }
   },
+
+  computed: {
+    loggedIn () {
+      return Boolean(this.$store.state.user)
+    }
+  },
   methods: {
+    logout () {
+      this.$store.commit('logout', this.$store.state)
+    },
     setNavDrawer (value) {
       this.navigationDrawer.isOpened = value
     },

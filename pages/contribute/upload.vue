@@ -220,6 +220,11 @@ export default {
       console.log(e)
     }
   },
+  created () {
+    if (this.$route.params.parentState) {
+      this.setParentState(this.$route.params.parentState)
+    }
+  },
   mounted () {
     // window.videojs = videojs
     this.initVideoJs(this.$refs.videoPlayer)
