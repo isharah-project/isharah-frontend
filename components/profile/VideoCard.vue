@@ -1,8 +1,8 @@
 <template>
   <v-card class="small-round-corners light-box-shadow">
     <v-img :src="image" aspect-ratio="1.5">
-      <v-container>
-        <v-card flat class="absolute-position px-5 py-1 color-opacity full-round-corners">
+      <v-container v-if="gesture.word.part_of_speech">
+        <v-card flat class="absolute-position px-5 py-1 pos-card full-round-corners">
           {{ gesture.word.part_of_speech }}
         </v-card>
       </v-container>
@@ -13,25 +13,26 @@
       </h2>
     </v-card-title>
     <v-card-text class="py-0 px-4">
-      <v-icon v-if="review==='مقبول'" color="green">
+      <v-icon v-if="reviewState === REVIEW_STATES.ACCEPTED" color="green">
         check_circle
       </v-icon>
-      <v-icon v-if="review==='مرفوض'" color="red">
+      <v-icon v-if="reviewState === REVIEW_STATES.REJECTED" color="red">
         cancel
       </v-icon>
-      <v-icon v-if="review==='قيد المراجعة..'">
+      <v-icon v-if="reviewState === REVIEW_STATES.PENDING">
         help
       </v-icon>
-      {{ review }}
+      {{ reviewText }}
     </v-card-text>
     <v-card-text class="grey--text text-xs-left px-4 pb-4">
-      {{ showDate }}
+      {{ formattedDate }}
     </v-card-text>
   </v-card>
 </template>
 <script>
 import image from '~/assets/images/image.jpg'
 import moment from 'moment'
+
 export default {
   props: {
     gesture: {
@@ -41,11 +42,16 @@ export default {
   },
   data () {
     return {
-      image: image
+      image: image,
+      REVIEW_STATES: {
+        ACCEPTED: 0,
+        REJECTED: 1,
+        PENDING: 2
+      }
     }
   },
   computed: {
-    showDate () {
+    formattedDate () {
       let diff = moment().diff(this.gesture.created_at, 'days')
       if (diff < 7) {
         return moment(this.gesture.created_at).locale('ar').calendar()
@@ -53,22 +59,34 @@ export default {
         return moment(this.gesture.created_at).locale('ar').format('Do MMMM YYYY , HH:mm')
       }
     },
-    review () {
+    reviewState () {
       if (this.gesture.review) {
         if (this.gesture.review.accepted) {
-          return 'مقبول'
+          return this.REVIEW_STATES.ACCEPTED
         } else {
-          return 'مرفوض'
+          return this.REVIEW_STATES.ACCEPTED
         }
       } else {
-        return 'قيد المراجعة..'
+        return this.REVIEW_STATES.PENDING
+      }
+    },
+    reviewText () {
+      switch (this.reviewState) {
+        case this.REVIEW_STATES.ACCEPTED:
+          return 'مقبول'
+        case this.REVIEW_STATES.REJECTED:
+          return 'مرفوض'
+        case this.REVIEW_STATES.PENDING:
+          return 'قيد المراجعة'
+        default:
+          return 'قيد المراجعة'
       }
     }
   }
 }
 </script>
 <style>
-  .color-opacity {
-    opacity: 0.65
-  }
+.pos-card {
+  opacity: 0.65
+}
 </style>

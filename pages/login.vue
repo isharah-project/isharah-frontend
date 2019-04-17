@@ -214,8 +214,8 @@ export default {
             return true
           }
         },
-        passwordLengthCheck () {
-          if (self.user.password && self.user.password.length < 6) {
+        passwordLengthCheck (value) {
+          if (value && value.length < 6) {
             return 'الحد الادني لكلمة السر 6 خانات'
           } else {
             return true

@@ -91,7 +91,7 @@
       <v-spacer></v-spacer>
       <nuxt-link
         is="v-btn"
-        v-if="!loggedIn()"
+        v-if="!loggedIn"
         :ripple="false"
         :class="{ 'blue-border-btn': $route.path !== '/login' }"
         active-class="blue-cyan-gradient white--text"
@@ -118,9 +118,9 @@
               </nuxt-link>
             </v-list-tile>
             <v-list-tile>
-              <nuxt-link is="v-btn" class="my-0 pa-2 mx-3" flat @click="logout()">
+              <v-btn class="my-0 pa-2 mx-2" flat @click="logout()">
                 تسجيل الخروج
-              </nuxt-link>
+              </v-btn>
             </v-list-tile>
           </v-list>
         </v-menu>
@@ -158,16 +158,14 @@ export default {
       ]
     }
   },
-  methods: {
+  computed: {
     loggedIn () {
-      if (this.$store.state.user) {
-        return true
-      } else {
-        return false
-      }
-    },
+      return Boolean(this.$store.state.user)
+    }
+  },
+  methods: {
     logout () {
-      this.$store.commit('clearUser', this.$store.state)
+      this.$store.commit('logout', this.$store.state)
     }
   }
 }

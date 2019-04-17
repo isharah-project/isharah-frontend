@@ -1,10 +1,7 @@
 <template>
-  <v-card class="small-round-corners light-box-shadow text-xs-center">
+  <v-card class="relative-position small-round-corners light-box-shadow text-xs-center">
     <v-btn
-      absolute
       icon
-      fab
-      right
       class="btn-position"
       @click="closeDialog()"
     >
@@ -16,17 +13,17 @@
           تعديل البيانات
         </h2>
       </v-card-text>
-      <v-form ref="editForm" @submit.prevent="edit">
+      <v-form ref="editForm" @submit.prevent="submitEdit">
         <v-text-field
-          v-model="user.first_name"
-          label="الأسم الأول"
+          v-model="userClone.first_name"
+          label="الاسم الأول"
           validate-on-blur
           :rules="validationRules.required"
         >
         </v-text-field>
         <v-text-field
-          v-model="user.last_name"
-          label="الأسم الأخير"
+          v-model="userClone.last_name"
+          label="الاسم الأخير"
           validate-on-blur
           :rules="validationRules.required"
         >
@@ -41,7 +38,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              v-model="user.date_of_birth"
+              v-model="userClone.date_of_birth"
               label="تاريخ الميلاد"
               prepend-icon="event"
               readonly
@@ -52,7 +49,7 @@
           </template>
           <v-date-picker
             ref="picker"
-            v-model="user.date_of_birth"
+            v-model="userClone.date_of_birth"
             :max="minAge()"
             min="1950-01-01"
             @change="saveDate"
@@ -78,7 +75,7 @@
 <script>
 export default {
   props: {
-    upcomingUser: {
+    userClone: {
       type: Object,
       required: true
     }
@@ -89,21 +86,7 @@ export default {
       today: new Date().toISOString(),
       maxYear: 0,
       editErrors: [],
-      menu: false,
-      user: {
-        first_name: this.upcomingUser.first_name,
-        last_name: this.upcomingUser.last_name,
-        date_of_birth: this.upcomingUser.date_of_birth
-      }
-    }
-  },
-  computed: {
-    validationRules () {
-      return {
-        required: [
-          v => !!v || 'الخانة مطلوبة'
-        ]
-      }
+      menu: false
     }
   },
   watch: {
@@ -119,13 +102,14 @@ export default {
       this.maxYear = Number(this.today.substr(0, 4)) - 18
       return `${this.maxYear}${this.today.substr(4, 6)}`
     },
-    edit () {
+    submitEdit () {
       if (this.$refs.editForm.validate()) {
         this.$axios.$put('auth', {
-          'first_name': this.user.first_name,
-          'last_name': this.user.last_name,
-          'date_of_birth': this.user.date_of_birth
+          'first_name': this.userClone.first_name,
+          'last_name': this.userClone.last_name,
+          'date_of_birth': this.userClone.date_of_birth
         }).then((r) => {
+          // TODO: show success msg
           this.$store.commit('setUser', r.data)
           this.closeDialog()
           this.editErrors = []
@@ -136,13 +120,19 @@ export default {
       }
     },
     closeDialog () {
-      this.$emit('close-dialog', false)
+      this.$emit('closeDialog', false)
     }
   }
 }
 </script>
 <style>
-  .btn-position {
-    right: 5px;
-  }
+.relative-position {
+  position: relative;
+}
+.btn-position {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 3;
+}
 </style>

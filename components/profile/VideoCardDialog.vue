@@ -1,17 +1,14 @@
 <template>
   <div class="relative-position">
     <v-btn
-      absolute
       icon
       dark
-      fab
-      right
       class="btn-position"
       @click="closeDialog()"
     >
       <v-icon>close</v-icon>
     </v-btn>
-    <v-card class="small-round-corners light-box-shadow">
+    <v-card v-if="gesture.word" class="small-round-corners light-box-shadow">
       <video :src="gesture.video_url" width="100%" height="100%" controls>
       </video>
       <v-container>
@@ -20,7 +17,7 @@
             <h2 class="display-2 py-0 pl-2">
               {{ gesture.word.name }}
             </h2>
-            <div class="grey--text">
+            <div v-if="gesture.word.part_of_speech" class="grey--text">
               [{{ gesture.word.part_of_speech }}]
             </div>
           </v-layout>
@@ -31,7 +28,19 @@
           </div>
         </v-layout>
       </v-container>
-      <v-container v-if="review" class="py-0">
+      <v-container>
+        <v-icon v-if="reviewState === REVIEW_STATES.ACCEPTED" color="green">
+          check_circle
+        </v-icon>
+        <v-icon v-if="reviewState === REVIEW_STATES.REJECTED" color="red">
+          cancel
+        </v-icon>
+        <v-icon v-if="reviewState === REVIEW_STATES.PENDING">
+          help
+        </v-icon>
+        {{ reviewText }}
+      </v-container>
+      <v-container v-if="review && review.comment" class="py-0">
         <h4 class="pb-1">
           التعليق:
         </h4>
@@ -39,15 +48,14 @@
           <v-card-text>
             {{ review.comment }}
             <v-card-text class="grey--text text-xs-left pa-0">
-              {{ showDate(review.created_at) }}
+              {{ getFormattedDate(review.created_at) }}
             </v-card-text>
           </v-card-text>
         </v-card>
       </v-container>
       <v-card-text class="grey--text text-xs-left px-4 pb-4">
-        {{ showDate(gesture.created_at) }}
+        {{ getFormattedDate(gesture.created_at) }}
       </v-card-text>
-      <!-- {{ gesture }} -->
     </v-card>
   </div>
 </template>
@@ -60,16 +68,48 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      REVIEW_STATES: {
+        ACCEPTED: 0,
+        REJECTED: 1,
+        PENDING: 2
+      }
+    }
+  },
   computed: {
     review () {
       if (this.gesture.review) {
         return this.gesture.review
       }
       return null
+    },
+    reviewState () {
+      if (this.gesture.review) {
+        if (this.gesture.review.accepted) {
+          return this.REVIEW_STATES.ACCEPTED
+        } else {
+          return this.REVIEW_STATES.ACCEPTED
+        }
+      } else {
+        return this.REVIEW_STATES.PENDING
+      }
+    },
+    reviewText () {
+      switch (this.reviewState) {
+        case this.REVIEW_STATES.ACCEPTED:
+          return 'مقبول'
+        case this.REVIEW_STATES.REJECTED:
+          return 'مرفوض'
+        case this.REVIEW_STATES.PENDING:
+          return 'قيد المراجعة'
+        default:
+          return 'قيد المراجعة'
+      }
     }
   },
   methods: {
-    showDate (date) {
+    getFormattedDate (date) {
       let diff = moment().diff(date, 'days')
       if (diff < 7) {
         return moment(date).locale('ar').calendar()
@@ -78,7 +118,7 @@ export default {
       }
     },
     closeDialog () {
-      this.$emit('close-dialog', false)
+      this.$emit('closeDialog', false)
     }
   }
 }
@@ -87,7 +127,10 @@ export default {
   .relative-position {
     position:relative
   }
-  .btn-position {
-    right: 5px;
+  .relative-position > .btn-position {
+    position: absolute;
+    z-index: 3;
+    right: 5px !important;
+    top: 5px !important;
   }
 </style>

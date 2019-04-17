@@ -1,10 +1,7 @@
 <template>
-  <v-card class="small-round-corners light-box-shadow text-xs-center">
+  <v-card class="relative-position small-round-corners light-box-shadow text-xs-center">
     <v-btn
-      absolute
       icon
-      fab
-      right
       class="btn-position"
       @click="closeDialog()"
     >
@@ -57,12 +54,6 @@
 </template>
 <script>
 export default {
-  props: {
-    upcomingUser: {
-      type: Object,
-      required: true
-    }
-  },
   data () {
     return {
       errors: [],
@@ -91,9 +82,8 @@ export default {
             return true
           }
         },
-        passwordLengthCheck () {
-          if ((self.user.password && self.user.password.length < 6) ||
-              (self.user.current_password && self.user.current_password.length < 6)) {
+        passwordLengthCheck (value) {
+          if ((value && value.length < 6)) {
             return 'الحد الادني لكلمة السر 6 خانات'
           } else {
             return true
@@ -109,24 +99,30 @@ export default {
           'current_password': this.user.current_password,
           'password': this.user.password,
           'password_confirmation': this.password_confirmation
-        }).then((r) => {
-          this.$store.commit('setUser', r.data)
+        }).then(() => {
+          // this.$store.commit('setUser', r.data)
+          // TODO: show success msg
           this.closeDialog()
           this.errors = []
-        }).catch((e) => {
-          this.errors = []
-          this.errors.push('كلمة السر الحالية غير صحيحة')
+        }).catch(() => {
+          this.errors = ['كلمة السر الحالية غير صحيحة']
         })
       }
     },
     closeDialog () {
-      this.$emit('close-dialog', false)
+      this.$emit('closeDialog', false)
     }
   }
 }
 </script>
 <style>
-  .btn-position {
-    right: 5px;
-  }
+.relative-position {
+  position: relative;
+}
+.btn-position {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 3;
+}
 </style>

@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    {{ this.$route.params }}
     <PageHeader icon="videocam" text="سجل فيديو" class="mb-0" />
     <v-layout row wrap>
       <v-flex

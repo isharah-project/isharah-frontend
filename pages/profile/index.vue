@@ -2,7 +2,7 @@
   <v-container>
     <PageHeader icon="person" text="الصفحة الشخصية" />
     <v-layout row wrap class="justify-center">
-      <v-flex sm6 xs12>
+      <v-flex sm6 xs12 pr-2>
         <v-card class="light-box-shadow small-round-corners pa-4">
           <v-layout row wrap>
             <v-flex
@@ -14,38 +14,36 @@
               class="text-xs-center"
             >
               <v-img
-                :src="imageSrc()"
+                :src="userImageSrc"
                 max-width="100"
                 :aspect-ratio="1/1"
-                class="full-round-corners-square ml-2"
+                class="user-image ml-2"
               >
               </v-img>
             </v-flex>
-            <v-flex lg5 md4 sm8 xs8 :class="{'pb-1':$vuetify.breakpoint.smAndDown}">
-              <h2>
+            <v-flex lg5 md4 sm8 xs8 :class="{ 'pb-1': $vuetify.breakpoint.smAndDown }">
+              <div class="headline font-weight-medium">
                 {{ user.first_name }} {{ user.last_name }}
-              </h2>
+              </div>
               <v-card-text class="ma-0 pa-0 grey--text">
                 {{ user.email }}
                 <br />
-                {{ arabicDate() }}
+                {{ userFormattedDate }}
                 <br />
                 {{ user.city }} , {{ user.country }}
               </v-card-text>
             </v-flex>
             <v-flex md5 xs12 align-self-end class="text-xs-center">
-              <nuxt-link
-                is="v-btn"
+              <v-btn
                 class="red-border-btn btn-shadow edit-btn-width"
                 flat
                 round
                 small
-                @click="editDialog = true"
+                @click="openEditDialog"
               >
                 تعديل البيانات
-              </nuxt-link>
-              <nuxt-link
-                is="v-btn"
+              </v-btn>
+              <v-btn
                 class="red-border-btn btn-shadow edit-btn-width"
                 flat
                 round
@@ -53,20 +51,20 @@
                 @click="changePasswordDialog = true"
               >
                 تغيير كلمة السر
-              </nuxt-link>
+              </v-btn>
             </v-flex>
           </v-layout>
         </v-card>
       </v-flex>
       <v-dialog v-model="editDialog" max-width="400px">
-        <editDialog :upcomingUser="user" @close-dialog="editDialog=false"></editDialog>
+        <editDialog :userClone="userClone" @closeDialog="editDialog = false"></editDialog>
       </v-dialog>
       <v-dialog v-model="changePasswordDialog" max-width="400px">
-        <changePasswordDialog :upcomingUser="user" @close-dialog="changePasswordDialog=false"></changePasswordDialog>
+        <changePasswordDialog @closeDialog="changePasswordDialog = false"></changePasswordDialog>
       </v-dialog>
-      <v-flex xs6 sm3 class="text-xs-center px-2" :class="{'btn-height my-2':$vuetify.breakpoint.xsOnly}">
+      <v-flex xs6 sm3 class="text-xs-center px-2" :class="{ 'btn-height my-2': $vuetify.breakpoint.xsOnly }">
         <v-btn
-          :class="{'display-1':$vuetify.breakpoint.smAndUp}"
+          :class="{ 'display-1':$vuetify.breakpoint.smAndUp, 'title': $vuetify.breakpoint.xsOnly }"
           class="orange-gradient btn-shadow full-height small-round-corners ma-0"
           height="100%"
           large
@@ -78,9 +76,9 @@
           ارفع
         </v-btn>
       </v-flex>
-      <v-flex xs6 sm3 class="text-xs-center px-2" :class="{'btn-height my-2':$vuetify.breakpoint.xsOnly}">
+      <v-flex xs6 sm3 class="text-xs-center pl-2" :class="{ 'btn-height my-2': $vuetify.breakpoint.xsOnly }">
         <v-btn
-          :class="{'display-1':$vuetify.breakpoint.smAndUp}"
+          :class="{ 'display-1':$vuetify.breakpoint.smAndUp, 'title': $vuetify.breakpoint.xsOnly }"
           class="red-gradient btn-shadow full-height small-round-corners ma-0"
           large
           block
@@ -93,14 +91,14 @@
         </v-btn>
       </v-flex>
     </v-layout>
-    <v-layout row wrap>
+    <v-layout row wrap class="mt-2">
       <v-flex
         v-for="contribution in contributions"
         :key="contribution.word.name"
         xs12
         sm6
         md4
-        pa-3
+        pa-2
         clickable
         @click="openGesturesDialog(contribution)"
       >
@@ -108,7 +106,7 @@
         </VideoCard>
       </v-flex>
       <v-dialog v-model="wordDialog" max-width="500px">
-        <VideoCardDialog :gesture="viewedGesture" @close-dialog=" wordDialog=false "></VideoCardDialog>
+        <VideoCardDialog :gesture="viewedGesture" @closeDialog="wordDialog=false"></VideoCardDialog>
       </v-dialog>
     </v-layout>
   </v-container>
@@ -122,7 +120,9 @@ import VideoCardDialog from '~/components/profile/VideoCardDialog'
 import editDialog from '~/components/profile/editDialog'
 import changePasswordDialog from '~/components/profile/changePasswordDialog'
 import moment from 'moment'
+import _ from 'lodash'
 import { deserialize } from 'jsonapi-deserializer'
+
 export default {
   components: { PageHeader, VideoCard, VideoCardDialog, editDialog, changePasswordDialog },
   data () {
@@ -132,12 +132,22 @@ export default {
       wordDialog: false,
       editDialog: false,
       changePasswordDialog: false,
-      viewedGesture: ''
+      viewedGesture: {},
+      userClone: {}
     }
   },
   computed: {
     user () {
       return this.$store.state.user
+    },
+    userImageSrc () {
+      if (!this.user.image) {
+        return this.defaultImage
+      }
+      return this.user.image
+    },
+    userFormattedDate () {
+      return moment(this.user.date_of_birth).locale('ar').format('Do MMMM YYYY')
     }
   },
   async asyncData ({ app, $axios }) {
@@ -145,18 +155,14 @@ export default {
       let contributions = deserialize((await $axios.get('/user/contributions')).data)
       return { contributions }
     } catch (e) {
+      // TODO: show err msg
       console.log(e)
     }
   },
   methods: {
-    imageSrc () {
-      if (!this.user.image) {
-        return this.defaultImage
-      }
-      return this.user.image
-    },
-    arabicDate () {
-      return moment(this.user.date_of_birth).locale('ar').format('Do MMMM YYYY')
+    openEditDialog () {
+      this.userClone = _.cloneDeep(this.user)
+      this.editDialog = true
     },
     openGesturesDialog (gesture) {
       this.wordDialog = true
@@ -170,23 +176,16 @@ export default {
 </script>
 
 <style scoped>
-  .video-method-btn {
-    width: 200px;
-    height: 50px;
-  }
-  .full-round-corners-square {
-    border-radius:50%
-  }
-  h2 {
-    font-weight: normal
-  }
-  .full-height {
-    height: 100%
-  }
-  .btn-height {
-    height: 50px
-  }
-  .edit-btn-width {
-    width: 120px
-  }
+.user-image {
+  border-radius: 50%;
+}
+.full-height {
+  height: 100%;
+}
+.btn-height {
+  height: 50px;
+}
+.edit-btn-width {
+  width: 120px
+}
 </style>
