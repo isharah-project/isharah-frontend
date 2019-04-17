@@ -139,7 +139,6 @@ export default {
         { progress: false }).then((response) => {
         this.loading = false
         if (this.deserializeResults) {
-          console.log(12)
           this.items = this.deserialize(response.data)
         } else {
           this.items = response.data
