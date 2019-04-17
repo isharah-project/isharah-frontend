@@ -97,6 +97,7 @@
             label="البحث عن الكلمة ..."
             itemText="name"
             :selectable="false"
+            :deserializeResults="true"
             apiEndPoint="words"
             @itemChanged="goToWord"
           />
@@ -108,7 +109,7 @@
             :length="page.total"
             :total-visible="paginationVisibleCount"
             @input="changeCurrentPage($event)"
-          ></v-pagination>
+          />
         </v-flex>
       </v-flex>
     </v-layout>
