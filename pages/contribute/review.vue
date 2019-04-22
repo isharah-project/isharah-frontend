@@ -1,10 +1,10 @@
 <template>
   <v-container>
-    <PageHeader id="pageHeader" text="قيم الإشارات" icon="rate_review" />
-    <v-layout v-if="!gestures.length">
+    <PageHeader id="pageHeader" text="قيّم الإشارات" icon="rate_review" />
+    <v-layout v-if="!gestures">
       <v-flex>
         <div class="headline text-xs-center">
-          ﻷ توجد إشارات للتقيم الاّن..
+          لا توجد إشارات للتقييم الآن..
         </div>
       </v-flex>
     </v-layout>

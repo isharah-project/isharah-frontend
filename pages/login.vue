@@ -172,6 +172,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   data () {
     return {
@@ -234,8 +236,8 @@ export default {
       this.$refs.menu.save(date)
     },
     minAge () {
-      this.maxYear = Number(this.today.substr(0, 4)) - 18
-      return `${this.maxYear}${this.today.substr(4, 6)}`
+      this.maxYear = moment().subtract(18, 'years').calendar()
+      return moment(this.maxYear).format('YYYY-MM-DD')
     },
     changeState (page) {
       this.errors = []

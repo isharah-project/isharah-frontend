@@ -159,7 +159,7 @@ export default {
           children: [
             { path: '/contribute/practice', text: 'تدرب على إشارة', icon: 'videocam' },
             { path: '/contribute/add_word', text: 'أضف كلمة للقاموس', icon: 'videocam' },
-            { path: '/contribute/review', text: 'قيم الإشارات', icon: 'rate_review' }
+            { path: '/contribute/review', text: 'قيّم الإشارات', icon: 'rate_review' }
           ]
         },
         { path: '/contact_us', text: 'تواصل معنا', icon: 'contact_mail' },

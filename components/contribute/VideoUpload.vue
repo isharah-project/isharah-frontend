@@ -56,7 +56,7 @@
       <v-layout row wrap>
         <v-flex md8 lg8 xs12>
           <div v-show="isState([states.UPLOAD.INIT, states.RECORD.INIT])" class="">
-            <img src="http://placehold.it/1280x720" alt="" class="full-width round-corners overflow-hidden">
+            <img src="~/assets/images/contribute-placeholder.jpg" alt="" class="full-width round-corners overflow-hidden">
           </div>
           <div v-show="isState([states.UPLOAD.PLAYBACK, states.RECORD.PLAYBACK])" class="round-corners overflow-hidden">
             <video ref="videoPlayer" class="video-js vjs-default-skin vjs-big-play-centered"></video>
