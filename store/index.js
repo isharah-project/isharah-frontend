@@ -19,12 +19,18 @@ export const mutations = {
     this.$router.push({ path: '/' })
     state.user = null
   },
-  setSnackBarValues (state, snackbar) {
-    console.log('2')
-    state.snackbar.state = snackbar.state
-    state.snackbar.message = snackbar.message
-    state.snackbar.color = snackbar.color
-    console.log('3')
+  setSnackBarState (state, { open }) {
+    state.snackbar.state = open
+  },
+  showSuccessMsg (state, { message }) {
+    state.snackbar.state = true
+    state.snackbar.message = message
+    state.snackbar.color = 'green'
+  },
+  showErrorMsg (state, { message }) {
+    state.snackbar.state = true
+    state.snackbar.message = message
+    state.snackbar.color = 'red'
   },
   changeSnackBarState (state, snackBarState) {
     state.snackbar.state = snackBarState

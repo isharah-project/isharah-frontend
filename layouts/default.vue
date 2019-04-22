@@ -135,13 +135,16 @@
       </div>
     </v-toolbar>
     <v-snackbar
-      v-model="snackbar.state"
-      :color="snackbar.color"
-      :timeout="2500"
+      v-model="snackbarState"
+      :color="$store.state.snackbar.color"
+      :timeout="0"
       top
       left
     >
-      {{ snackbar.message }}
+      <span>
+        {{ $store.state.snackbar.message }}
+        <v-btn flat @click="snackbarState = false">إغلاق</v-btn>
+      </span>
     </v-snackbar>
     <v-content>
       <v-container fluid>
@@ -181,21 +184,12 @@ export default {
     loggedIn () {
       return Boolean(this.$store.state.user)
     },
-    snackbar () {
-      let self = this
-      return {
-        color: this.$store.state.snackbar.color,
-        message: this.$store.state.snackbar.message,
-        state: {
-          get: function () {
-            return self.$store.state.snackbar.state
-          },
-          set: function (state) {
-            console.log('1')
-            self.$store.commit('changeSnackBarState', state)
-            console.log('4')
-          }
-        }
+    snackbarState: {
+      get: function () {
+        return this.$store.state.snackbar.state
+      },
+      set: function (state) {
+        this.$store.commit('setSnackBarState', { open: state })
       }
     }
   },
