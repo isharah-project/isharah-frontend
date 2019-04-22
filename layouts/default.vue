@@ -89,7 +89,7 @@
                 v-for="(child, i) in link.children"
                 :key="i"
               >
-                <nuxt-link is="v-btn" class="ma-0" :to="child.path" flat>
+                <nuxt-link is="v-btn" class="ma-0 v-btn--round" :to="child.path" flat>
                   {{ child.text }}
                 </nuxt-link>
               </v-list-tile>
