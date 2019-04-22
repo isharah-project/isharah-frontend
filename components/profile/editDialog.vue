@@ -86,7 +86,12 @@ export default {
       today: new Date().toISOString(),
       maxYear: 0,
       editErrors: [],
-      menu: false
+      menu: false,
+      snackbar: {
+        message: 'تم تعديل البيانات بنجاح',
+        color: 'green',
+        state: true
+      }
     }
   },
   watch: {
@@ -109,6 +114,7 @@ export default {
           'last_name': this.userClone.last_name,
           'date_of_birth': this.userClone.date_of_birth
         }).then((r) => {
+          this.$store.commit('setSnackBarValues', this.snackbar)
           // TODO: show success msg
           this.$store.commit('setUser', r.data)
           this.closeDialog()

@@ -134,6 +134,15 @@
         </v-menu>
       </div>
     </v-toolbar>
+    <v-snackbar
+      v-model="snackbar.state"
+      :color="snackbar.color"
+      :timeout="2500"
+      top
+      left
+    >
+      {{ snackbar.message }}
+    </v-snackbar>
     <v-content>
       <v-container fluid>
         <nuxt />
@@ -171,6 +180,23 @@ export default {
   computed: {
     loggedIn () {
       return Boolean(this.$store.state.user)
+    },
+    snackbar () {
+      let self = this
+      return {
+        color: this.$store.state.snackbar.color,
+        message: this.$store.state.snackbar.message,
+        state: {
+          get: function () {
+            return self.$store.state.snackbar.state
+          },
+          set: function (state) {
+            console.log('1')
+            self.$store.commit('changeSnackBarState', state)
+            console.log('4')
+          }
+        }
+      }
     }
   },
   methods: {
