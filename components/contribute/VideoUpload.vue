@@ -116,7 +116,7 @@
                 <v-select
                   v-model="word.part_of_speech"
                   :items="partOfSpeechTypes"
-                  :rules="validationRules.required"
+                  :rules="generalValidationRules.required"
                   class="round-input light-shadow-input full-width"
                   menu-props="auto"
                   label="إختر نوع الكلمة"
@@ -126,7 +126,7 @@
                 <v-select
                   v-model="word.categories"
                   :items="categories"
-                  :rules="validationRules.atLeastOne"
+                  :rules="generalValidationRules.atLeastOne"
                   item-text="name"
                   item-value="name"
                   class="round-input light-shadow-input full-width"

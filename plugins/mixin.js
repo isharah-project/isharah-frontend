@@ -24,7 +24,7 @@ Vue.mixin({
     }
   },
   computed: {
-    validationRules () {
+    generalValidationRules () {
       return {
         required: [
           v => !!v || 'الخانة مطلوبة'

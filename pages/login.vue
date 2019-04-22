@@ -18,7 +18,7 @@
                 label="البريد الالكتروني"
                 type="email"
                 validate-on-blur
-                :rules="[...validationRules.required, ...validationRules.emailRules]"
+                :rules="[...generalValidationRules.required, ...generalValidationRules.emailRules]"
               >
               </v-text-field>
               <v-text-field
@@ -26,7 +26,7 @@
                 label="كلمة السر"
                 type="password"
                 validate-on-blur
-                :rules="[...validationRules.required, validationRules.passwordLengthCheck]"
+                :rules="[...generalValidationRules.required, validationRules.passwordLengthCheck]"
               >
               </v-text-field>
               <div v-for="error in errors" :key="error" class="red--text">
@@ -61,14 +61,14 @@
                 v-model="user.first_name"
                 label="الأسم الأول"
                 validate-on-blur
-                :rules="validationRules.required"
+                :rules="generalValidationRules.required"
               >
               </v-text-field>
               <v-text-field
                 v-model="user.last_name"
                 label="الأسم الأخير"
                 validate-on-blur
-                :rules="validationRules.required"
+                :rules="generalValidationRules.required"
               >
               </v-text-field>
               <v-text-field
@@ -76,7 +76,7 @@
                 label="البريد الالكتروني"
                 type="email"
                 validate-on-blur
-                :rules="[...validationRules.required, ...validationRules.emailRules]"
+                :rules="[...generalValidationRules.required, ...generalValidationRules.emailRules]"
               >
               </v-text-field>
               <v-text-field
@@ -84,14 +84,14 @@
                 label="كلمة السر"
                 type="password"
                 validate-on-blur
-                :rules="[...validationRules.required, validationRules.passwordLengthCheck]"
+                :rules="[...generalValidationRules.required, generalValidationRules.passwordLengthCheck]"
               ></v-text-field>
               <v-text-field
                 v-model="user.password_confirmation"
                 label="تأكيد كلمة السر"
                 type="password"
                 validate-on-blur
-                :rules="[...validationRules.required, validationRules.passwordConfirmation]"
+                :rules="[...generalValidationRules.required, validationRules.passwordConfirmation]"
               ></v-text-field>
               <v-menu
                 ref="menu"
@@ -108,7 +108,7 @@
                     prepend-icon="event"
                     readonly
                     validate-on-blur
-                    :rules="validationRules.required"
+                    :rules="generalValidationRules.required"
                     v-on="on"
                   ></v-text-field>
                 </template>
@@ -199,12 +199,6 @@ export default {
     validationRules () {
       let self = this
       return {
-        emailRules: [
-          v => /(?!\.)[\w.-]+@[a-z0-9.-]+\.[a-z]{2,4}/.test(v) || 'يجب ان يكون البريد الالكتروني بالشكل الصحيح'
-        ],
-        required: [
-          v => !!v || 'الخانة مطلوبة'
-        ],
         passwordConfirmation () {
           if (
             self.user.password &&

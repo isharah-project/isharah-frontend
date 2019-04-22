@@ -18,14 +18,14 @@
           v-model="userClone.first_name"
           label="الاسم الأول"
           validate-on-blur
-          :rules="validationRules.required"
+          :rules="generalValidationRules.required"
         >
         </v-text-field>
         <v-text-field
           v-model="userClone.last_name"
           label="الاسم الأخير"
           validate-on-blur
-          :rules="validationRules.required"
+          :rules="generalValidationRules.required"
         >
         </v-text-field>
         <v-menu
@@ -43,7 +43,7 @@
               prepend-icon="event"
               readonly
               validate-on-blur
-              :rules="validationRules.required"
+              :rules="generalValidationRules.required"
               v-on="on"
             ></v-text-field>
           </template>

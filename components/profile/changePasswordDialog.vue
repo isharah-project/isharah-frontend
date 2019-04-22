@@ -19,21 +19,21 @@
           label="كلمة السر الحالية"
           type="password"
           validate-on-blur
-          :rules="[...validationRules.required, validationRules.passwordLengthCheck]"
+          :rules="[...generalValidationRules.required, validationRules.passwordLengthCheck]"
         ></v-text-field>
         <v-text-field
           v-model="user.password"
           label="كلمة السر الجديدة"
           type="password"
           validate-on-blur
-          :rules="[...validationRules.required, validationRules.passwordLengthCheck]"
+          :rules="[...generalValidationRules.required, validationRules.passwordLengthCheck]"
         ></v-text-field>
         <v-text-field
           v-model="user.password_confirmation"
           label="تأكيد كلمة السر"
           type="password"
           validate-on-blur
-          :rules="[...validationRules.required, validationRules.passwordConfirmation]"
+          :rules="[...generalValidationRules.required, validationRules.passwordConfirmation]"
         ></v-text-field>
         <v-btn
           :ripple="false"
@@ -68,9 +68,6 @@ export default {
     validationRules () {
       let self = this
       return {
-        required: [
-          v => !!v || 'الخانة مطلوبة'
-        ],
         passwordConfirmation () {
           if (
             self.user.password &&
