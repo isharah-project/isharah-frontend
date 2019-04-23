@@ -67,10 +67,11 @@
         </v-flex>
         <v-flex md4 lg4 xs12>
           <v-form ref="videoForm" v-model="validForm" class="px-2 word-data-form" @submit.prevent="submitVideo">
-            <transition name="fade" mode="out-in">
+            <transition name="small-slide">
               <div
                 v-if="isParentState('UPLOAD') && isState(states.UPLOAD.PLAYBACK)"
                 key="0"
+                class="hidden-overflow"
                 :class="{ 'my-3': $vuetify.breakpoint.smAndDown }"
               >
                 <v-btn
@@ -83,7 +84,9 @@
                   {{ videoBlob.name }}
                 </v-btn>
               </div>
-              <div v-if="isParentState('RECORD')" key="1">
+            </transition>
+            <transition name="small-slide">
+              <div v-if="isParentState('RECORD')" key="1" class="hidden-overflow">
                 <v-btn
                   class="recording-btn red-gradient"
                   round
@@ -117,7 +120,7 @@
                 class="round-input light-shadow-input full-width"
                 @itemChanged="setSelectedWord"
               />
-              <transition name="slide">
+              <transition name="big-slide">
                 <div v-if="word.name" class="hidden-overflow">
                   <div class="mt-3">
                     <h3>نوع الكلمة</h3>
@@ -399,18 +402,27 @@ export default {
   opacity: 0;
 }
 
-.slide-enter-active,
-.slide-leave-active {
+.small-slide-enter-active,
+.small-slide-leave-active,
+.big-slide-enter-active,
+.big-slide-leave-active {
   transform-origin: top;
   transition: max-height .7s;
 }
-.slide-enter,
-.slide-leave-to {
+.small-slide-enter,
+.small-slide-leave-to,
+.big-slide-enter,
+.big-slide-leave-to {
   max-height: 0;
 }
 
-.slide-leave,
-.slide-enter-to {
+.small-slide-leave,
+.small-slide-enter-to {
+  max-height: 60px;
+}
+
+.big-slide-leave,
+.big-slide-enter-to {
   max-height: 250px;
 }
 
