@@ -56,7 +56,9 @@ export default {
       return { word }
     } catch (e) {
       console.log(e)
-      // TODO: show error msg
+      this.$store.commit('showErrorMsg', {
+        message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+      })
     }
   },
   methods: {

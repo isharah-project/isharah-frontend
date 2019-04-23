@@ -112,7 +112,6 @@ export default {
           this.$store.commit('showSuccessMsg', {
             message: 'تم تعديل البيانات بنجاح'
           })
-          // TODO: show success msg
           this.$store.commit('setUser', r.data)
           this.closeDialog()
           this.editErrors = []

@@ -155,8 +155,10 @@ export default {
       let contributions = deserialize((await $axios.get('/user/contributions')).data)
       return { contributions }
     } catch (e) {
-      // TODO: show err msg
       console.log(e)
+      this.$store.commit('showErrorMsg', {
+        message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+      })
     }
   },
   methods: {

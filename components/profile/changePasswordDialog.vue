@@ -97,8 +97,9 @@ export default {
           'password': this.user.password,
           'password_confirmation': this.password_confirmation
         }).then(() => {
-          // this.$store.commit('setUser', r.data)
-          // TODO: show success msg
+          this.$store.commit('showSuccessMsg', {
+            message: 'تم تغيير كلمة السر بنجاح'
+          })
           this.closeDialog()
           this.errors = []
         }).catch(() => {

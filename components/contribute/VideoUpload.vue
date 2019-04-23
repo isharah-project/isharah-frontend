@@ -384,10 +384,14 @@ export default {
           this.$refs.videoForm.reset()
           this.setParentState(this.getParentState())
           this.videoBlob = null
-          // TODO: show msg of success
+          this.$store.commit('showSuccessMsg', {
+            message: 'تم رفع الاشارة بنجاح'
+          })
         }).catch((e) => {
           console.log(e)
-          // TODO
+          this.$store.commit('showErrorMsg', {
+            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+          })
         })
       }
     }

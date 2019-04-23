@@ -135,7 +135,9 @@ export default {
       }
       return { gestures, selectedGesture, page }
     } catch (e) {
-      // TODO: show err message
+      this.$store.commit('showErrorMsg', {
+        message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+      })
     }
   },
   methods: {
@@ -144,7 +146,9 @@ export default {
         this.gestures = this.deserialize(response.data)
         if (callback) callback()
       }).catch((e) => {
-        // TODO: show err message
+        this.$store.commit('showErrorMsg', {
+          message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+        })
       })
     },
     submitReview (value) {
@@ -156,9 +160,13 @@ export default {
         this.fetchGestures(this.page.current, () => {
           this.selectGesture(this.gestures.length ? this.gestures[0] : null)
         })
-        // TODO: show success message
+        this.$store.commit('showSuccessMsg', {
+          message: 'تم تقييم اﻹشارة بنجاح'
+        })
       }).catch((e) => {
-        // TODO: show err message
+        this.$store.commit('showErrorMsg', {
+          message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+        })
       })
     },
     enableButtons () {
