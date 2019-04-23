@@ -1,6 +1,6 @@
 <template>
   <v-card class="small-round-corners light-box-shadow">
-    <v-img :src="image" aspect-ratio="1.5">
+    <v-img :src="gesture.preview_url" aspect-ratio="1.5">
       <v-container v-if="gesture.word.part_of_speech">
         <v-card flat class="absolute-position px-5 py-1 pos-card full-round-corners">
           {{ gesture.word.part_of_speech }}
