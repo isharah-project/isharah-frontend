@@ -18,7 +18,7 @@
                 label="البريد الالكتروني"
                 type="email"
                 validate-on-blur
-                :rules="[...generalValidationRules.required, ...generalValidationRules.emailRules]"
+                :rules="[...generalValidationRules.required, ...generalValidationRules.email]"
               >
               </v-text-field>
               <v-text-field
@@ -76,7 +76,7 @@
                 label="البريد الالكتروني"
                 type="email"
                 validate-on-blur
-                :rules="[...generalValidationRules.required, ...generalValidationRules.emailRules]"
+                :rules="[...generalValidationRules.required, ...generalValidationRules.email]"
               >
               </v-text-field>
               <v-text-field
@@ -84,7 +84,7 @@
                 label="كلمة السر"
                 type="password"
                 validate-on-blur
-                :rules="[...generalValidationRules.required, generalValidationRules.passwordLengthCheck]"
+                :rules="[...generalValidationRules.required, validationRules.passwordLengthCheck]"
               ></v-text-field>
               <v-text-field
                 v-model="user.password_confirmation"

@@ -126,7 +126,7 @@ export default {
   },
   async asyncData ({ store, $axios }) {
     try {
-      let response = (await $axios.get('gestures/unreviewed?page=1&per_page=10')).data
+      let response = (await $axios.get('gestures/unreviewed?page=1&per_page=6')).data
       let gestures = store.state.deserialize(response)
       let selectedGesture = gestures.length ? gestures[0] : null
       let page = {
@@ -142,7 +142,8 @@ export default {
   },
   methods: {
     fetchGestures (page, callback) {
-      this.$axios.get(`gestures/unreviewed?page=${page}&per_page=10`).then((response) => {
+      this.$axios.get(`gestures/unreviewed?page=${page}&per_page=6`).then((response) => {
+        this.page.total = response.data.page_meta.total_pages
         this.gestures = this.deserialize(response.data)
         if (callback) callback()
       }).catch((e) => {
@@ -156,14 +157,21 @@ export default {
         accepted: value,
         comment: this.review.comment
       }
-      this.$axios.post(`gestures/${this.selectedGesture.id}/review`, postData).then((response) => {
+      this.$axios.post(`gestures/${this.selectedGesture.id}/review`, postData).then(() => {
         this.fetchGestures(this.page.current, () => {
-          this.selectGesture(this.gestures.length ? this.gestures[0] : null)
+          if (this.gestures.length === 0 && this.page.current !== 1) {
+            // last gesture in a page, need to request last page
+            this.fetchGestures(--this.page.current, () => {
+              this.selectGesture(this.gestures.length ? this.gestures[0] : null)
+            })
+          } else {
+            this.selectGesture(this.gestures.length ? this.gestures[0] : null)
+          }
         })
         this.$store.commit('showSuccessMsg', {
           message: 'تم تقييم اﻹشارة بنجاح'
         })
-      }).catch((e) => {
+      }).catch(() => {
         this.$store.commit('showErrorMsg', {
           message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
         })

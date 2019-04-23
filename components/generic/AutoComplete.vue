@@ -145,7 +145,6 @@ export default {
         }
       }).catch((e) => {
         this.loading = false
-        console.log(e)
         this.$store.commit('showErrorMsg', {
           message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
         })

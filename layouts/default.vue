@@ -137,7 +137,7 @@
     <v-snackbar
       v-model="snackbarState"
       :color="$store.state.snackbar.color"
-      :timeout="3000"
+      :timeout="3500"
       top
       left
     >

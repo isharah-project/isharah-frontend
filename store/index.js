@@ -22,6 +22,7 @@ export const mutations = {
   setSnackBarState (state, { open }) {
     state.snackbar.state = open
   },
+  // TODO: following 3 methods need to be refactored into 1
   showSuccessMsg (state, { message }) {
     state.snackbar.state = true
     state.snackbar.message = message
@@ -31,6 +32,11 @@ export const mutations = {
     state.snackbar.state = true
     state.snackbar.message = message
     state.snackbar.color = 'red'
+  },
+  showInfoMsg (state, { message }) {
+    state.snackbar.state = true
+    state.snackbar.message = message
+    state.snackbar.color = 'blue'
   },
   changeSnackBarState (state, snackBarState) {
     state.snackbar.state = snackBarState
