@@ -70,6 +70,7 @@
             v-if="!link.children"
             :key="link.path"
             :to="link.path"
+            active-class="toolbar-btn-active"
             flat
           >
             {{ link.text }}
@@ -78,7 +79,7 @@
             <template v-slot:activator="{ on }">
               <v-btn
                 flat
-                :class="{ 'v-btn--active': chickChildrenPathsMatch(link) }"
+                :class="{ 'toolbar-btn-active': chickChildrenPathsMatch(link) }"
                 v-on="on"
               >
                 {{ link.text }}
@@ -89,7 +90,7 @@
                 v-for="(child, i) in link.children"
                 :key="i"
               >
-                <nuxt-link is="v-btn" class="ma-0 v-btn--round" :to="child.path" flat>
+                <nuxt-link is="v-btn" class="ma-0 small-round-corners" :to="child.path" flat>
                   {{ child.text }}
                 </nuxt-link>
               </v-list-tile>
@@ -121,12 +122,12 @@
           </template>
           <v-list>
             <v-list-tile>
-              <nuxt-link is="v-btn" class="ma-0 pa-2 mx-2" to="/profile" flat>
+              <nuxt-link is="v-btn" class="ma-0 pa-2 mx-2 small-round-corners" to="/profile" flat>
                 الصفحة الشخصية
               </nuxt-link>
             </v-list-tile>
             <v-list-tile>
-              <v-btn class="my-0 pa-2 mx-2" flat @click="logout()">
+              <v-btn class="my-0 pa-2 mx-2 small-round-corners" flat @click="logout()">
                 تسجيل الخروج
               </v-btn>
             </v-list-tile>
@@ -215,5 +216,8 @@ export default {
 }
 .app-toolbar {
   box-shadow: $toolbar-shadow !important;
+}
+.toolbar-btn-active {
+  border-bottom: solid 2px $blue;
 }
 </style>
