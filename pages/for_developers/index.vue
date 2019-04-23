@@ -22,7 +22,7 @@
               v-model="requestData.name"
               label="الاسم"
               type="text"
-              :rules="validationRules.required"
+              :rules="generalValidationRules.required"
             />
           </v-flex>
           <v-flex xs12 sm12 md6>
@@ -30,14 +30,14 @@
               v-model="requestData.email"
               label="البريد الإلكتروني"
               type="email"
-              :rules="[...validationRules.required, ...validationRules.email]"
+              :rules="[...generalValidationRules.required, ...generalValidationRules.email]"
             />
           </v-flex>
           <v-flex xs12>
             <v-textarea
               v-model="requestData.purpose"
               label="الغرض"
-              :rules="validationRules.required"
+              :rules="generalValidationRules.required"
             />
           </v-flex>
           <v-flex xs12>

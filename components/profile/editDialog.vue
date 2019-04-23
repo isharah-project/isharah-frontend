@@ -18,14 +18,14 @@
           v-model="userClone.first_name"
           label="الاسم الأول"
           validate-on-blur
-          :rules="validationRules.required"
+          :rules="generalValidationRules.required"
         >
         </v-text-field>
         <v-text-field
           v-model="userClone.last_name"
           label="الاسم الأخير"
           validate-on-blur
-          :rules="validationRules.required"
+          :rules="generalValidationRules.required"
         >
         </v-text-field>
         <v-menu
@@ -43,7 +43,7 @@
               prepend-icon="event"
               readonly
               validate-on-blur
-              :rules="validationRules.required"
+              :rules="generalValidationRules.required"
               v-on="on"
             ></v-text-field>
           </template>
@@ -109,7 +109,9 @@ export default {
           'last_name': this.userClone.last_name,
           'date_of_birth': this.userClone.date_of_birth
         }).then((r) => {
-          // TODO: show success msg
+          this.$store.commit('showSuccessMsg', {
+            message: 'تم تعديل البيانات بنجاح'
+          })
           this.$store.commit('setUser', r.data)
           this.closeDialog()
           this.editErrors = []

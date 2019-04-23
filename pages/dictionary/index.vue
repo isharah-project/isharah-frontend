@@ -204,8 +204,9 @@ export default {
       let categories = store.state.deserialize(response.data)
       return { categories }
     } catch (e) {
-      // TODO
-      console.log(e)
+      store.commit('showErrorMsg', {
+        message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+      })
     }
   },
   created () {
@@ -230,9 +231,10 @@ export default {
         this.words = this.deserialize(response)
         this.page.total = response.page_meta.total_pages || 1
         this.loading = false
-      }).catch((error) => {
-        // TODO
-        console.log(error)
+      }).catch(() => {
+        this.$store.commit('showErrorMsg', {
+          message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+        })
       })
     },
     buildApiQuery () {

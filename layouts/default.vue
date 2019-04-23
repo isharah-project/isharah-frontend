@@ -134,6 +134,18 @@
         </v-menu>
       </div>
     </v-toolbar>
+    <v-snackbar
+      v-model="snackbarState"
+      :color="$store.state.snackbar.color"
+      :timeout="3500"
+      top
+      left
+    >
+      <span>
+        {{ $store.state.snackbar.message }}
+        <v-btn flat @click="snackbarState = false">إغلاق</v-btn>
+      </span>
+    </v-snackbar>
     <v-content>
       <v-container fluid>
         <nuxt />
@@ -159,7 +171,7 @@ export default {
           children: [
             { path: '/contribute/practice', text: 'تدرب على إشارة', icon: 'videocam' },
             { path: '/contribute/add_gesture', text: 'اضف إشارة للقاموس', icon: 'videocam' },
-            { path: '/contribute/review', text: 'قيم الإشارات', icon: 'rate_review' }
+            { path: '/contribute/review', text: 'قيّم الإشارات', icon: 'rate_review' }
           ]
         },
         { path: '/contact_us', text: 'تواصل معنا', icon: 'contact_mail' },
@@ -171,6 +183,14 @@ export default {
   computed: {
     loggedIn () {
       return Boolean(this.$store.state.user)
+    },
+    snackbarState: {
+      get: function () {
+        return this.$store.state.snackbar.state
+      },
+      set: function (state) {
+        this.$store.commit('setSnackBarState', { open: state })
+      }
     }
   },
   methods: {

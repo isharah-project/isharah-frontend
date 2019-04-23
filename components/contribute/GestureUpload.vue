@@ -29,7 +29,7 @@
     <v-flex
       ref="dragZone"
       :class="{ 'expanded': isParentState('UPLOAD') && isState(states.UPLOAD.INIT) }"
-      class="text-xs-center drag-zone round-corners mt-3"
+      class="text-xs-center drag-zone medium-round-corners mt-3"
       xs12
       @drag.prevent.stop
       @dragstart.prevent.stop
@@ -56,12 +56,12 @@
       <v-layout row wrap>
         <v-flex md8 lg8 xs12>
           <div v-show="isState([states.UPLOAD.INIT, states.RECORD.INIT])" class="">
-            <img src="http://placehold.it/1280x720" alt="" class="full-width round-corners overflow-hidden">
+            <img src="~/assets/images/contribute-placeholder.jpg" alt="" class="full-width medium-round-corners overflow-hidden">
           </div>
-          <div v-show="isState([states.UPLOAD.PLAYBACK, states.RECORD.PLAYBACK])" class="round-corners overflow-hidden">
+          <div v-show="isState([states.UPLOAD.PLAYBACK, states.RECORD.PLAYBACK])" class="medium-round-corners overflow-hidden">
             <video ref="videoPlayer" class="video-js vjs-default-skin vjs-big-play-centered"></video>
           </div>
-          <div v-show="isState([states.RECORD.LIVE_PREVIEW, states.RECORD.RECORDING])" class="round-corners overflow-hidden">
+          <div v-show="isState([states.RECORD.LIVE_PREVIEW, states.RECORD.RECORDING])" class="medium-round-corners overflow-hidden">
             <video ref="livePreview" class="live-preview-video"></video>
           </div>
         </v-flex>
@@ -112,7 +112,7 @@
                 :deserializeResults="autoCompleteDeserializeResults"
                 :apiEndPoint="autoCompleteEndPoint"
                 :selectable="true"
-                :rules="validationRules.required"
+                :rules="generalValidationRules.required"
                 prependIcon=""
                 class="round-input light-shadow-input full-width"
                 @itemChanged="setSelectedWord"
@@ -264,9 +264,10 @@ export default {
         if (callback) callback()
       }).catch((e) => {
         if (e.name === 'NotAllowedError') {
-          // TODO: ask user to accept permission
+          this.$store.commit('showInfoMsg', {
+            message: 'لتتمكن من التسجيل يجب السماح بالوصول الى الكاميرا'
+          })
         }
-        console.log(e)
       })
     },
     releaseUserMedia () {
@@ -304,11 +305,14 @@ export default {
           this.videoBlob = file
           this.setVideoJsSource(URL.createObjectURL(this.videoBlob), this.videoBlob.type)
         } else {
-          console.log('not supported video type')
-          // TODO: show video type support error message
+          this.$store.commit('showInfoMsg', {
+            message: 'هذا النوع من الوسائط غير مدعوم'
+          })
         }
       } else {
-        // TODO: show drag & drop not support error
+        this.$store.commit('showInfoMsg', {
+          message: 'خاصية السحب والإسقاط غير مدعومة من خلال متصفحك'
+        })
       }
     },
     setParentState (parent) {
@@ -367,10 +371,13 @@ export default {
           this.$refs.videoForm.reset()
           this.setParentState(this.getParentState())
           this.videoBlob = null
-          // TODO: show msg of success
+          this.$store.commit('showSuccessMsg', {
+            message: 'تم رفع الاشارة بنجاح'
+          })
         }).catch((e) => {
-          console.log(e)
-          // TODO
+          this.$store.commit('showErrorMsg', {
+            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+          })
         })
       }
     }
