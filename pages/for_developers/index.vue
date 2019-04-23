@@ -3,7 +3,17 @@
     <PageHeader text="للمطورين" icon="contact_mail" />
     <v-card class="medium-round-corners light-box-shadow pa-4">
       <p class="body-2">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus alias animi aut delectus deleniti error excepturi exercitationem incidunt inventore, laboriosam molestias, nulla porro quis recusandae reprehenderit sunt veritatis voluptates.
+        لوريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور
+
+        أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا . يوت انيم أد مينيم فينايم,كيواس نوستريد
+
+        أكسير سيتاشن يللأمكو لابورأس نيسي يت أليكيوب أكس أيا كوممودو كونسيكيوات . ديواس
+
+        أيوتي أريري دولار إن ريبريهينديرأيت فوليوبتاتي فيلايت أيسسي كايلليوم دولار أيو فيجايت
+
+        نيولا باراياتيور. أيكسسيبتيور ساينت أوككايكات كيوبايداتات نون بروايدينت ,سيونت ان كيولبا
+
+        كيو أوفيسيا ديسيريونتموليت انيم أيدي ايست لابوريوم.
       </p>
       <v-form ref="requestForm" @submit.prevent="submitRequest">
         <v-layout wrap>

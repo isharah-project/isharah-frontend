@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <PageHeader text="الرئيسية" icon="home" />
+    <PageHeader text="تدرب على إشارة" icon="videocam" />
   </v-container>
 </template>
 
@@ -14,6 +14,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

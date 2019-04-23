@@ -1,9 +1,16 @@
 <template>
-  <div></div>
+  <v-container>
+    <PageHeader icon="contact_mail" text="تواصل معنا" />
+  </v-container>
 </template>
 
 <script>
+import PageHeader from '~/components/generic/PageHeader'
+
 export default {
+  components: {
+    PageHeader
+  }
 }
 </script>
 

@@ -169,7 +169,7 @@ export default {
       this.viewedGesture = gesture
     },
     redirect (state) {
-      this.$router.push({ name: 'contribute-add_word', params: { parentState: state } })
+      this.$router.push({ name: 'contribute-add_gesture', params: { parentState: state } })
     }
   }
 }
