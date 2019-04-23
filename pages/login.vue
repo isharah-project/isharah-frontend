@@ -86,13 +86,20 @@
                 validate-on-blur
                 :rules="[...generalValidationRules.required, validationRules.passwordLengthCheck]"
               ></v-text-field>
-              <v-text-field
-                v-model="user.password_confirmation"
-                label="تأكيد كلمة السر"
-                type="password"
+              <v-combobox
+                v-model="user.city"
+                label="المحافظة"
+                :items="egyptGovernorate"
                 validate-on-blur
-                :rules="[...generalValidationRules.required, validationRules.passwordConfirmation]"
-              ></v-text-field>
+                :rules="generalValidationRules.required"
+              ></v-combobox>
+              <!--<v-text-field-->
+              <!--v-model="user.password_confirmation"-->
+              <!--label="تأكيد كلمة السر"-->
+              <!--type="password"-->
+              <!--validate-on-blur-->
+              <!--:rules="[...generalValidationRules.required, validationRules.passwordConfirmation]"-->
+              <!--&gt;</v-text-field>-->
               <v-menu
                 ref="menu"
                 v-model="menu"
@@ -142,12 +149,14 @@
             </v-card-text>
           </div>
         </transition>
-        <v-btn flat round class="btn-shadow">
-          تسجيل الدخول عن طريق فيسبوك
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="5 0 30 30" width="30px" height="25px">
-            <path style="fill:#3b5998" d="M24,4H6C4.895,4,4,4.895,4,6v18c0,1.105,0.895,2,2,2h10v-9h-3v-3h3v-1.611C16,9.339,17.486,8,20.021,8 c1.214,0,1.856,0.09,2.16,0.131V11h-1.729C19.376,11,19,11.568,19,12.718V14h3.154l-0.428,3H19v9h5c1.105,0,2-0.895,2-2V6 C26,4.895,25.104,4,24,4z" />
-          </svg>
-        </v-btn>
+        <v-f-b-login-scope appId="391600888090638">
+          <v-btn slot-scope="scope" flat round class="btn-shadow" @click="loginWithFacebook(scope)">
+            تسجيل الدخول عن طريق فيسبوك
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="5 0 30 30" width="30px" height="25px">
+              <path style="fill:#3b5998" d="M24,4H6C4.895,4,4,4.895,4,6v18c0,1.105,0.895,2,2,2h10v-9h-3v-3h3v-1.611C16,9.339,17.486,8,20.021,8 c1.214,0,1.856,0.09,2.16,0.131V11h-1.729C19.376,11,19,11.568,19,12.718V14h3.154l-0.428,3H19v9h5c1.105,0,2-0.895,2-2V6 C26,4.895,25.104,4,24,4z" />
+            </svg>
+          </v-btn>
+        </v-f-b-login-scope>
         <v-btn color="#000000" dark flat round class="btn-shadow">
           تسجيل الدخول عن طريق جوجل
           <svg
@@ -173,8 +182,12 @@
 
 <script>
 import moment from 'moment'
+import { VFBLoginScope } from 'vue-facebook-login-component'
 
 export default {
+  components: {
+    VFBLoginScope
+  },
   data () {
     return {
       state: 'signin',
@@ -197,19 +210,19 @@ export default {
   },
   computed: {
     validationRules () {
-      let self = this
+      // let self = this
       return {
-        passwordConfirmation () {
-          if (
-            self.user.password &&
-            self.user.password_confirmation &&
-            self.user.password !== self.user.password_confirmation
-          ) {
-            return 'كلمة السر و تأكيد كلمة السر غير متطابقين'
-          } else {
-            return true
-          }
-        },
+        // passwordConfirmation () {
+        //   if (
+        //     self.user.password &&
+        //     self.user.password_confirmation &&
+        //     self.user.password !== self.user.password_confirmation
+        //   ) {
+        //     return 'كلمة السر و تأكيد كلمة السر غير متطابقين'
+        //   } else {
+        //     return true
+        //   }
+        // },
         passwordLengthCheck (value) {
           if (value && value.length < 6) {
             return 'الحد الادني لكلمة السر 6 خانات'
@@ -279,6 +292,21 @@ export default {
           this.errors.push('خطأ في البريد الالكتروني او كلمة السر')
         })
       }
+    },
+    loginWithFacebook () {
+      /* eslint-disable no-undef */
+      FB.login(function (response) {
+        if (response.authResponse) {
+          FB.api('/me?fields=email,first_name,last_name', function (r) {
+            console.log('me', r)
+          })
+        } else {
+          // TODO: show err message
+        }
+      }, {
+        scope: 'email',
+        return_scopes: true
+      })
     }
   }
 }

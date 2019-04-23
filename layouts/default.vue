@@ -89,7 +89,7 @@
                 v-for="(child, i) in link.children"
                 :key="i"
               >
-                <nuxt-link is="v-btn" class="ma-0" :to="child.path" flat>
+                <nuxt-link is="v-btn" class="ma-0 v-btn--round" :to="child.path" flat>
                   {{ child.text }}
                 </nuxt-link>
               </v-list-tile>
@@ -170,7 +170,7 @@ export default {
           icon: 'accessibility',
           children: [
             { path: '/contribute/practice', text: 'تدرب على إشارة', icon: 'videocam' },
-            { path: '/contribute/add_word', text: 'أضف كلمة للقاموس', icon: 'videocam' },
+            { path: '/contribute/add_gesture', text: 'اضف إشارة للقاموس', icon: 'videocam' },
             { path: '/contribute/review', text: 'قيّم الإشارات', icon: 'rate_review' }
           ]
         },

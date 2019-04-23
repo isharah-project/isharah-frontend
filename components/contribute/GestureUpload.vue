@@ -12,7 +12,7 @@
         round
         @click="!isParentState('UPLOAD') ? setParentState('UPLOAD') : null"
       >
-        ارفع
+        رفع
       </v-btn>
       <v-btn
         class="red-gradient video-method-btn btn-shadow title mx-2"
@@ -22,7 +22,7 @@
         round
         @click="!isParentState('RECORD') ? setParentState('RECORD') : null"
       >
-        سجل
+        تسجيل
       </v-btn>
     </v-flex>
     <input ref="fileInput" type="file" :accept="videoTypes.join(',')" class="d-none">
@@ -68,7 +68,11 @@
         <v-flex md4 lg4 xs12>
           <v-form ref="videoForm" v-model="validForm" class="px-2 word-data-form" @submit.prevent="submitVideo">
             <transition name="fade" mode="out-in">
-              <div v-if="isParentState('UPLOAD') && isState(states.UPLOAD.PLAYBACK)" key="0">
+              <div
+                v-if="isParentState('UPLOAD') && isState(states.UPLOAD.PLAYBACK)"
+                key="0"
+                :class="{ 'my-3': $vuetify.breakpoint.smAndDown }"
+              >
                 <v-btn
                   class="blue-cyan-gradient btn-shadow upload-btn"
                   flat
@@ -108,41 +112,31 @@
                 :deserializeResults="autoCompleteDeserializeResults"
                 :apiEndPoint="autoCompleteEndPoint"
                 :selectable="true"
+                :rules="generalValidationRules.required"
                 prependIcon=""
-                class="round-input light-shadow-input full-width mb-4"
+                class="round-input light-shadow-input full-width"
                 @itemChanged="setSelectedWord"
               />
-              <template v-if="!hideWordDetails">
-                <v-select
-                  v-model="word.part_of_speech"
-                  :items="partOfSpeechTypes"
-                  :rules="generalValidationRules.required"
-                  class="round-input light-shadow-input full-width"
-                  menu-props="auto"
-                  label="إختر نوع الكلمة"
-                  single-line
-                  solo
-                ></v-select>
-                <v-select
-                  v-model="word.categories"
-                  :items="categories"
-                  :rules="generalValidationRules.atLeastOne"
-                  item-text="name"
-                  item-value="name"
-                  class="round-input light-shadow-input full-width"
-                  menu-props="auto"
-                  label="إختر فئة الكلمة"
-                  single-line
-                  multiple
-                  chips
-                  solo
-                ></v-select>
-              </template>
+              <transition name="slide">
+                <div v-if="word.name" class="hidden-overflow">
+                  <div class="mt-3">
+                    <h3>نوع الكلمة</h3>
+                    <v-chip>{{ word.part_of_speech }}</v-chip>
+                  </div>
+                  <div class="mt-3">
+                    <h3>فئات الكلمة</h3>
+                    <v-chip v-for="category in word.categories" :key="category.name">
+                      {{ category.name }}
+                    </v-chip>
+                  </div>
+                </div>
+              </transition>
             </div>
             <div>
               <v-btn
                 type="submit"
                 class="orange-gradient btn-shadow fixed-size-btn"
+                :class="{ 'my-3': $vuetify.breakpoint.smAndDown }"
                 :disabled="!validForm || !videoBlob"
                 round
                 flat
@@ -170,10 +164,6 @@ export default {
     AutoComplete
   },
   props: {
-    categories: {
-      type: Array,
-      required: true
-    },
     submitEndPoint: {
       type: String,
       required: true
@@ -189,11 +179,6 @@ export default {
     autoCompleteDeserializeResults: {
       type: Boolean,
       required: true
-    },
-    hideWordDetails: {
-      type: Boolean,
-      required: false,
-      default: false
     }
   },
   data () {
@@ -222,7 +207,7 @@ export default {
         fluid: true
       },
       word: {
-        name: 'أحمر',
+        name: '',
         part_of_speech: null,
         categories: null
       },
@@ -363,7 +348,7 @@ export default {
       if (word) {
         if (this.autoCompleteDeserializeResults) {
           // word is an object (in practice mode)
-          this.word.name = word.name
+          this.word = word
         } else {
           // word is a string (in add word mode)
           this.word.name = word
@@ -381,8 +366,6 @@ export default {
       if (this.$refs.videoForm.validate() && this.videoBlob) {
         let formData = new FormData()
         formData.append('word', this.word.name)
-        formData.append('part_of_speech', this.word.part_of_speech)
-        formData.append('category', this.word.categories ? this.word.categories.join(',') : null)
         formData.append('video', this.videoBlob)
         this.$axios.post(this.submitEndPoint, formData).then(() => {
           this.$refs.videoForm.reset()
@@ -403,64 +386,82 @@ export default {
 </script>
 
 <style>
+.hidden-overflow {
+  overflow: hidden;
+}
 
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity .5s 0.8s;
-  }
-  .fade-enter,
-  .fade-leave-to {
-    opacity: 0;
-  }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .5s 0.8s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
 
+.slide-enter-active,
+.slide-leave-active {
+  transform-origin: top;
+  transition: max-height .7s;
+}
+.slide-enter,
+.slide-leave-to {
+  max-height: 0;
+}
+
+.slide-leave,
+.slide-enter-to {
+  max-height: 250px;
+}
+
+.btn-active {
+  transform: translateY(5px);
+}
+@media screen and (max-width: 515px) {
   .btn-active {
-    transform: translateY(5px);
+    transform: translateX(5px);
   }
-  @media screen and (max-width: 515px) {
-    .btn-active {
-      transform: translateX(5px);
-    }
-  }
+}
 
-  .drag-zone {
-    height: 0;
-    overflow: hidden;
-    opacity: 0;
-    border: 1px solid #c7c7c7;
-    transition: height 0.5s ease-out 0.5s, opacity 0.5s ease-out 0.5s;
-  }
-  .drag-zone.expanded {
-    height: 130px;
-    border: 1px solid #c7c7c7;
-    opacity: 1;
-  }
-  .drag-zone.is-dragging {
-    background: #d8d8d8;
-    border: 2px dashed #000;
-  }
+.drag-zone {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  border: 1px solid #c7c7c7;
+  transition: height 0.5s ease-out 0.5s, opacity 0.5s ease-out 0.5s;
+}
+.drag-zone.expanded {
+  height: 130px;
+  border: 1px solid #c7c7c7;
+  opacity: 1;
+}
+.drag-zone.is-dragging {
+  background: #d8d8d8;
+  border: 2px dashed #000;
+}
 
-  .live-preview-video {
-    width: 100%;
-  }
-  .video-method-btn {
-    width: 200px;
-    height: 50px;
-  }
+.live-preview-video {
+  width: 100%;
+}
+.video-method-btn {
+  width: 200px;
+  height: 50px;
+}
 
-  .word-data-form {
-    height: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    justify-content: space-evenly;
-  }
+.word-data-form {
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+.recording-btn {
+  width: 150px;
+  height: 40px;
+}
+@media screen and (max-width: 1264px) and (min-width: 960px) {
   .recording-btn {
-    width: 150px;
-    height: 40px;
+    width: 115px;
   }
-  @media screen and (max-width: 1264px) and (min-width: 960px) {
-    .recording-btn {
-      width: 115px;
-    }
-  }
+}
 </style>
