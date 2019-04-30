@@ -1,113 +1,104 @@
 <template>
   <v-container>
-    <PageHeader icon="person" text="الصفحة الشخصية" />
-    <v-layout row wrap class="justify-center">
-      <v-flex sm6 xs12 pr-2>
-        <v-card class="light-box-shadow small-round-corners pa-4">
-          <v-layout row wrap>
-            <v-flex
-              lg2
-              md3
-              sm4
-              xs4
-              align-self-center
-              class="text-xs-center"
+    <v-layout row wrap>
+      <v-flex xs3>
+        <v-layout fill-height>
+          <v-list subheader class="small-round-corners full-width ml-4">
+            <v-list-tile
+              :class="{ 'list-active': state === 'profile' }"
+              @click="changeState('profile')"
             >
-              <v-img
-                :src="userImageSrc"
-                max-width="100"
-                :aspect-ratio="1/1"
-                class="user-image ml-2"
-              >
-              </v-img>
+              الصفحة الشخصية
+            </v-list-tile>
+            <v-divider></v-divider>
+            <v-list-tile
+              :class="{ 'list-active': state === 'contributions' }"
+              @click="changeState('contributions')"
+            >
+              مشاركاتي
+            </v-list-tile>
+            <v-divider></v-divider>
+            <v-list-tile
+              :class="{ 'list-active': state === 'reviews' }"
+              @click="changeState('reviews')"
+            >
+              تقييماتي
+            </v-list-tile>
+            <v-divider></v-divider>
+            <v-list-tile
+              :class="{ 'list-active': state === 'edit' }"
+              @click="changeState('edit')"
+            >
+              تغيير البيانات
+            </v-list-tile>
+            <v-divider></v-divider>
+          </v-list>
+        </v-layout>
+      </v-flex>
+      <v-flex xs9>
+        <div v-if="state==='profile'">
+          <PageHeader icon="person" text="الصفحة الشخصية" />
+          <v-layout row wrap class="justify-center">
+            <v-flex xs12>
+              <v-card class="light-box-shadow small-round-corners pa-4">
+                <v-layout row wrap>
+                  <v-flex
+                    lg2
+                    md3
+                    sm4
+                    xs4
+                    align-self-center
+                    class="text-xs-center"
+                  >
+                    <v-img
+                      :src="userImageSrc"
+                      max-width="100"
+                      :aspect-ratio="1/1"
+                      class="user-image ml-2"
+                    >
+                    </v-img>
+                  </v-flex>
+                  <v-flex lg5 md4 sm8 xs8 :class="{ 'pb-1': $vuetify.breakpoint.smAndDown }">
+                    <div class="headline font-weight-medium">
+                      {{ user.first_name }} {{ user.last_name }}
+                    </div>
+                    <v-card-text class="ma-0 pa-0 grey--text">
+                      {{ user.email }}
+                      <br />
+                      {{ userFormattedDate }}
+                      <br />
+                      {{ user.city }} , {{ user.country }}
+                    </v-card-text>
+                  </v-flex>
+                </v-layout>
+              </v-card>
             </v-flex>
-            <v-flex lg5 md4 sm8 xs8 :class="{ 'pb-1': $vuetify.breakpoint.smAndDown }">
-              <div class="headline font-weight-medium">
-                {{ user.first_name }} {{ user.last_name }}
-              </div>
-              <v-card-text class="ma-0 pa-0 grey--text">
-                {{ user.email }}
-                <br />
-                {{ userFormattedDate }}
-                <br />
-                {{ user.city }} , {{ user.country }}
-              </v-card-text>
+            <v-flex xs12 my-3>
+              <v-card class="small-round-corners light-box-shadow">
+                <v-container>
+                  <myContributions :contributions="contributions"></myContributions>
+                </v-container>
+              </v-card>
             </v-flex>
-            <v-flex md5 xs12 align-self-end class="text-xs-center">
-              <v-btn
-                class="red-border-btn btn-shadow edit-btn-width"
-                flat
-                round
-                small
-                @click="openEditDialog"
-              >
-                تعديل البيانات
-              </v-btn>
-              <v-btn
-                class="red-border-btn btn-shadow edit-btn-width"
-                flat
-                round
-                small
-                @click="changePasswordDialog = true"
-              >
-                تغيير كلمة السر
-              </v-btn>
+            <v-flex xs12 my-3>
+              <v-card class="small-round-corners light-box-shadow">
+                <v-container>
+                  <myReviews></myReviews>
+                </v-container>
+              </v-card>
             </v-flex>
           </v-layout>
-        </v-card>
+        </div>
+        <div v-if="state==='contributions'">
+          <myContributions :contributions="contributions"></myContributions>
+        </div>
+        <div v-if="state==='reviews'">
+          <myReviews></myReviews>
+        </div>
+        <div v-if="state==='edit'">
+          <editProfile :userClone="userClone"></editProfile>
+        </div>
       </v-flex>
-      <v-dialog v-model="editDialog" max-width="400px">
-        <editDialog :userClone="userClone" @closeDialog="editDialog = false"></editDialog>
-      </v-dialog>
-      <v-dialog v-model="changePasswordDialog" max-width="400px">
-        <changePasswordDialog @closeDialog="changePasswordDialog = false"></changePasswordDialog>
-      </v-dialog>
-      <v-flex xs6 sm3 class="text-xs-center px-2" :class="{ 'btn-height my-2': $vuetify.breakpoint.xsOnly }">
-        <v-btn
-          :class="{ 'display-1':$vuetify.breakpoint.smAndUp, 'title': $vuetify.breakpoint.xsOnly }"
-          class="orange-gradient btn-shadow full-height small-round-corners ma-0"
-          height="100%"
-          large
-          block
-          flat
-          dark
-          @click="redirect('UPLOAD')"
-        >
-          ارفع
-        </v-btn>
-      </v-flex>
-      <v-flex xs6 sm3 class="text-xs-center pl-2" :class="{ 'btn-height my-2': $vuetify.breakpoint.xsOnly }">
-        <v-btn
-          :class="{ 'display-1':$vuetify.breakpoint.smAndUp, 'title': $vuetify.breakpoint.xsOnly }"
-          class="red-gradient btn-shadow full-height small-round-corners ma-0"
-          large
-          block
-          flat
-          dark
-          round
-          @click="redirect('RECORD')"
-        >
-          سجل
-        </v-btn>
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap class="mt-2">
-      <v-flex
-        v-for="contribution in contributions"
-        :key="contribution.word.name"
-        xs12
-        sm6
-        md4
-        pa-2
-        clickable
-        @click="openGesturesDialog(contribution)"
-      >
-        <VideoCard :gesture="contribution">
-        </VideoCard>
-      </v-flex>
-      <v-dialog v-model="wordDialog" max-width="500px">
-        <VideoCardDialog :gesture="viewedGesture" @closeDialog="wordDialog=false"></VideoCardDialog>
-      </v-dialog>
     </v-layout>
   </v-container>
 </template>
@@ -115,25 +106,21 @@
 <script>
 import image from '~/assets/images/placeholder-user.png'
 import PageHeader from '~/components/generic/PageHeader'
-import VideoCard from '~/components/profile/VideoCard'
-import VideoCardDialog from '~/components/profile/VideoCardDialog'
-import editDialog from '~/components/profile/editDialog'
-import changePasswordDialog from '~/components/profile/changePasswordDialog'
+import myContributions from '~/components/profile/myContributions'
+import myReviews from '~/components/profile/myReviews'
+import editProfile from '~/components/profile/editProfile'
 import moment from 'moment'
 import _ from 'lodash'
 import { deserialize } from 'jsonapi-deserializer'
 
 export default {
-  components: { PageHeader, VideoCard, VideoCardDialog, editDialog, changePasswordDialog },
+  components: { PageHeader, myContributions, myReviews, editProfile },
   data () {
     return {
       defaultImage: image,
       contributions: [],
-      wordDialog: false,
-      editDialog: false,
-      changePasswordDialog: false,
-      viewedGesture: {},
-      userClone: {}
+      userClone: {},
+      state: 'profile'
     }
   },
   computed: {
@@ -162,16 +149,11 @@ export default {
     }
   },
   methods: {
-    openEditDialog () {
-      this.userClone = _.cloneDeep(this.user)
-      this.editDialog = true
-    },
-    openGesturesDialog (gesture) {
-      this.wordDialog = true
-      this.viewedGesture = gesture
-    },
-    redirect (state) {
-      this.$router.push({ name: 'contribute-add_gesture', params: { parentState: state } })
+    changeState (state) {
+      this.state = state
+      if (state === 'edit') {
+        this.userClone = _.cloneDeep(this.user)
+      }
     }
   }
 }
@@ -189,5 +171,11 @@ export default {
 }
 .edit-btn-width {
   width: 120px
+}
+.list-active {
+  border-right: solid 2px blue;
+}
+.list-active >>> .v-list__tile {
+  font-weight: bold
 }
 </style>

@@ -135,9 +135,9 @@ export default {
       }
       return { gestures, selectedGesture, page }
     } catch (e) {
-      this.$store.commit('showErrorMsg', {
-        message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
-      })
+      // this.$store.commit('showErrorMsg', {
+      //   message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+      // })
     }
   },
   methods: {
