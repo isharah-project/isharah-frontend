@@ -11,6 +11,7 @@
           label="إختر نوع الكلمة"
           hide-details
           single-line
+          clearable
           solo
         ></v-select>
       </v-flex>
@@ -49,7 +50,8 @@
         :class="{ 'flex-wrap': $vuetify.breakpoint.xsOnly,
                   'my-2 pa-1': $vuetify.breakpoint.mdAndDown }"
       >
-        <v-flex xs12>
+        <!-- FIRST LETTER SEARCH -->
+        <!-- <v-flex xs12>
           <v-menu
             v-model="menu"
             offset-y
@@ -91,18 +93,17 @@
               </v-layout>
             </v-card>
           </v-menu>
-        </v-flex>
+        </v-flex> -->
         <v-flex xs12>
-          <AutoComplete
-            label="البحث عن الكلمة ..."
-            itemText="name"
-            :selectable="false"
-            :deserializeResults="true"
-            apiEndPoint="words"
-            @itemChanged="goToWord"
+          <v-text-field
+            v-model="query.q"
+            class="search-input input-hidden-underline ma-0 pt-0 pr-2"
+            placeholder="البحث عن الكلمة.."
+            prepend-icon="search"
+            hide-details
           />
         </v-flex>
-        <v-flex xs12 class="text-xs-center" :class="{ 'mt-3': $vuetify.breakpoint.xsOnly }">
+        <v-flex xs12 class="text-xs-center">
           <v-pagination
             v-model="page.current"
             class="flat-pagination round-pagination"
@@ -142,12 +143,10 @@
 <script>
 import _ from 'lodash'
 import PageHeader from '~/components/generic/PageHeader'
-import AutoComplete from '~/components/generic/AutoComplete'
 
 export default {
   components: {
-    PageHeader,
-    AutoComplete
+    PageHeader
   },
   data () {
     return {
@@ -158,7 +157,7 @@ export default {
         q: null
       },
       page: {
-        perPage: 5,
+        perPage: 30,
         current: 1,
         total: null
       },
@@ -173,20 +172,21 @@ export default {
   computed: {
     paginationVisibleCount () {
       if (this.$vuetify.breakpoint.xsOnly) return 4
-      else if (this.$vuetify.breakpoint.smAndDown) return 5
-      else return 6
+      else if (this.$vuetify.breakpoint.smAndDown) return 6
+      else return 7
     }
   },
   watch: {
-    query: {
-      handler: function () {
-        this.loading = true
-        // TODO: reset pagination
-        // this.resetPagination()
-        this.setUrlQuery()
-        this.fetchData(this.buildApiQuery())
-      },
+    'query.part_of_speech': {
+      handler: function () { this.setQueryAndFetchData() },
       deep: true
+    },
+    'query.category': {
+      handler: function () { this.setQueryAndFetchData() },
+      deep: true
+    },
+    'query.q': {
+      handler: function () { _.debounce(this.setQueryAndFetchData, 500)() }
     },
     '$route.query': {
       // For browser navigation
@@ -292,10 +292,10 @@ export default {
         !this.assertSubsetOfList(this.query.category, this.categories, 'name')) {
         this.query.category = null
       }
-      if (this.query.q &&
-        !this.assertValueInList(this.query.q, this.arabicLetters)) {
-        this.query.q = null
-      }
+      // if (this.query.q &&
+      //   !this.assertValueInList(this.query.q, this.arabicLetters)) {
+      //   this.query.q = null
+      // }
     },
     assertValueInList (value, list, prop) {
       if (!list || !list.length) return false
@@ -308,6 +308,13 @@ export default {
       return subsetList.every((listItem) => {
         return this.assertValueInList(listItem, fullList, prop)
       })
+    },
+    setQueryAndFetchData () {
+      this.loading = true
+      // TODO: reset pagination
+      // this.resetPagination()
+      this.setUrlQuery()
+      this.fetchData(this.buildApiQuery())
     },
     changeCurrentPage (pageNumber) {
       this.page.current = pageNumber
@@ -338,13 +345,16 @@ export default {
 
 <style scoped>
 
-@media all and (min-width: 400px) {
-  .arabic-letters-container {
-    width: 300px;
-  }
-}
+/*@media all and (min-width: 400px) {*/
+  /*.arabic-letters-container {*/
+    /*width: 300px;*/
+  /*}*/
+/*}*/
 
 .flex-wrap {
   flex-wrap: wrap;
+}
+.search-input >>> .v-input__control {
+  padding-right: 4px;
 }
 </style>
