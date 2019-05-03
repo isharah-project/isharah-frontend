@@ -2,7 +2,7 @@ const pkg = require('./package')
 require('dotenv').config({ path: './.env' })
 
 module.exports = {
-  env:{
+  env: {
     FRONTEND_URL: process.env.FRONTEND_URL
   },
   mode: 'spa',

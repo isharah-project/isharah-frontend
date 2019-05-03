@@ -1,6 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex
+      v-if="$vuetify.breakpoint.lgAndUp"
       xs12
       class="text-xs-center"
     >
@@ -110,7 +111,7 @@
             </transition>
             <div>
               <AutoComplete
-                label="البحث عن الكلمة ..."
+                :label="autoCompleteLabel"
                 :itemText="autoCompleteItemText"
                 :deserializeResults="autoCompleteDeserializeResults"
                 :apiEndPoint="autoCompleteEndPoint"
@@ -182,6 +183,10 @@ export default {
     autoCompleteDeserializeResults: {
       type: Boolean,
       required: true
+    },
+    autoCompleteLabel: {
+      type: String,
+      required: true
     }
   },
   data () {
@@ -220,7 +225,7 @@ export default {
     }
   },
   created () {
-    if (this.$route.params.parentState) {
+    if (this.$route.params.parentState && this.$vuetify.breakpoint.lgAndUp) {
       this.setParentState(this.$route.params.parentState)
     }
   },

@@ -82,7 +82,7 @@
             class="light-box-shadow small-round-corners mx-3 gesture"
             @click="selectGesture(gesture)"
           >
-            <v-img :src="gesture.preview_url"></v-img>
+            <v-img :src="gesture.preview_url" aspect-ratio="1.78"></v-img>
             <v-card-text primary-title>
               <h3 class="word-text headline mb-0">
                 {{ gesture.word.name }}
@@ -135,7 +135,7 @@ export default {
       }
       return { gestures, selectedGesture, page }
     } catch (e) {
-      this.$store.commit('showErrorMsg', {
+      store.commit('showErrorMsg', {
         message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
       })
     }

@@ -310,7 +310,6 @@ export default {
           this.$router.push({ path: '/' })
         }).catch((e) => {
           this.errors = []
-          console.log(e)
           this.errors.push('خطأ في البريد الالكتروني او كلمة السر')
         })
       }

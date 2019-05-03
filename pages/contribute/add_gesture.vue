@@ -5,6 +5,7 @@
       submitEndPoint="gestures"
       autoCompleteEndPoint="autocomplete/words"
       autoCompleteItemText="name"
+      autoCompleteLabel="اختر الكلمة"
       :autoCompleteDeserializeResults="true"
     />
   </v-container>
