@@ -1,3 +1,4 @@
+import MomentLocalesPlugin from 'moment-locales-webpack-plugin'
 const pkg = require('./package')
 require('dotenv').config({ path: './.env' })
 
@@ -89,6 +90,12 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
+    plugins: [
+      new MomentLocalesPlugin({
+        // whitelist app locales
+        localesToKeep: ['ar']
+      })
+    ],
     extend (config, ctx) {
       // Run ESLint on save
       if (ctx.isDev && ctx.isClient) {
