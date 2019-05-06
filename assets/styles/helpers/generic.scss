@@ -1,3 +1,8 @@
+/*
+  !important is necessary in this file as vuetify-loader
+  loads components' style declarations after this file
+  so it overrides it in some scenarios
+*/
 @import "colors";
 
 $toolbar-shadow: 0 3px 46px rgba(0, 0, 0, 0.03);
@@ -9,28 +14,28 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 /***********************/
 
 .full-width {
-  width: 100%;
+  width: 100% !important;
 }
 .card-size {
-  width: 400px
+  width: 400px !important;
 }
 
 .small-round-corners {
-  border-radius: 8px;
+  border-radius: 8px !important;
 }
 .medium-round-corners {
-  border-radius: 10px;
+  border-radius: 10px !important;
 }
 .full-round-corners {
-  border-radius: 15px
+  border-radius: 15px !important;
 }
 
 .absolute-position {
-  position: absolute
+  position: absolute !important;
 }
 
 .clickable {
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 /**********************/
@@ -38,20 +43,20 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 /**********************/
 
 .red-gradient {
-  background: $red-gradient;
+  background: $red-gradient !important;
 }
 .orange-gradient {
-  background: $orange-gradient;
+  background: $orange-gradient !important;
 }
 .blue-cyan-gradient {
-  background: $blue-cyan-gradient;
+  background: $blue-cyan-gradient !important;
 }
 .red-black-gradient {
-  background: $red-black-gradient;
+  background: $red-black-gradient !important;
 }
 
 .grey-text {
-  color: $dark-grey-text;
+  color: $dark-grey-text !important;
 }
 
 /***********************/
@@ -59,13 +64,13 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 /***********************/
 
 .toolbar-shadow {
-  background: $toolbar-shadow;
+  background: $toolbar-shadow !important;
 }
 .btn-shadow {
-  box-shadow: $btn-shadow;
+  box-shadow: $btn-shadow !important;
 }
 .light-box-shadow {
-  box-shadow: $light-shadow;
+  box-shadow: $light-shadow !important;
 }
 
 /**********************/
@@ -74,7 +79,7 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 
 .input-hidden-underline .v-input__slot::before,
 .input-hidden-underline .v-input__slot::after {
-  display: none;
+  display: none !important;
 }
 .round-input.theme--light > .v-input__control > .v-input__slot,
 .round-input.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
@@ -82,7 +87,7 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 }
 .light-shadow-input.theme--light > .v-input__control > .v-input__slot,
 .light-shadow-input.theme--light.v-text-field--solo > .v-input__control > .v-input__slot {
-  box-shadow: $light-shadow;
+  box-shadow: $light-shadow !important;
 }
 
 /***********************/
@@ -90,14 +95,14 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 /***********************/
 
 .blue-border-btn {
-  border:solid 2px $blue;
+  border:solid 2px $blue !important;
 }
 .red-border-btn {
-  border: solid 2px $red;
+  border: solid 2px $red !important;
 }
 .fixed-size-btn {
-  width: 180px;
-  height: 40px;
+  width: 180px !important;
+  height: 40px !important;
 }
 
 /**************************/
@@ -105,14 +110,14 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
 /**************************/
 
 .round-pagination .v-pagination__item {
-  border-radius: 10px;
-  outline: none;
+  border-radius: 10px !important;
+  outline: none !important;
 }
 .flat-pagination .v-pagination__navigation,
 .flat-pagination .v-pagination__item ,
 .flat-pagination .v-pagination__item.v-pagination__item--active {
-  box-shadow: none;
-  outline: none;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 /*************************/
@@ -136,6 +141,6 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
   transform: translateX(5px);
 }
 .page-leave-to {
-  opacity: 0;
+  opacity: 0 !important;
   transform: translateX(-5px);
 }

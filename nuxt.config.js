@@ -1,4 +1,5 @@
 import MomentLocalesPlugin from 'moment-locales-webpack-plugin'
+import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
 const pkg = require('./package')
 require('dotenv').config({ path: './.env' })
 
@@ -94,7 +95,8 @@ module.exports = {
       new MomentLocalesPlugin({
         // whitelist app locales
         localesToKeep: ['ar']
-      })
+      }),
+      new VuetifyLoaderPlugin()
     ],
     extend (config, ctx) {
       // Run ESLint on save
