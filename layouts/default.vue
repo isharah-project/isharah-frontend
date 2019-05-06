@@ -14,7 +14,7 @@
       <v-divider></v-divider>
 
       <v-list dense class="pt-0">
-        <template v-for="link in links">
+        <template v-for="link in shownLinks">
           <nuxt-link
             is="v-list-tile"
             v-if="!link.children"
@@ -64,7 +64,7 @@
         EgSl
       </v-toolbar-title>
       <v-toolbar-items class="hidden-sm-and-down">
-        <template v-for="link in links">
+        <template v-for="link in shownLinks">
           <nuxt-link
             is="v-btn"
             v-if="!link.children"
@@ -101,7 +101,7 @@
       <v-spacer></v-spacer>
       <nuxt-link
         is="v-btn"
-        v-if="!loggedIn"
+        v-if="!isLoggedIn"
         :ripple="false"
         :class="{ 'blue-border-btn': $route.path !== '/login' }"
         to="/login"
@@ -117,7 +117,7 @@
               flat
               v-on="on"
             >
-              {{ $store.state.user.first_name }} {{ $store.state.user.last_name }}
+              {{ userName }}
             </v-btn>
           </template>
           <v-list>
@@ -156,13 +156,14 @@
 </template>
 
 <script>
+import _ from 'lodash'
+
 export default {
   data () {
     return {
       navigationDrawer: {
         isOpened: false
       },
-      koko: null,
       links: [
         { path: '/', text: 'الرئيسية', icon: 'home' },
         { path: '/dictionary?page=1', text: 'القاموس', icon: 'library_books' },
@@ -172,7 +173,7 @@ export default {
           children: [
             { path: '/contribute/practice', text: 'تدرب على إشارة', icon: 'videocam' },
             { path: '/contribute/add_gesture', text: 'اضف إشارة للقاموس', icon: 'videocam' },
-            { path: '/contribute/review', text: 'قيّم الإشارات', icon: 'rate_review' }
+            { path: '/contribute/review', text: 'قيّم الإشارات', icon: 'rate_review', hidden: !this.isUser(['Admin', 'Reviewer']) }
           ]
         },
         { path: '/contact_us', text: 'تواصل معنا', icon: 'contact_mail' },
@@ -180,11 +181,7 @@ export default {
       ]
     }
   },
-
   computed: {
-    loggedIn () {
-      return Boolean(this.$store.state.user)
-    },
     snackbarState: {
       get: function () {
         return this.$store.state.snackbar.state
@@ -192,6 +189,25 @@ export default {
       set: function (state) {
         this.$store.commit('setSnackBarState', { open: state })
       }
+    },
+    userName () {
+      if (this.$store.state.user) {
+        return `${this.$store.state.user.first_name} ${this.$store.state.user.last_name}`
+      } else {
+        return ''
+      }
+    },
+    shownLinks () {
+      let links = _.cloneDeep(this.links)
+      return links.filter((link) => {
+        if (link.hidden) return false
+        if (link.children) {
+          link.children = link.children.filter((child) => {
+            return !child.hidden
+          })
+        }
+        return true
+      })
     }
   },
   methods: {

@@ -63,6 +63,12 @@ module.exports = {
     '@nuxtjs/auth'
   ],
   /*
+  ** Router module
+   */
+  router: {
+    middleware: 'routes'
+  },
+  /*
   ** Auth module
    */
   auth: {

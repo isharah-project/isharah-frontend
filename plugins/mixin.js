@@ -31,6 +31,9 @@ Vue.mixin({
     }
   },
   computed: {
+    isLoggedIn () {
+      return Boolean(this.$store.state.user)
+    },
     generalValidationRules () {
       return {
         required: [
@@ -46,6 +49,11 @@ Vue.mixin({
     }
   },
   methods: {
+    isUser (types) {
+      return this.$store.state.user && types.some((type) => {
+        return type === this.$store.state.user.type
+      })
+    },
     validateValueInList (value, list, prop) {
       if (!list || !list.length) return false
       return list.some((listValue) => {

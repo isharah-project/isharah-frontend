@@ -37,8 +37,5 @@ export const mutations = {
     state.snackbar.state = true
     state.snackbar.message = message
     state.snackbar.color = 'blue'
-  },
-  changeSnackBarState (state, snackBarState) {
-    state.snackbar.state = snackBarState
   }
 }
