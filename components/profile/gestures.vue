@@ -105,9 +105,9 @@ export default {
       this.wordDialog = true
       this.viewedGesture = gesture
     },
-    redirect (state) {
-      this.$router.push({ name: 'contribute-add_gesture', params: { parentState: state } })
-    },
+    // redirect (state) {
+    //   this.$router.push({ name: 'contribute-add_gesture', params: { parentState: state } })
+    // },
     changeCurrentPage (pageNumber, callback) {
       this.page.current = pageNumber
       this.$axios.get(`${this.url}?page=${pageNumber}&per_page=6`).then((response) => {

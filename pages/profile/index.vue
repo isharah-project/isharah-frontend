@@ -36,7 +36,31 @@
         </v-layout>
       </v-flex>
       <v-flex v-else xs12 mb-3>
-        <v-tabs subheader hide-slider class="small-round-corners">
+        <v-card flat class="small-round-corners light-box-shadow">
+          <v-layout row wrap class="text-xs-center">
+            <v-flex xs6 sm3>
+              <v-btn flat :class="{'tab-active': state === 'profile'}" @click="changeState('profile')">
+                الصفحة الشخصية
+              </v-btn>
+            </v-flex>
+            <v-flex xs6 sm3>
+              <v-btn flat :class="{'tab-active': state === 'contributions'}" @click="changeState('contributions')">
+                المشاركات
+              </v-btn>
+            </v-flex>
+            <v-flex xs6 sm3>
+              <v-btn flat :class="{'tab-active': state === 'reviews'}" @click="changeState('reviews')">
+                التقييمات
+              </v-btn>
+            </v-flex>
+            <v-flex xs6 sm3>
+              <v-btn flat :class="{'tab-active': state === 'edit'}" @click="changeState('edit')">
+                تغيير البيانات
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-card>
+        <!-- <v-tabs subheader hide-slider class="small-round-corners">
           <v-tab
             :class="{ 'tab-active': state === 'profile' }"
             @click="changeState('profile')"
@@ -61,7 +85,7 @@
           >
             تغيير البيانات
           </v-tab>
-        </v-tabs>
+        </v-tabs> -->
       </v-flex>
       <v-flex xs12 md9>
         <div v-if="state==='profile'">
@@ -315,11 +339,9 @@ export default {
 }
 .tab-active {
   border-bottom: solid 2px blue;
-}
-.list-active >>> .v-list__tile {
   font-weight: bold
 }
-.tab-active >>> .v-tabs__item {
+.list-active >>> .v-list__tile {
   font-weight: bold
 }
 </style>
