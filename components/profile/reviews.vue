@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader text="تقييماتي" icon="rate_review">
+    <PageHeader text="التقييمات" icon="rate_review">
     </PageHeader>
     <!-- <v-layout row wrap class="mt-2">
       <v-flex

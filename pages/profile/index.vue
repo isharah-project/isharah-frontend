@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <v-flex xs3>
+      <v-flex v-if="$vuetify.breakpoint.mdAndUp" md3>
         <v-layout fill-height>
           <v-list subheader class="small-round-corners full-width ml-4">
             <v-list-tile
@@ -15,14 +15,14 @@
               :class="{ 'list-active': state === 'contributions' }"
               @click="changeState('contributions')"
             >
-              مشاركاتي
+              المشاركات
             </v-list-tile>
             <v-divider></v-divider>
             <v-list-tile
               :class="{ 'list-active': state === 'reviews' }"
               @click="changeState('reviews')"
             >
-              تقييماتي
+              التقييمات
             </v-list-tile>
             <v-divider></v-divider>
             <v-list-tile
@@ -35,9 +35,37 @@
           </v-list>
         </v-layout>
       </v-flex>
-      <v-flex xs9>
+      <v-flex v-else xs12 mb-3>
+        <v-tabs subheader hide-slider class="small-round-corners">
+          <v-tab
+            :class="{ 'tab-active': state === 'profile' }"
+            @click="changeState('profile')"
+          >
+            الصفحة الشخصية
+          </v-tab>
+          <v-tab
+            :class="{ 'tab-active': state === 'contributions' }"
+            @click="changeState('contributions')"
+          >
+            المشاركات
+          </v-tab>
+          <v-tab
+            :class="{ 'tab-active': state === 'reviews' }"
+            @click="changeState('reviews')"
+          >
+            التقييمات
+          </v-tab>
+          <v-tab
+            :class="{ 'tab-active': state === 'edit' }"
+            @click="changeState('edit')"
+          >
+            تغيير البيانات
+          </v-tab>
+        </v-tabs>
+      </v-flex>
+      <v-flex xs12 md9>
         <div v-if="state==='profile'">
-          <PageHeader icon="person" text="الصفحة الشخصية" />
+          <PageHeader v-if="$vuetify.breakpoint.mdAndUp" icon="person" text="الصفحة الشخصية" />
           <v-layout row wrap class="justify-center">
             <v-flex xs12>
               <v-card class="light-box-shadow small-round-corners pa-4">
@@ -45,7 +73,7 @@
                   <v-flex
                     lg2
                     md3
-                    sm4
+                    sm2
                     xs4
                     align-self-center
                     class="text-xs-center"
@@ -73,27 +101,128 @@
                 </v-layout>
               </v-card>
             </v-flex>
-            <v-flex xs12 my-3>
+            <v-flex xs12 mt-3>
               <v-card class="small-round-corners light-box-shadow">
                 <v-container>
-                  <myContributions :contributions="contributions"></myContributions>
+                  <PageHeader text="المشاركات" icon="videocam">
+                  </PageHeader>
+                  <v-layout row wrap class="mt-2">
+                    <div v-if="!contributions" class="headline text-xs-center">
+                      لا يوجد إشارات
+                    </div>
+                    <v-flex
+                      v-else
+                      xs12
+                      sm6
+                      md4
+                      pa-2
+                      clickable
+                      @click="openGesturesDialog(contributions[0])"
+                    >
+                      <VideoCard :gesture="contributions[0]">
+                      </VideoCard>
+                    </v-flex>
+                    <v-flex
+                      v-if="contributions[1] && $vuetify.breakpoint.mdAndUp"
+                      xs12
+                      sm6
+                      md4
+                      pa-2
+                      clickable
+                      @click="openGesturesDialog(contributions[1])"
+                    >
+                      <VideoCard :gesture="contributions[1]">
+                      </VideoCard>
+                    </v-flex>
+                    <v-flex
+                      xs12
+                      sm6
+                      md4
+                      pa-2
+                      clickable
+                      @click="changeState('contributions')"
+                    >
+                      <v-card flat hover color="#eaeaea" class="small-round-corners full-height light-box-shadow pa-3">
+                        <v-layout column align-center justify-center fill-height>
+                          <v-icon size="80px" color="black">
+                            arrow_back
+                          </v-icon>
+                          <h2>
+                            المزيد
+                          </h2>
+                        </v-layout>
+                      </v-card>
+                    </v-flex>
+                    <v-dialog v-model="wordDialog" max-width="500px">
+                      <VideoCardDialog :gesture="viewedGesture" @closeDialog="wordDialog=false"></VideoCardDialog>
+                    </v-dialog>
+                  </v-layout>
                 </v-container>
               </v-card>
             </v-flex>
-            <v-flex xs12 my-3>
+            <v-flex xs12 mt-3>
               <v-card class="small-round-corners light-box-shadow">
                 <v-container>
-                  <myReviews></myReviews>
+                  <PageHeader text="التقييمات" icon="rate_review">
+                  </PageHeader>
+                  <v-layout row wrap class="mt-2">
+                    <div v-if="!contributions" class="headline text-xs-center">
+                      لا يوجد إشارات
+                    </div>
+                    <v-flex
+                      v-else
+                      xs12
+                      sm6
+                      md4
+                      pa-2
+                      clickable
+                      @click="openGesturesDialog(contributions[0])"
+                    >
+                      <VideoCard :gesture="contributions[0]">
+                      </VideoCard>
+                    </v-flex>
+                    <v-flex
+                      v-if="contributions[1] && $vuetify.breakpoint.mdAndUp"
+                      xs12
+                      sm6
+                      md4
+                      pa-2
+                      clickable
+                      @click="openGesturesDialog(contributions[1])"
+                    >
+                      <VideoCard :gesture="contributions[1]">
+                      </VideoCard>
+                    </v-flex>
+                    <v-flex
+                      xs12
+                      sm6
+                      md4
+                      pa-2
+                      clickable
+                      @click="changeState('reviews')"
+                    >
+                      <v-card flat hover color="#eaeaea" class="small-round-corners full-height light-box-shadow pa-3">
+                        <v-layout column align-center justify-center fill-height>
+                          <v-icon size="80px" color="black">
+                            arrow_back
+                          </v-icon>
+                          <h2>
+                            المزيد
+                          </h2>
+                        </v-layout>
+                      </v-card>
+                    </v-flex>
+                  </v-layout>
                 </v-container>
               </v-card>
             </v-flex>
           </v-layout>
         </div>
         <div v-if="state==='contributions'">
-          <myContributions :contributions="contributions"></myContributions>
+          <gestures text="المشاركات" icon="videocam" url="/user/contributions"></gestures>
         </div>
         <div v-if="state==='reviews'">
-          <myReviews></myReviews>
+          <gestures text="التقييمات" icon="rate_review" url="/user/contributions"></gestures>
         </div>
         <div v-if="state==='edit'">
           <editProfile :userClone="userClone"></editProfile>
@@ -106,21 +235,25 @@
 <script>
 import image from '~/assets/images/placeholder-user.png'
 import PageHeader from '~/components/generic/PageHeader'
-import myContributions from '~/components/profile/myContributions'
-import myReviews from '~/components/profile/myReviews'
+import gestures from '~/components/profile/gestures'
 import editProfile from '~/components/profile/editProfile'
+import VideoCard from '~/components/profile/VideoCard'
+import VideoCardDialog from '~/components/profile/VideoCardDialog'
 import moment from 'moment'
 import _ from 'lodash'
 import { deserialize } from 'jsonapi-deserializer'
 
 export default {
-  components: { PageHeader, myContributions, myReviews, editProfile },
+  components: { PageHeader, gestures, editProfile, VideoCard, VideoCardDialog },
   data () {
     return {
       defaultImage: image,
       contributions: [],
       userClone: {},
-      state: 'profile'
+      state: 'profile',
+      wordDialog: false,
+      viewedGesture: {},
+      response: []
     }
   },
   computed: {
@@ -139,7 +272,8 @@ export default {
   },
   async asyncData ({ app, $axios }) {
     try {
-      let contributions = deserialize((await $axios.get('/user/contributions')).data)
+      let response = (await $axios.get('/user/contributions?page=1&per_page=2'))
+      let contributions = deserialize(response.data)
       return { contributions }
     } catch (e) {
       console.log(e)
@@ -154,6 +288,10 @@ export default {
       if (state === 'edit') {
         this.userClone = _.cloneDeep(this.user)
       }
+    },
+    openGesturesDialog (gesture) {
+      this.wordDialog = true
+      this.viewedGesture = gesture
     }
   }
 }
@@ -175,7 +313,13 @@ export default {
 .list-active {
   border-right: solid 2px blue;
 }
+.tab-active {
+  border-bottom: solid 2px blue;
+}
 .list-active >>> .v-list__tile {
+  font-weight: bold
+}
+.tab-active >>> .v-tabs__item {
   font-weight: bold
 }
 </style>
