@@ -57,13 +57,46 @@
       <v-layout row wrap>
         <v-flex md8 lg8 xs12>
           <div v-show="isState([states.UPLOAD.INIT, states.RECORD.INIT])" class="">
-            <img src="~/assets/images/contribute-placeholder.jpg" alt="" class="full-width medium-round-corners overflow-hidden">
+            <img :src="videoPlaceholder" alt="" class="full-width medium-round-corners overflow-hidden">
           </div>
-          <div v-show="isState([states.UPLOAD.PLAYBACK, states.RECORD.PLAYBACK])" class="medium-round-corners overflow-hidden">
-            <video ref="videoPlayer" class="video-js vjs-default-skin vjs-big-play-centered"></video>
+          <div
+            v-show="isState([states.UPLOAD.PLAYBACK, states.RECORD.PLAYBACK])"
+            class="video-editor-wrapper medium-round-corners"
+            dir="ltr"
+          >
+            <video ref="videoEditor" class="full-width">
+              <source ref="videoEditorSrc" src="">
+            </video>
+            <div class="video-range-wrapper px-3">
+              <v-icon class="mr-3 video-editor-icon" @click="toggleVideoEditorState">
+                {{ videoEditor.isPlaying ? 'pause' : 'play_arrow' }}
+              </v-icon>
+              <div class="full-width seek-bars-wrapper">
+                <range-slider
+                  v-model="videoEditor.range"
+                  :min="0"
+                  :max="videoEditor.rangeMax"
+                  :step="0.01"
+                  class="video-range ma-0"
+                  thumb-label
+                  hide-details
+                ></range-slider>
+                <slider
+                  v-model="videoEditor.seek"
+                  :min="videoEditor.range[0]"
+                  :max="videoEditor.range[1]"
+                  :step="0.01"
+                  :style="`width: ${videoEditor.seekWidth}%; left: ${videoEditor.seekPosition}%`"
+                  class="video-seek ma-0"
+                  color="green"
+                  hide-details
+                  @change="updateCurrentTime"
+                ></slider>
+              </div>
+            </div>
           </div>
           <div v-show="isState([states.RECORD.LIVE_PREVIEW, states.RECORD.RECORDING])" class="medium-round-corners overflow-hidden">
-            <video ref="livePreview" class="live-preview-video"></video>
+            <video ref="livePreview" class="full-width"></video>
           </div>
         </v-flex>
         <v-flex md4 lg4 xs12>
@@ -73,7 +106,7 @@
                 v-if="isParentState('UPLOAD') && isState(states.UPLOAD.PLAYBACK)"
                 key="0"
                 class="hidden-overflow"
-                :class="{ 'my-3': $vuetify.breakpoint.smAndDown }"
+                :class="{ 'mb-3 mt-5': $vuetify.breakpoint.smAndDown }"
               >
                 <v-btn
                   class="blue-cyan-gradient btn-shadow upload-btn"
@@ -158,14 +191,17 @@
 
 <script>
 import AutoComplete from '~/components/generic/AutoComplete'
-import videojs from 'video.js'
+import Slider from '~/components/vuetify_custom/VSlider/VSlider'
+import RangeSlider from '~/components/vuetify_custom/VRangeSlider/VRangeSlider'
+import videoPlaceholder from '~/assets/images/contribute-placeholder.jpg'
 import RecordRTC from 'recordrtc'
-import 'video.js/dist/video-js.css'
-window.videojs = videojs
+import getBlobDuration from 'get-blob-duration'
 
 export default {
   components: {
-    AutoComplete
+    AutoComplete,
+    Slider,
+    RangeSlider
   },
   props: {
     submitEndPoint: {
@@ -191,7 +227,17 @@ export default {
   },
   data () {
     return {
-      videojsRef: null,
+      videoPlaceholder,
+      videoEditor: {
+        isPlaying: false,
+        range: [0, 0],
+        rangeMax: 100,
+        seek: 0,
+        seekWidth: 100,
+        seekPosition: 0,
+        setIntervalId: null,
+        playNextTime: false
+      },
       fileReader: new FileReader(),
       videoBlob: null,
       streams: [],
@@ -224,14 +270,39 @@ export default {
       validForm: false
     }
   },
+  watch: {
+    'videoEditor.isPlaying': function (isPlaying) {
+      if (isPlaying) {
+        this.setIntervalId = setInterval(this.updateSeekBar, 40)
+      } else {
+        clearInterval(this.setIntervalId)
+      }
+    },
+    'videoEditor.range': {
+      handler: function (toRange, fromRange) {
+        let duration = this.$refs.videoEditor.duration
+        this.$refs.videoEditor.pause()
+        this.videoEditor.isPlaying = false
+        this.videoEditor.seekWidth = ((toRange[1] - toRange[0]) / duration) * 100
+        this.videoEditor.seekPosition = (toRange[0] / duration) * 100
+        if (toRange[0] !== fromRange[0]) {
+          this.$refs.videoEditor.currentTime = toRange[0]
+          this.videoEditor.seek = this.$refs.videoEditor.currentTime
+        } else {
+          this.$refs.videoEditor.currentTime = toRange[1]
+          this.videoEditor.playNextTime = true
+        }
+      },
+      deep: true
+    }
+  },
   created () {
     if (this.$route.params.parentState && this.$vuetify.breakpoint.lgAndUp) {
       this.setParentState(this.$route.params.parentState)
     }
   },
   mounted () {
-    // window.videojs = videojs
-    this.initVideoJs(this.$refs.videoPlayer)
+    this.initVideoEditor()
     this.addFileInputListener()
     this.state = this.states.UPLOAD.INIT
   },
@@ -239,23 +310,17 @@ export default {
     this.releaseUserMedia()
   },
   methods: {
-    initVideoJs (el) {
-      let options = { ...this.videoOptions }
-      this.videojsRef = videojs(el, options, () => {
-        let msg = 'Using video.js ' + videojs.VERSION +
-          ' and recordrtc ' + RecordRTC.version
-        videojs.log(msg)
+    initVideoEditor () {
+      this.$refs.videoEditor.addEventListener('ended', () => {
+        this.videoEditor.isPlaying = false
       })
-    },
-    setVideoJsSource (src, type) {
-      this.videojsRef.src([{ src, type }])
     },
     addFileInputListener () {
       this.$refs.fileInput.onchange = (event) => {
         if (event.target.files && event.target.files[0]) {
           this.state = this.states.UPLOAD.PLAYBACK
           this.videoBlob = event.target.files[0]
-          this.setVideoJsSource(URL.createObjectURL(this.videoBlob), this.videoBlob.type)
+          this.setVideoEditorSrc()
         }
       }
     },
@@ -290,9 +355,7 @@ export default {
     stopRecording () {
       this.recorder.stopRecording(() => {
         this.videoBlob = this.recorder.getBlob()
-        this.videojsRef.src([
-          { src: URL.createObjectURL(this.videoBlob), type: 'video/webm' }
-        ])
+        this.setVideoEditorSrc()
         this.state = this.states.RECORD.PLAYBACK
       })
     },
@@ -321,6 +384,39 @@ export default {
         this.$store.commit('showInfoMsg', {
           message: 'خاصية السحب والإسقاط غير مدعومة من خلال متصفحك'
         })
+      }
+    },
+    setVideoEditorSrc () {
+      this.$refs.videoEditorSrc.src = URL.createObjectURL(this.videoBlob)
+      getBlobDuration(this.videoBlob).then((duration) => {
+        this.videoEditor.rangeMax = duration.toFixed(2)
+        this.videoEditor.range = [0, duration.toFixed(2)]
+      })
+      this.$nextTick(() => {
+        this.$refs.videoEditor.load()
+      })
+    },
+    updateSeekBar () {
+      if (this.$refs.videoEditor.currentTime >= this.videoEditor.range[1]) {
+        if (!this.videoEditor.playNextTime) {
+          this.videoEditor.isPlaying = false
+          this.$refs.videoEditor.pause()
+        }
+        this.$refs.videoEditor.currentTime = this.videoEditor.range[0]
+        this.videoEditor.playNextTime = false
+      }
+      this.videoEditor.seek = this.$refs.videoEditor.currentTime
+    },
+    updateCurrentTime (val) {
+      this.$refs.videoEditor.currentTime = val
+    },
+    toggleVideoEditorState () {
+      if (this.videoEditor.isPlaying) {
+        this.$refs.videoEditor.pause()
+        this.videoEditor.isPlaying = false
+      } else {
+        this.$refs.videoEditor.play()
+        this.videoEditor.isPlaying = true
       }
     },
     setParentState (parent) {
@@ -393,7 +489,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .hidden-overflow {
   overflow: hidden;
 }
@@ -434,11 +530,6 @@ export default {
 .btn-active {
   transform: translateY(5px);
 }
-@media screen and (max-width: 515px) {
-  .btn-active {
-    transform: translateX(5px);
-  }
-}
 
 .drag-zone {
   height: 0;
@@ -457,9 +548,6 @@ export default {
   border: 2px dashed #000;
 }
 
-.live-preview-video {
-  width: 100%;
-}
 .video-method-btn {
   width: 200px;
   height: 50px;
@@ -476,6 +564,33 @@ export default {
   width: 150px;
   height: 40px;
 }
+
+.video-editor-wrapper {
+  position: relative;
+}
+
+.video-range-wrapper {
+  position: absolute;
+  bottom: -43px;
+  left: 0;
+  height: 50px;
+  width: 100%;
+  background: rgba(255, 255, 255, 1);
+  display: flex;
+}
+.video-range-wrapper .seek-bars-wrapper {
+  position: relative;
+}
+.video-range-wrapper .video-seek {
+  position: absolute;
+  width: 100%;
+  top: 20px;
+}
+.video-range-wrapper .video-seek >>> .v-slider__thumb-container,
+.video-range-wrapper .video-seek >>> .v-slider__track-fill {
+  transition: none;
+}
+
 @media screen and (max-width: 1264px) and (min-width: 960px) {
   .recording-btn {
     width: 115px;
