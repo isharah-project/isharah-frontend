@@ -273,13 +273,14 @@ export default {
   watch: {
     'videoEditor.isPlaying': function (isPlaying) {
       if (isPlaying) {
-        this.setIntervalId = setInterval(this.updateSeekBar, 40)
+        this.setIntervalId = setInterval(this.updateSeekBar, 10)
       } else {
         clearInterval(this.setIntervalId)
       }
     },
     'videoEditor.range': {
       handler: function (toRange, fromRange) {
+        if (Number.isNaN(this.$refs.videoEditor.duration)) return
         let duration = this.$refs.videoEditor.duration
         this.$refs.videoEditor.pause()
         this.videoEditor.isPlaying = false
@@ -288,6 +289,9 @@ export default {
         if (toRange[0] !== fromRange[0]) {
           this.$refs.videoEditor.currentTime = toRange[0]
           this.videoEditor.seek = this.$refs.videoEditor.currentTime
+          // if range end is modified then range start is modified
+          // playNextTime is set
+          this.videoEditor.playNextTime = false
         } else {
           this.$refs.videoEditor.currentTime = toRange[1]
           this.videoEditor.playNextTime = true
@@ -389,8 +393,9 @@ export default {
     setVideoEditorSrc () {
       this.$refs.videoEditorSrc.src = URL.createObjectURL(this.videoBlob)
       getBlobDuration(this.videoBlob).then((duration) => {
-        this.videoEditor.rangeMax = duration.toFixed(2)
-        this.videoEditor.range = [0, duration.toFixed(2)]
+        let roundedDuration = duration.toFixed(2)
+        this.videoEditor.rangeMax = roundedDuration
+        this.videoEditor.range = [0, roundedDuration]
       })
       this.$nextTick(() => {
         this.$refs.videoEditor.load()
@@ -490,6 +495,7 @@ export default {
 </script>
 
 <style scoped>
+
 .hidden-overflow {
   overflow: hidden;
 }
@@ -586,11 +592,26 @@ export default {
   width: 100%;
   top: 20px;
 }
-.video-range-wrapper .video-seek >>> .v-slider__thumb-container,
-.video-range-wrapper .video-seek >>> .v-slider__track-fill {
+.seek-bars-wrapper .video-seek >>> .v-slider__thumb-container,
+.seek-bars-wrapper .video-seek >>> .v-slider__track-fill {
   transition: none;
 }
-
+.seek-bars-wrapper >>> .v-slider__track__container,
+.seek-bars-wrapper >>> .v-slider__track,
+.seek-bars-wrapper >>> .v-slider__track-fill {
+  height: 5px;
+}
+.video-range >>> .v-slider__thumb {
+  width: 0;
+  height: 0;
+  left: -60px;
+  border-left: 60px solid transparent !important;
+  border-right: 60px solid transparent !important;
+  border-top: 100px solid #2196F3 !important;
+  background-color: transparent !important;
+  border-radius: 0;
+  transform: translateY(-56%) scale(0.15);
+}
 @media screen and (max-width: 1264px) and (min-width: 960px) {
   .recording-btn {
     width: 115px;
