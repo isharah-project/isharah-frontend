@@ -54,143 +54,146 @@
       </v-btn>
     </v-flex>
     <v-flex xs12 class="mt-3">
-      <v-layout row wrap>
-        <v-flex md8 lg8 xs12>
-          <div v-show="isState([states.UPLOAD.INIT, states.RECORD.INIT])" class="">
-            <img :src="videoPlaceholder" alt="" class="full-width medium-round-corners overflow-hidden">
-          </div>
-          <div
-            v-show="isState([states.UPLOAD.PLAYBACK, states.RECORD.PLAYBACK])"
-            class="video-editor-wrapper medium-round-corners"
-            dir="ltr"
-          >
-            <video ref="videoEditor" class="full-width">
-              <source ref="videoEditorSrc" src="">
-            </video>
-            <div class="video-range-wrapper px-3">
-              <v-icon class="mr-3 video-editor-icon" @click="toggleVideoEditorState">
-                {{ videoEditor.isPlaying ? 'pause' : 'play_arrow' }}
-              </v-icon>
-              <div class="full-width seek-bars-wrapper">
-                <range-slider
-                  v-model="videoEditor.range"
-                  :min="0"
-                  :max="videoEditor.rangeMax"
-                  :step="0.01"
-                  class="video-range ma-0"
-                  thumb-label
-                  hide-details
-                ></range-slider>
-                <slider
-                  v-model="videoEditor.seek"
-                  :min="videoEditor.range[0]"
-                  :max="videoEditor.range[1]"
-                  :step="0.01"
-                  :style="`width: ${videoEditor.seekWidth}%; left: ${videoEditor.seekPosition}%`"
-                  class="video-seek ma-0"
-                  color="green"
-                  hide-details
-                  @change="updateCurrentTime"
-                ></slider>
+      <Loader :active="loading">
+        <v-layout row wrap>
+          <v-flex md8 lg8 xs12>
+            <div v-show="isState([states.UPLOAD.INIT, states.RECORD.INIT])" class="">
+              <img :src="videoPlaceholder" alt="" class="full-width medium-round-corners overflow-hidden">
+            </div>
+            <div
+              v-show="isState([states.UPLOAD.PLAYBACK, states.RECORD.PLAYBACK])"
+              class="video-editor-wrapper medium-round-corners"
+              dir="ltr"
+            >
+              <video ref="videoEditor" class="full-width">
+                <source ref="videoEditorSrc" src="">
+              </video>
+              <div class="video-range-wrapper px-3">
+                <v-icon class="mr-3 video-editor-icon" @click="toggleVideoEditorState">
+                  {{ videoEditor.isPlaying ? 'pause' : 'play_arrow' }}
+                </v-icon>
+                <div class="full-width seek-bars-wrapper">
+                  <range-slider
+                    v-model="videoEditor.range"
+                    :min="0"
+                    :max="videoEditor.rangeMax"
+                    :step="0.01"
+                    class="video-range ma-0"
+                    thumb-label
+                    hide-details
+                  ></range-slider>
+                  <slider
+                    v-model="videoEditor.seek"
+                    :min="videoEditor.range[0]"
+                    :max="videoEditor.range[1]"
+                    :step="0.01"
+                    :style="`width: ${videoEditor.seekWidth}%; left: ${videoEditor.seekPosition}%`"
+                    class="video-seek ma-0"
+                    color="green"
+                    hide-details
+                    @change="updateCurrentTime"
+                  ></slider>
+                </div>
               </div>
             </div>
-          </div>
-          <div v-show="isState([states.RECORD.LIVE_PREVIEW, states.RECORD.RECORDING])" class="medium-round-corners overflow-hidden">
-            <video ref="livePreview" class="full-width"></video>
-          </div>
-        </v-flex>
-        <v-flex md4 lg4 xs12>
-          <v-form ref="videoForm" v-model="validForm" class="px-2 word-data-form" @submit.prevent="submitVideo">
-            <transition name="small-slide">
-              <div
-                v-if="isParentState('UPLOAD') && isState(states.UPLOAD.PLAYBACK)"
-                key="0"
-                class="hidden-overflow"
-                :class="{ 'mb-3 mt-5': $vuetify.breakpoint.smAndDown }"
-              >
-                <v-btn
-                  class="blue-cyan-gradient btn-shadow upload-btn"
-                  flat
-                  dark
-                  round
-                  @click="triggerFileInput"
+            <div v-show="isState([states.RECORD.LIVE_PREVIEW, states.RECORD.RECORDING])" class="medium-round-corners overflow-hidden">
+              <video ref="livePreview" class="full-width"></video>
+            </div>
+          </v-flex>
+          <v-flex md4 lg4 xs12>
+            <v-form ref="videoForm" v-model="validForm" class="px-2 word-data-form" @submit.prevent="submitVideo">
+              <transition name="small-slide">
+                <div
+                  v-if="isParentState('UPLOAD') && isState(states.UPLOAD.PLAYBACK)"
+                  key="0"
+                  class="hidden-overflow"
+                  :class="{ 'mb-3 mt-5': $vuetify.breakpoint.smAndDown }"
                 >
-                  {{ videoBlob.name }}
-                </v-btn>
-              </div>
-            </transition>
-            <transition name="small-slide">
-              <div v-if="isParentState('RECORD')" key="1" class="hidden-overflow">
-                <v-btn
-                  class="recording-btn red-gradient"
-                  round
-                  flat
-                  dark
-                  :disabled="isState(states.RECORD.RECORDING)"
-                  @click="startRecording"
-                >
-                  تسجيل
-                </v-btn>
-                <v-btn
-                  class="recording-btn red-border-btn"
-                  round
-                  flat
-                  :disabled="!isState(states.RECORD.RECORDING)"
-                  @click="stopRecording"
-                >
-                  وقف
-                </v-btn>
-              </div>
-            </transition>
-            <div>
-              <AutoComplete
-                :label="autoCompleteLabel"
-                :itemText="autoCompleteItemText"
-                :deserializeResults="autoCompleteDeserializeResults"
-                :apiEndPoint="autoCompleteEndPoint"
-                :selectable="true"
-                :rules="generalValidationRules.required"
-                prependIcon=""
-                class="round-input light-shadow-input full-width"
-                @itemChanged="setSelectedWord"
-              />
-              <transition name="big-slide">
-                <div v-if="word.name" class="hidden-overflow">
-                  <div class="mt-3">
-                    <h3>نوع الكلمة</h3>
-                    <v-chip>{{ word.part_of_speech }}</v-chip>
-                  </div>
-                  <div class="mt-3">
-                    <h3>فئات الكلمة</h3>
-                    <v-chip v-for="category in word.categories" :key="category.name">
-                      {{ category.name }}
-                    </v-chip>
-                  </div>
+                  <v-btn
+                    class="blue-cyan-gradient btn-shadow upload-btn"
+                    flat
+                    dark
+                    round
+                    @click="triggerFileInput"
+                  >
+                    {{ videoBlob.name }}
+                  </v-btn>
                 </div>
               </transition>
-            </div>
-            <div>
-              <v-btn
-                type="submit"
-                class="orange-gradient btn-shadow fixed-size-btn"
-                :class="{ 'my-3': $vuetify.breakpoint.smAndDown }"
-                :disabled="!validForm || !videoBlob"
-                round
-                flat
-                dark
-              >
-                حفظ
-              </v-btn>
-            </div>
-          </v-form>
-        </v-flex>
-      </v-layout>
+              <transition name="small-slide">
+                <div v-if="isParentState('RECORD')" key="1" class="hidden-overflow">
+                  <v-btn
+                    class="recording-btn red-gradient"
+                    round
+                    flat
+                    dark
+                    :disabled="isState(states.RECORD.RECORDING)"
+                    @click="startRecording"
+                  >
+                    تسجيل
+                  </v-btn>
+                  <v-btn
+                    class="recording-btn red-border-btn"
+                    round
+                    flat
+                    :disabled="!isState(states.RECORD.RECORDING)"
+                    @click="stopRecording"
+                  >
+                    وقف
+                  </v-btn>
+                </div>
+              </transition>
+              <div>
+                <AutoComplete
+                  :label="autoCompleteLabel"
+                  :itemText="autoCompleteItemText"
+                  :deserializeResults="autoCompleteDeserializeResults"
+                  :apiEndPoint="autoCompleteEndPoint"
+                  :selectable="true"
+                  :rules="generalValidationRules.required"
+                  prependIcon=""
+                  class="round-input light-shadow-input full-width"
+                  @itemChanged="setSelectedWord"
+                />
+                <transition name="big-slide">
+                  <div v-if="word.name" class="hidden-overflow">
+                    <div class="mt-3">
+                      <h3>نوع الكلمة</h3>
+                      <v-chip>{{ word.part_of_speech }}</v-chip>
+                    </div>
+                    <div class="mt-3">
+                      <h3>فئات الكلمة</h3>
+                      <v-chip v-for="category in word.categories" :key="category.name">
+                        {{ category.name }}
+                      </v-chip>
+                    </div>
+                  </div>
+                </transition>
+              </div>
+              <div>
+                <v-btn
+                  type="submit"
+                  class="orange-gradient btn-shadow fixed-size-btn"
+                  :class="{ 'my-3': $vuetify.breakpoint.smAndDown }"
+                  :disabled="!validForm || !videoBlob"
+                  round
+                  flat
+                  dark
+                >
+                  حفظ
+                </v-btn>
+              </div>
+            </v-form>
+          </v-flex>
+        </v-layout>
+      </Loader>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
 import AutoComplete from '~/components/generic/AutoComplete'
+import Loader from '~/components/generic/Loader'
 import Slider from '~/components/vuetify_custom/VSlider/VSlider'
 import RangeSlider from '~/components/vuetify_custom/VRangeSlider/VRangeSlider'
 import videoPlaceholder from '~/assets/images/contribute-placeholder.jpg'
@@ -200,6 +203,7 @@ import getBlobDuration from 'get-blob-duration'
 export default {
   components: {
     AutoComplete,
+    Loader,
     Slider,
     RangeSlider
   },
@@ -267,7 +271,8 @@ export default {
       },
       wordSearchResults: [],
       wordSearchQuery: null,
-      validForm: false
+      validForm: false,
+      loading: false
     }
   },
   watch: {
@@ -473,6 +478,7 @@ export default {
     },
     submitVideo () {
       if (this.$refs.videoForm.validate() && this.videoBlob) {
+        this.loading = true
         let formData = new FormData()
         formData.append('word', this.word.name)
         formData.append('video', this.videoBlob)
@@ -487,6 +493,8 @@ export default {
           this.$store.commit('showErrorMsg', {
             message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
           })
+        }).finally(() => {
+          this.loading = false
         })
       }
     }

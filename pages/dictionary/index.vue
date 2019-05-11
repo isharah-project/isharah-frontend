@@ -114,39 +114,43 @@
         </v-flex>
       </v-flex>
     </v-layout>
-    <v-layout row wrap class="white light-box-shadow small-round-corners pa-2 mt-4">
-      <v-flex
-        v-for="word in words"
-        :key="word.name"
-        class="headline pa-1"
-        xs6
-        sm3
-        md2
-      >
-        <v-btn
-          flat
-          class="headline"
-          @click="goToWord(word)"
+    <Loader :active="loading">
+      <v-layout row wrap class="white light-box-shadow small-round-corners pa-2 mt-4">
+        <v-flex
+          v-for="word in words"
+          :key="word.name"
+          class="headline pa-1"
+          xs6
+          sm3
+          md2
         >
-          {{ word.name }}
-        </v-btn>
-      </v-flex>
-      <v-flex v-if="words.length === 0" class="text-xs-center">
-        <div class="pa-2 headline">
-          لا يوجد كلمات
-        </div>
-      </v-flex>
-    </v-layout>
+          <v-btn
+            flat
+            class="headline"
+            @click="goToWord(word)"
+          >
+            {{ word.name }}
+          </v-btn>
+        </v-flex>
+        <v-flex v-if="words.length === 0" class="text-xs-center">
+          <div class="pa-2 headline">
+            لا يوجد كلمات
+          </div>
+        </v-flex>
+      </v-layout>
+    </Loader>
   </v-container>
 </template>
 
 <script>
 import _ from 'lodash'
 import PageHeader from '~/components/generic/PageHeader'
+import Loader from '~/components/generic/Loader'
 
 export default {
   components: {
-    PageHeader
+    PageHeader,
+    Loader
   },
   data () {
     return {
@@ -223,6 +227,7 @@ export default {
   methods: {
     fetchData (query = '') {
       if (query === this.lastQuery) return
+      this.loading = true
       this.lastQuery = query
       this.$axios.$get(`/words${query}`).then((response) => {
         if (this.page.current > response.page_meta.total_pages) {
@@ -230,11 +235,12 @@ export default {
         }
         this.words = this.deserialize(response)
         this.page.total = response.page_meta.total_pages || 1
-        this.loading = false
       }).catch(() => {
         this.$store.commit('showErrorMsg', {
           message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
         })
+      }).finally(() => {
+        this.loading = false
       })
     },
     buildApiQuery () {
@@ -310,7 +316,6 @@ export default {
       })
     },
     setQueryAndFetchData () {
-      this.loading = true
       // TODO: reset pagination
       // this.resetPagination()
       this.setUrlQuery()
