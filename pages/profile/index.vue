@@ -2,13 +2,12 @@
   <v-container>
     <PageHeader icon="person" text="الصفحة الشخصية" />
     <v-layout row wrap class="justify-center">
-      <v-flex sm6 xs12 pr-2>
+      <v-flex xs12>
         <v-card class="light-box-shadow small-round-corners pa-4">
           <v-layout row wrap>
             <v-flex
-              lg2
-              md3
-              sm4
+              lg1
+              sm2
               xs4
               align-self-center
               class="text-xs-center"
@@ -21,7 +20,7 @@
               >
               </v-img>
             </v-flex>
-            <v-flex lg5 md4 sm8 xs8 :class="{ 'pb-1': $vuetify.breakpoint.smAndDown }">
+            <v-flex lg2 md3 sm4 xs8>
               <div class="headline font-weight-medium">
                 {{ user.first_name }} {{ user.last_name }}
               </div>
@@ -33,7 +32,46 @@
                 {{ user.city }} , {{ user.country }}
               </v-card-text>
             </v-flex>
-            <v-flex md5 xs12 align-self-end class="text-xs-center">
+            <v-flex lg7 md5 sm6 class="text-xs-center" :class="{ 'my-3': $vuetify.breakpoint.xsOnly }">
+              <v-layout align-center justify-space-between row fill-height class="subheading">
+                <v-flex xs6>
+                  <v-layout row wrap justify-center>
+                    <v-flex lg3 sm5 xs12>
+                      <v-icon size="50px">
+                        video_library
+                      </v-icon>
+                    </v-flex>
+                    <v-flex lg3 sm7 xs12>
+                      <div>
+                        2
+                      </div>
+                      <div class="font-weight-bold">
+                        مشاركة
+                      </div>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+                <v-divider vertical></v-divider>
+                <v-flex xs6>
+                  <v-layout row wrap justify-center>
+                    <v-flex lg3 sm5 xs12>
+                      <v-icon size="50px">
+                        event
+                      </v-icon>
+                    </v-flex>
+                    <v-flex lg3 sm7 xs12>
+                      <div class="font-weight-bold">
+                        عضو منذ
+                      </div>
+                      <div :class="{ 'body-2': $vuetify.breakpoint.smAndDown }">
+                        {{ accountDate }}
+                      </div>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+            <v-flex md2 xs12 align-self-end class="text-xs-center" :class="{ 'mt-3': $vuetify.breakpoint.smOnly }">
               <v-btn
                 class="red-border-btn btn-shadow edit-btn-width"
                 flat
@@ -62,73 +100,35 @@
       <v-dialog v-model="changePasswordDialog" max-width="400px">
         <changePasswordDialog @closeDialog="changePasswordDialog = false"></changePasswordDialog>
       </v-dialog>
-      <v-flex xs6 sm3 class="text-xs-center px-2" :class="{ 'btn-height my-2': $vuetify.breakpoint.xsOnly }">
-        <v-btn
-          :class="{ 'display-1':$vuetify.breakpoint.smAndUp, 'title': $vuetify.breakpoint.xsOnly }"
-          class="orange-gradient btn-shadow full-height small-round-corners ma-0"
-          height="100%"
-          large
-          block
-          flat
-          dark
-          @click="redirect('UPLOAD')"
-        >
-          ارفع
-        </v-btn>
-      </v-flex>
-      <v-flex xs6 sm3 class="text-xs-center pl-2" :class="{ 'btn-height my-2': $vuetify.breakpoint.xsOnly }">
-        <v-btn
-          :class="{ 'display-1':$vuetify.breakpoint.smAndUp, 'title': $vuetify.breakpoint.xsOnly }"
-          class="red-gradient btn-shadow full-height small-round-corners ma-0"
-          large
-          block
-          flat
-          dark
-          round
-          @click="redirect('RECORD')"
-        >
-          سجل
-        </v-btn>
-      </v-flex>
     </v-layout>
     <v-layout row wrap class="mt-2">
-      <v-flex
-        v-for="contribution in contributions"
-        :key="contribution.word.name"
-        xs12
-        sm6
-        md4
-        pa-2
-        clickable
-        @click="openGesturesDialog(contribution)"
-      >
-        <VideoCard :gesture="contribution">
-        </VideoCard>
+      <v-flex xs12 mt-3>
+        <v-card class="small-round-corners light-box-shadow">
+          <v-container>
+            <gestures text="المشاركات" icon="videocam" url="/user/contributions"></gestures>
+          </v-container>
+        </v-card>
       </v-flex>
-      <v-dialog v-model="wordDialog" max-width="500px">
-        <VideoCardDialog :gesture="viewedGesture" @closeDialog="wordDialog=false"></VideoCardDialog>
-      </v-dialog>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import image from '~/assets/images/placeholder-user.png'
+import image from '~/assets/images/placeholder-user.jpg'
 import PageHeader from '~/components/generic/PageHeader'
-import VideoCard from '~/components/profile/VideoCard'
-import VideoCardDialog from '~/components/profile/VideoCardDialog'
 import editDialog from '~/components/profile/editDialog'
 import changePasswordDialog from '~/components/profile/changePasswordDialog'
+import gestures from '~/components/profile/gestures'
 import moment from 'moment'
 import _ from 'lodash'
 import { deserialize } from 'jsonapi-deserializer'
 
 export default {
-  components: { PageHeader, VideoCard, VideoCardDialog, editDialog, changePasswordDialog },
+  components: { PageHeader, editDialog, changePasswordDialog, gestures },
   data () {
     return {
       defaultImage: image,
-      contributions: [],
+      accountDate: '',
       wordDialog: false,
       editDialog: false,
       changePasswordDialog: false,
@@ -152,8 +152,10 @@ export default {
   },
   async asyncData ({ app, $axios }) {
     try {
-      let contributions = deserialize((await $axios.get('/user/contributions')).data)
-      return { contributions }
+      let accountDate = deserialize((await $axios.get('/user/')).data).created_at
+      accountDate = moment(accountDate).locale('ar').format('Do MMMM YYYY')
+      console.log(accountDate)
+      return { accountDate }
     } catch (e) {
       console.log(e)
       this.$store.commit('showErrorMsg', {
@@ -169,9 +171,6 @@ export default {
     openGesturesDialog (gesture) {
       this.wordDialog = true
       this.viewedGesture = gesture
-    },
-    redirect (state) {
-      this.$router.push({ name: 'contribute-add_gesture', params: { parentState: state } })
     }
   }
 }
