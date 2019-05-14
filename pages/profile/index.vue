@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import image from '~/assets/images/placeholder-user.png'
+import image from '~/assets/images/placeholder-user.jpg'
 import PageHeader from '~/components/generic/PageHeader'
 import VideoCard from '~/components/profile/VideoCard'
 import VideoCardDialog from '~/components/profile/VideoCardDialog'
