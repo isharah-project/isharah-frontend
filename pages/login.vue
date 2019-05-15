@@ -1,14 +1,5 @@
 <template>
   <v-layout row wrap class="justify-center pt-4">
-    <!-- FACEBOOK LOGIN REQUIREMENT -->
-    <div id="fb-root"></div>
-    <script
-      async
-      defer
-      crossorigin="anonymous"
-      src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.3&appId=391600888090638&autoLogAppEvents=1"
-    >
-    </script>
     <v-card class="py-4 light-box-shadow text-xs-center card-size small-round-corners">
       <v-card-text v-if="state === 'email-confirmation'">
         تم ارسال رسالة على البريد الالكتروني لتأكيد حسابك
@@ -158,25 +149,19 @@
             </v-card-text>
           </div>
         </transition>
-        <!-- <v-f-b-login-scope appId="391600888090638">
-          <v-btn slot-scope="scope" flat round class="btn-shadow" @click="loginWithFacebook(scope)">
-            تسجيل الدخول عن طريق فيسبوك
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="5 0 30 30" width="30px" height="25px">
-              <path style="fill:#3b5998" d="M24,4H6C4.895,4,4,4.895,4,6v18c0,1.105,0.895,2,2,2h10v-9h-3v-3h3v-1.611C16,9.339,17.486,8,20.021,8 c1.214,0,1.856,0.09,2.16,0.131V11h-1.729C19.376,11,19,11.568,19,12.718V14h3.154l-0.428,3H19v9h5c1.105,0,2-0.895,2-2V6 C26,4.895,25.104,4,24,4z" />
-            </svg>
-          </v-btn>
-        </v-f-b-login-scope> -->
-        <div
-          class="fb-login-button"
-          data-width=""
-          data-size="large"
-          data-button-type="continue_with"
-          data-auto-logout-link="false"
-          data-use-continue-as="true"
-          data-onlogin="facebookLoginCB"
+        <v-btn flat round class="btn-shadow" @click="loginWithFacebook()">
+          تسجيل الدخول عن طريق فيسبوك
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="5 0 30 30" width="30px" height="25px">
+            <path style="fill:#3b5998" d="M24,4H6C4.895,4,4,4.895,4,6v18c0,1.105,0.895,2,2,2h10v-9h-3v-3h3v-1.611C16,9.339,17.486,8,20.021,8 c1.214,0,1.856,0.09,2.16,0.131V11h-1.729C19.376,11,19,11.568,19,12.718V14h3.154l-0.428,3H19v9h5c1.105,0,2-0.895,2-2V6 C26,4.895,25.104,4,24,4z" />
+          </svg>
+        </v-btn>
+        <v-btn
+          color="#000000"
+          dark
+          flat
+          round
+          class="btn-shadow"
         >
-        </div>
-        <v-btn color="#000000" dark flat round class="btn-shadow">
           تسجيل الدخول عن طريق جوجل
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -201,12 +186,8 @@
 
 <script>
 import moment from 'moment'
-// import { VFBLoginScope } from 'vue-facebook-login-component'
 
 export default {
-  components: {
-    // VFBLoginScope
-  },
   data () {
     return {
       state: 'signin',
@@ -259,6 +240,7 @@ export default {
   },
   created () {
     window.facebookLoginCB = this.facebookLogin
+    this.checkFacebookLoginQueryParams()
   },
   methods: {
     saveDate (date) {
@@ -308,31 +290,36 @@ export default {
         }).then(() => {
           this.errors = []
           this.$router.push({ path: '/' })
-        }).catch((e) => {
+        }).catch(() => {
           this.errors = []
           this.errors.push('خطأ في البريد الالكتروني او كلمة السر')
         })
       }
     },
-    facebookLogin () {
-      console.log(arguments)
+    loginWithFacebook () {
+      let redirectUrl = `${this.API_ENDPOINT}/auth/facebook?auth_origin_url=${this.FRONTEND_URL}/login`
+      window.location.assign(redirectUrl)
+    },
+    checkFacebookLoginQueryParams () {
+      let query = this.$route.query
+      if (query.auth_token && query.uid && query.client_id && query.expiry) {
+        let authHeaders = {
+          'access-token': query.auth_token,
+          'uid': query.uid,
+          'client': query.client_id,
+          'expiry': query.expiry,
+          'token-type': 'Bearer'
+        }
+        this.$auth.$storage.setUniversal('fullToken', JSON.stringify(authHeaders))
+        this.$axios.get('/auth/validate_token').then(() => {
+          this.$router.push('/')
+        }).catch(() => {
+          this.$store.commit('showErrorMsg', {
+            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+          })
+        })
+      }
     }
-    // loginWithFacebook () {
-    //   /* eslint-disable no-undef */
-    //   FB.login(function (response) {
-    //     console.log(response)
-    //     if (response.authResponse) {
-    //       FB.api('/me?fields=email,first_name,last_name', function (r) {
-    //         console.log('me', r)
-    //       })
-    //     } else {
-    //       // TODO: show err message
-    //     }
-    //   }, {
-    //     scope: 'email',
-    //     return_scopes: true
-    //   })
-    // }
   }
 }
 </script>
