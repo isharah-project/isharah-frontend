@@ -41,7 +41,9 @@
           </svg>
         </v-btn>
         <v-divider class="mb-3 mt-4" />
-        <div class="or-divider">أو</div>
+        <div class="or-divider">
+          أو
+        </div>
         <transition name="slide-fade" mode="out-in">
           <div v-if="state === 'signin'" key="3">
             <v-form ref="loginForm" class="mx-5" @submit.prevent="login">
