@@ -22,6 +22,7 @@
           flat
           round
           class="btn-shadow"
+          @click="loginWithGoogle"
         >
           تسجيل الدخول عن طريق جوجل
           <svg
@@ -318,6 +319,10 @@ export default {
     },
     loginWithFacebook () {
       let redirectUrl = `${this.API_ENDPOINT}/auth/facebook?auth_origin_url=${this.FRONTEND_URL}/login`
+      window.location.assign(redirectUrl)
+    },
+    loginWithGoogle () {
+      let redirectUrl = `${this.API_ENDPOINT}/auth/google_oauth2?auth_origin_url=${this.FRONTEND_URL}/login`
       window.location.assign(redirectUrl)
     },
     checkFacebookLoginQueryParams () {
