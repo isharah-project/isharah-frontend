@@ -25,7 +25,8 @@ export default function ({ $axios, app, store }) {
     }
     if (config.request.responseURL.includes('validate_token') ||
       config.request.responseURL.includes('login')) {
-      store.commit('setUser', config.data.data)
+      let userData = store.state.deserialize(config.data)
+      store.commit('setUser', userData)
     }
   })
 }

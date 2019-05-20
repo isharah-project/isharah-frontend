@@ -4,6 +4,8 @@ import { deserialize } from 'jsonapi-deserializer'
 Vue.mixin({
   data () {
     return {
+      API_ENDPOINT: process.env.API_ENDPOINT,
+      FRONTEND_URL: process.env.FRONTEND_URL,
       deserialize,
       egyptGovernorate: [
         'الإسكندرية', 'الإسماعيلية', 'أسوان', 'أسيوط', 'الأقصر',

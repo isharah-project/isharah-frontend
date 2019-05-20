@@ -5,6 +5,7 @@ require('dotenv').config({ path: './.env' })
 
 module.exports = {
   env: {
+    API_ENDPOINT: process.env.API_ENDPOINT,
     FRONTEND_URL: process.env.FRONTEND_URL
   },
   mode: 'spa',
