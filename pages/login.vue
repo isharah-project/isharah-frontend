@@ -370,6 +370,6 @@ export default {
   text-align: center;
   line-height: 26px;
   border-radius: 50%;
-  border: 1px solid rgba(0,0,0,0.12);
+  /*border: 1px solid rgba(0,0,0,0.12);*/
 }
 </style>

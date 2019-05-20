@@ -55,7 +55,7 @@ export default {
       let word = store.state.deserialize(response)
       return { word }
     } catch (e) {
-      this.$store.commit('showErrorMsg', {
+      store.commit('showErrorMsg', {
         message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
       })
     }
