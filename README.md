@@ -10,11 +10,7 @@ install [yarn package manager](https://yarnpkg.com/lang/en/docs/install/)
 $ yarn install
 ```
 
-create `.env` file in the root with the corresponding env vars
-```
-API_ENDPOINT=https://api.example.com
-FRONTEND_URL=https://example.com
-```
+create `.env` file similar to `.env.example` in the root with the corresponding env vars
 
 ``` bash
 # run with hot reload at localhost:4567
