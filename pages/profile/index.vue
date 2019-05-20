@@ -57,20 +57,14 @@
                     <v-divider v-if="$vuetify.breakpoint.smAndUp" vertical></v-divider>
                     <v-flex lg4 sm6 xs12>
                       <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
-                        ٧ مقبول
+                        {{ accepted }} مقبول
                       </div>
                       <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
-                        ٢ مرفوض
+                        {{ rejected }} مرفوض
                       </div>
                       <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
-                        ٦ قيد المراجعة
+                        {{ pending }} قيد المراجعة
                       </div>
-                      <!-- <div>
-                        2
-                      </div>
-                      <div class="font-weight-bold">
-                        مشاركة
-                      </div> -->
                     </v-flex>
                   </v-layout>
                 </v-flex>
@@ -152,6 +146,10 @@ export default {
     return {
       defaultImage: image,
       accountDate: '',
+      pending: 0,
+      accepted: 0,
+      rejected: 0,
+      account: undefined,
       wordDialog: false,
       editDialog: false,
       changePasswordDialog: false,
@@ -175,9 +173,14 @@ export default {
   },
   async asyncData ({ app, $axios }) {
     try {
-      let accountDate = deserialize((await $axios.get('/user/')).data).created_at
+      let account = deserialize((await $axios.get('/user/')).data)
+      console.log(account)
+      let pending = account.pending_contributions_count
+      let rejected = account.rejected_contributions_count
+      let accepted = account.accepted_contributions_count
+      let accountDate = account.created_at
       accountDate = moment(accountDate).locale('ar').format('Do MMMM YYYY')
-      return { accountDate }
+      return { accountDate, pending, rejected, accepted }
     } catch (e) {
       console.log(e)
       this.$store.commit('showErrorMsg', {
