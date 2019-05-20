@@ -20,50 +20,73 @@
               >
               </v-img>
             </v-flex>
-            <v-flex lg2 md3 sm4 xs8>
-              <div class="headline font-weight-medium">
+            <v-flex lg2 md2 sm3 xs8>
+              <div class="headline font-weight-medium" :class="{'title': $vuetify.breakpoint.mdAndDown}">
                 {{ user.first_name }} {{ user.last_name }}
               </div>
               <v-card-text class="ma-0 pa-0 grey--text">
+                <div v-if="isUser(['User'])">
+                  "مشارك"
+                </div>
+                <div v-if="isUser(['Reviewer'])">
+                  "مراجع"
+                </div>
                 {{ user.email }}
-                <br />
-                {{ userFormattedDate }}
                 <br />
                 {{ user.city }} , {{ user.country }}
               </v-card-text>
             </v-flex>
-            <v-flex lg7 md5 sm6 class="text-xs-center" :class="{ 'my-3': $vuetify.breakpoint.xsOnly }">
-              <v-layout align-center justify-space-between row fill-height class="subheading">
+            <v-flex lg7 md6 sm7 class="text-xs-center" :class="{ 'my-3': $vuetify.breakpoint.xsOnly }">
+              <v-layout
+                justify-space-between
+                row
+                fill-height
+                class="subheading"
+                :class="{'align-start': $vuetify.breakpoint.xsOnly, 'align-center': $vuetify.breakpoint.smAndUp}"
+              >
                 <v-flex xs6>
-                  <v-layout row wrap justify-center>
+                  <v-layout row wrap justify-center align-center>
                     <v-flex lg3 sm5 xs12>
-                      <v-icon size="50px">
+                      <v-icon size="40px">
                         video_library
                       </v-icon>
+                      <div class="body-1" :class="{ 'font-weight-bold': $vuetify.breakpoint.xsOnly, 'caption': $vuetify.breakpoint.smOnly }">
+                        المشاركات
+                      </div>
                     </v-flex>
-                    <v-flex lg3 sm7 xs12>
-                      <div>
+                    <v-divider v-if="$vuetify.breakpoint.smAndUp" vertical></v-divider>
+                    <v-flex lg4 sm6 xs12>
+                      <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
+                        ٧ مقبول
+                      </div>
+                      <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
+                        ٢ مرفوض
+                      </div>
+                      <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
+                        ٦ قيد المراجعة
+                      </div>
+                      <!-- <div>
                         2
                       </div>
                       <div class="font-weight-bold">
                         مشاركة
-                      </div>
+                      </div> -->
                     </v-flex>
                   </v-layout>
                 </v-flex>
-                <v-divider vertical></v-divider>
                 <v-flex xs6>
-                  <v-layout row wrap justify-center>
-                    <v-flex lg3 sm5 xs12>
-                      <v-icon size="50px">
+                  <v-layout row wrap justify-center align-center>
+                    <v-flex lg3 sm4 xs12>
+                      <v-icon size="40px">
                         event
                       </v-icon>
-                    </v-flex>
-                    <v-flex lg3 sm7 xs12>
-                      <div class="font-weight-bold">
+                      <div class="body-1" :class="{ 'font-weight-bold': $vuetify.breakpoint.xsOnly, 'caption': $vuetify.breakpoint.smOnly }">
                         عضو منذ
                       </div>
-                      <div :class="{ 'body-2': $vuetify.breakpoint.smAndDown }">
+                    </v-flex>
+                    <v-divider v-if="$vuetify.breakpoint.smAndUp" vertical></v-divider>
+                    <v-flex lg4 sm7 xs12>
+                      <div :class="{ 'body-2': $vuetify.breakpoint.mdAndDown }">
                         {{ accountDate }}
                       </div>
                     </v-flex>
@@ -73,7 +96,7 @@
             </v-flex>
             <v-flex md2 xs12 align-self-end class="text-xs-center" :class="{ 'mt-3': $vuetify.breakpoint.smOnly }">
               <v-btn
-                class="red-border-btn btn-shadow edit-btn-width"
+                class="blue-border-btn btn-shadow edit-btn-width"
                 flat
                 round
                 small
@@ -82,7 +105,7 @@
                 تعديل البيانات
               </v-btn>
               <v-btn
-                class="red-border-btn btn-shadow edit-btn-width"
+                class="blue-border-btn btn-shadow edit-btn-width"
                 flat
                 round
                 small
@@ -154,7 +177,6 @@ export default {
     try {
       let accountDate = deserialize((await $axios.get('/user/')).data).created_at
       accountDate = moment(accountDate).locale('ar').format('Do MMMM YYYY')
-      console.log(accountDate)
       return { accountDate }
     } catch (e) {
       console.log(e)
