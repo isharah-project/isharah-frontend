@@ -211,7 +211,6 @@ export default {
         first_name: '',
         last_name: '',
         city: '',
-        country: '',
         date_of_birth: ''
       },
       date: null,
@@ -288,8 +287,7 @@ export default {
           'password_confirmation': this.user.password_confirmation,
           'first_name': this.user.first_name,
           'last_name': this.user.last_name,
-          'city': 'Cairo',
-          'country': 'Egypt',
+          'city': this.user.city,
           'date_of_birth': this.user.date_of_birth,
           'confirm_success_url': process.env.FRONTEND_URL + '/login'
         }).then(() => {
