@@ -174,10 +174,9 @@ export default {
   async asyncData ({ app, $axios }) {
     try {
       let account = deserialize((await $axios.get('/user/')).data)
-      console.log(account)
-      let pending = account.pending_contributions_count
-      let rejected = account.rejected_contributions_count
-      let accepted = account.accepted_contributions_count
+      let pending = account.pending_contributions_count.toLocaleString('ar-EG')
+      let rejected = account.rejected_contributions_count.toLocaleString('ar-EG')
+      let accepted = account.accepted_contributions_count.toLocaleString('ar-EG')
       let accountDate = account.created_at
       accountDate = moment(accountDate).locale('ar').format('Do MMMM YYYY')
       return { accountDate, pending, rejected, accepted }
