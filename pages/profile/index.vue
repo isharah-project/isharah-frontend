@@ -31,6 +31,9 @@
                 <div v-if="isUser(['Reviewer'])">
                   "مراجع"
                 </div>
+                <div v-if="isUser(['Admin'])">
+                  "مشرف"
+                </div>
                 {{ user.email }}
                 <br />
                 {{ user.city }} , {{ user.country }}
@@ -42,7 +45,7 @@
                 row
                 fill-height
                 class="subheading"
-                :class="{'align-start': $vuetify.breakpoint.xsOnly, 'align-center': $vuetify.breakpoint.smAndUp}"
+                :class="{ 'align-start': $vuetify.breakpoint.xsOnly, 'align-center': $vuetify.breakpoint.smAndUp }"
               >
                 <v-flex xs6>
                   <v-layout row wrap justify-center align-center>
@@ -57,13 +60,13 @@
                     <v-divider v-if="$vuetify.breakpoint.smAndUp" vertical></v-divider>
                     <v-flex lg4 sm6 xs12>
                       <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
-                        {{ accepted }} مقبول
+                        {{ acceptedCount }} مقبول
                       </div>
                       <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
-                        {{ rejected }} مرفوض
+                        {{ rejectedCount }} مرفوض
                       </div>
                       <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
-                        {{ pending }} قيد المراجعة
+                        {{ pendingCount }} قيد المراجعة
                       </div>
                     </v-flex>
                   </v-layout>
@@ -103,7 +106,7 @@
                 flat
                 round
                 small
-                @click="changePasswordDialog = true"
+                @click="ChangePasswordDialog = true"
               >
                 تغيير كلمة السر
               </v-btn>
@@ -111,18 +114,18 @@
           </v-layout>
         </v-card>
       </v-flex>
-      <v-dialog v-model="editDialog" max-width="400px">
-        <editDialog :userClone="userClone" @closeDialog="editDialog = false"></editDialog>
+      <v-dialog v-model="EditDialog" max-width="400px">
+        <EditDialog :userClone="userClone" @closeDialog="EditDialog = false"></EditDialog>
       </v-dialog>
-      <v-dialog v-model="changePasswordDialog" max-width="400px">
-        <changePasswordDialog @closeDialog="changePasswordDialog = false"></changePasswordDialog>
+      <v-dialog v-model="ChangePasswordDialog" max-width="400px">
+        <ChangePasswordDialog @closeDialog="ChangePasswordDialog = false"></ChangePasswordDialog>
       </v-dialog>
     </v-layout>
     <v-layout row wrap class="mt-2">
       <v-flex xs12 mt-3>
         <v-card class="small-round-corners light-box-shadow">
           <v-container>
-            <gestures text="المشاركات" icon="videocam" url="/user/contributions"></gestures>
+            <Gestures text="المشاركات" icon="videocam" url="/user/contributions"></Gestures>
           </v-container>
         </v-card>
       </v-flex>
@@ -133,27 +136,24 @@
 <script>
 import image from '~/assets/images/placeholder-user.jpg'
 import PageHeader from '~/components/generic/PageHeader'
-import editDialog from '~/components/profile/editDialog'
-import changePasswordDialog from '~/components/profile/changePasswordDialog'
-import gestures from '~/components/profile/gestures'
+import EditDialog from '~/components/profile/EditDialog'
+import ChangePasswordDialog from '~/components/profile/ChangePasswordDialog'
+import Gestures from '~/components/profile/Gestures'
 import moment from 'moment'
 import _ from 'lodash'
 import { deserialize } from 'jsonapi-deserializer'
 
 export default {
-  components: { PageHeader, editDialog, changePasswordDialog, gestures },
+  components: { PageHeader, EditDialog, ChangePasswordDialog, Gestures },
   data () {
     return {
       defaultImage: image,
       accountDate: '',
-      pending: 0,
-      accepted: 0,
-      rejected: 0,
-      account: undefined,
-      wordDialog: false,
-      editDialog: false,
-      changePasswordDialog: false,
-      viewedGesture: {},
+      pendingCount: 0,
+      acceptedCount: 0,
+      rejectedCount: 0,
+      EditDialog: false,
+      ChangePasswordDialog: false,
       userClone: {}
     }
   },
@@ -166,22 +166,18 @@ export default {
         return this.defaultImage
       }
       return this.user.image
-    },
-    userFormattedDate () {
-      return moment(this.user.date_of_birth).locale('ar').format('Do MMMM YYYY')
     }
   },
   async asyncData ({ app, $axios }) {
     try {
       let account = deserialize((await $axios.get('/user/')).data)
-      let pending = account.pending_contributions_count.toLocaleString('ar-EG')
-      let rejected = account.rejected_contributions_count.toLocaleString('ar-EG')
-      let accepted = account.accepted_contributions_count.toLocaleString('ar-EG')
+      let pendingCount = account.pending_contributions_count.toLocaleString('ar-EG')
+      let rejectedCount = account.rejected_contributions_count.toLocaleString('ar-EG')
+      let acceptedCount = account.accepted_contributions_count.toLocaleString('ar-EG')
       let accountDate = account.created_at
       accountDate = moment(accountDate).locale('ar').format('Do MMMM YYYY')
-      return { accountDate, pending, rejected, accepted }
+      return { accountDate, pendingCount, rejectedCount, acceptedCount }
     } catch (e) {
-      console.log(e)
       this.$store.commit('showErrorMsg', {
         message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
       })
@@ -190,11 +186,7 @@ export default {
   methods: {
     openEditDialog () {
       this.userClone = _.cloneDeep(this.user)
-      this.editDialog = true
-    },
-    openGesturesDialog (gesture) {
-      this.wordDialog = true
-      this.viewedGesture = gesture
+      this.EditDialog = true
     }
   }
 }
@@ -203,12 +195,6 @@ export default {
 <style scoped>
 .user-image {
   border-radius: 50%;
-}
-.full-height {
-  height: 100%;
-}
-.btn-height {
-  height: 50px;
 }
 .edit-btn-width {
   width: 120px

@@ -13,62 +13,64 @@
           تعديل البيانات
         </h2>
       </v-card-text>
-      <v-form ref="editForm" @submit.prevent="submitEdit">
-        <v-text-field
-          v-model="userClone.first_name"
-          label="الاسم الأول"
-          validate-on-blur
-          :rules="generalValidationRules.required"
-        >
-        </v-text-field>
-        <v-text-field
-          v-model="userClone.last_name"
-          label="الاسم الأخير"
-          validate-on-blur
-          :rules="generalValidationRules.required"
-        >
-        </v-text-field>
-        <v-menu
-          ref="menu"
-          v-model="menu"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          lazy
-          transition="scale-transition"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
+      <Loader :active="loading">
+        <v-form ref="editForm" @submit.prevent="submitEdit">
+          <v-text-field
+            v-model="userClone.first_name"
+            label="الاسم الأول"
+            validate-on-blur
+            :rules="generalValidationRules.required"
+          >
+          </v-text-field>
+          <v-text-field
+            v-model="userClone.last_name"
+            label="الاسم الأخير"
+            validate-on-blur
+            :rules="generalValidationRules.required"
+          >
+          </v-text-field>
+          <v-menu
+            ref="menu"
+            v-model="menu"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model="userClone.date_of_birth"
+                label="تاريخ الميلاد"
+                prepend-icon="event"
+                readonly
+                validate-on-blur
+                :rules="generalValidationRules.required"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              ref="picker"
               v-model="userClone.date_of_birth"
-              label="تاريخ الميلاد"
-              prepend-icon="event"
-              readonly
-              validate-on-blur
-              :rules="generalValidationRules.required"
-              v-on="on"
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            ref="picker"
-            v-model="userClone.date_of_birth"
-            :max="minAge()"
-            min="1950-01-01"
-            @change="saveDate"
-          ></v-date-picker>
-        </v-menu>
-        <v-btn
-          :ripple="false"
-          dark
-          flat
-          round
-          class="blue-cyan-gradient fixed-size-btn btn-shadow"
-          type="submit"
-        >
-          تعديل
-        </v-btn>
-        <div v-for="error in editErrors" :key="error" class="red--text">
-          - {{ error }}
-        </div>
-      </v-form>
+              :max="minAge()"
+              min="1950-01-01"
+              @change="saveDate"
+            ></v-date-picker>
+          </v-menu>
+          <v-btn
+            :ripple="false"
+            dark
+            flat
+            round
+            class="blue-cyan-gradient fixed-size-btn btn-shadow"
+            type="submit"
+          >
+            تعديل
+          </v-btn>
+          <div v-for="error in editErrors" :key="error" class="red--text">
+            - {{ error }}
+          </div>
+        </v-form>
+      </Loader>
     </v-container>
   </v-card>
 </template>
@@ -86,7 +88,8 @@ export default {
       today: new Date().toISOString(),
       maxYear: 0,
       editErrors: [],
-      menu: false
+      menu: false,
+      loading: true
     }
   },
   watch: {
@@ -103,6 +106,7 @@ export default {
       return `${this.maxYear}${this.today.substr(4, 6)}`
     },
     submitEdit () {
+      this.loading = true
       if (this.$refs.editForm.validate()) {
         this.$axios.$put('auth', {
           'first_name': this.userClone.first_name,
@@ -118,6 +122,8 @@ export default {
         }).catch((e) => {
           this.editErrors = []
           this.editErrors.push(...e.response.data.errors.full_messages)
+        }).finally(() => {
+          this.loading = false
         })
       }
     },
