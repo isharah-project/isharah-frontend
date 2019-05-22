@@ -76,6 +76,7 @@
 </template>
 <script>
 import Loader from '~/components/generic/Loader'
+import { deserialize } from 'jsonapi-deserializer'
 
 export default {
   components: { Loader },
@@ -119,7 +120,8 @@ export default {
           this.$store.commit('showSuccessMsg', {
             message: 'تم تعديل البيانات بنجاح'
           })
-          this.$store.commit('setUser', r.data)
+          console.log(r)
+          this.$store.commit('setUser', deserialize(r))
           this.closeDialog()
           this.editErrors = []
         }).catch((e) => {
