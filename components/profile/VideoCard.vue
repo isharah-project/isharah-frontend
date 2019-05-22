@@ -64,7 +64,7 @@ export default {
         if (this.gesture.review.accepted) {
           return this.REVIEW_STATES.ACCEPTED
         } else {
-          return this.REVIEW_STATES.ACCEPTED
+          return this.REVIEW_STATES.REJECTED
         }
       } else {
         return this.REVIEW_STATES.PENDING

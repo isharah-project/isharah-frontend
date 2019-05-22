@@ -83,11 +83,11 @@
                     hide-details
                   ></range-slider>
                   <slider
-                    v-model="videoEditor.seek"
+                    v-model="videoEditor.seekPoint"
                     :min="videoEditor.range[0]"
                     :max="videoEditor.range[1]"
                     :step="0.01"
-                    :style="`width: ${videoEditor.seekWidth}%; left: ${videoEditor.seekPosition}%`"
+                    :style="`width: ${videoEditor.seekWidth}%; left: ${videoEditor.seekStartPosition}%`"
                     class="video-seek ma-0"
                     color="green"
                     hide-details
@@ -236,9 +236,9 @@ export default {
         isPlaying: false,
         range: [0, 0],
         rangeMax: 100,
-        seek: 0,
+        seekPoint: 0,
         seekWidth: 100,
-        seekPosition: 0,
+        seekStartPosition: 0,
         setIntervalId: null,
         playNextTime: false
       },
@@ -290,12 +290,12 @@ export default {
         this.$refs.videoEditor.pause()
         this.videoEditor.isPlaying = false
         this.videoEditor.seekWidth = ((toRange[1] - toRange[0]) / duration) * 100
-        this.videoEditor.seekPosition = (toRange[0] / duration) * 100
+        this.videoEditor.seekStartPosition = (toRange[0] / duration) * 100
         if (toRange[0] !== fromRange[0]) {
           this.$refs.videoEditor.currentTime = toRange[0]
-          this.videoEditor.seek = this.$refs.videoEditor.currentTime
+          this.videoEditor.seekPoint = toRange[0]
           // if range end is modified then range start is modified
-          // playNextTime is set
+          // playNextTime is true, need to make it false
           this.videoEditor.playNextTime = false
         } else {
           this.$refs.videoEditor.currentTime = toRange[1]
@@ -383,7 +383,7 @@ export default {
         if (this.videoTypes.indexOf(file.type) !== -1) {
           this.state = this.states.UPLOAD.PLAYBACK
           this.videoBlob = file
-          this.setVideoJsSource(URL.createObjectURL(this.videoBlob), this.videoBlob.type)
+          this.setVideoEditorSrc()
         } else {
           this.$store.commit('showInfoMsg', {
             message: 'هذا النوع من الوسائط غير مدعوم'
@@ -415,7 +415,7 @@ export default {
         this.$refs.videoEditor.currentTime = this.videoEditor.range[0]
         this.videoEditor.playNextTime = false
       }
-      this.videoEditor.seek = this.$refs.videoEditor.currentTime
+      this.videoEditor.seekPoint = this.$refs.videoEditor.currentTime
     },
     updateCurrentTime (val) {
       this.$refs.videoEditor.currentTime = val
@@ -476,6 +476,14 @@ export default {
         this.$refs.videoForm.reset()
       }
     },
+    resetComponentValues () {
+      this.$refs.videoForm.reset()
+      this.videoBlob = null
+      this.videoEditor.isPlaying = false
+      this.videoEditor.seekWidth = 100
+      this.videoEditor.seekPoint = 0
+      this.videoEditor.seekStartPosition = 0
+    },
     submitVideo () {
       if (this.$refs.videoForm.validate() && this.videoBlob) {
         this.loading = true
@@ -483,9 +491,8 @@ export default {
         formData.append('word', this.word.name)
         formData.append('video', this.videoBlob)
         this.$axios.post(this.submitEndPoint, formData).then(() => {
-          this.$refs.videoForm.reset()
           this.setParentState(this.getParentState())
-          this.videoBlob = null
+          this.resetComponentValues()
           this.$store.commit('showSuccessMsg', {
             message: 'تم رفع الاشارة بنجاح'
           })

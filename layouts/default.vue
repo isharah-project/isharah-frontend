@@ -163,8 +163,12 @@ export default {
     return {
       navigationDrawer: {
         isOpened: false
-      },
-      links: [
+      }
+    }
+  },
+  computed: {
+    links () {
+      return [
         { path: '/', text: 'الرئيسية', icon: 'home' },
         { path: '/dictionary?page=1', text: 'القاموس', icon: 'library_books' },
         { path: '/contribute',
@@ -179,9 +183,7 @@ export default {
         { path: '/contact_us', text: 'تواصل معنا', icon: 'contact_mail' },
         { path: '/for_developers', text: 'للمطورين', icon: 'code' }
       ]
-    }
-  },
-  computed: {
+    },
     snackbarState: {
       get: function () {
         return this.$store.state.snackbar.state

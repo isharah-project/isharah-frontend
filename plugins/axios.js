@@ -24,9 +24,12 @@ export default function ({ $axios, app, store }) {
       app.$auth.$storage.setUniversal('fullToken', JSON.stringify(authHeaders))
     }
     if (config.request.responseURL.includes('validate_token') ||
-      config.request.responseURL.includes('login')) {
+      config.request.responseURL.includes('sign_in')) {
       let userData = store.state.deserialize(config.data)
       store.commit('setUser', userData)
+    }
+    if (config.request.responseURL.includes('sign_out')) {
+      app.$auth.$storage.setUniversal('fullToken', false)
     }
   })
 }
