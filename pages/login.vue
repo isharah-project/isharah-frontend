@@ -122,22 +122,13 @@
                     :rules="[...generalValidationRules.required, validationRules.passwordLengthCheck]"
                   />
                 </v-flex>
-                <!--<v-flex>-->
-                <!--<v-text-field-->
-                <!--v-model="user.password_confirmation"-->
-                <!--label="تأكيد كلمة السر"-->
-                <!--type="password"-->
-                <!--validate-on-blur-->
-                <!--:rules="[...generalValidationRules.required, validationRules.passwordConfirmation]"-->
-                <!--&gt;</v-text-field>-->
-                <!--</v-flex>-->
                 <v-flex>
                   <v-combobox
                     v-model="user.city"
                     label="المحافظة"
                     :items="egyptGovernorate"
                     validate-on-blur
-                    :rules="generalValidationRules.required"
+                    :rules="[...generalValidationRules.required, validationRules.cityCheck]"
                   />
                 </v-flex>
                 <v-flex>
@@ -207,7 +198,6 @@ export default {
       user: {
         email: '',
         password: '',
-        password_confirmation: '',
         first_name: '',
         last_name: '',
         city: '',
@@ -230,19 +220,14 @@ export default {
       return ''
     },
     validationRules () {
-      // let self = this
+      let self = this
       return {
-        // passwordConfirmation () {
-        //   if (
-        //     self.user.password &&
-        //     self.user.password_confirmation &&
-        //     self.user.password !== self.user.password_confirmation
-        //   ) {
-        //     return 'كلمة السر و تأكيد كلمة السر غير متطابقين'
-        //   } else {
-        //     return true
-        //   }
-        // },
+        cityCheck (value) {
+          if (self.egyptGovernorate.includes(value)) {
+            return true
+          }
+          return `"${value}" ليست ضمن المحافظات`
+        },
         passwordLengthCheck (value) {
           if (value && value.length < 6) {
             return 'الحد الادني لكلمة السر 6 خانات'
@@ -284,7 +269,6 @@ export default {
         this.$axios.$post('auth', {
           'email': this.user.email,
           'password': this.user.password,
-          'password_confirmation': this.user.password_confirmation,
           'first_name': this.user.first_name,
           'last_name': this.user.last_name,
           'city': this.user.city,
