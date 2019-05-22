@@ -156,8 +156,8 @@
                       v-model="user.date_of_birth"
                       :max="minAge()"
                       min="1950-01-01"
+                      locale="ar-EG"
                       @change="saveDate"
-                      locale='ar-EG'
                     />
                   </v-menu>
                 </v-flex>

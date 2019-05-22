@@ -53,6 +53,7 @@
               v-model="userClone.date_of_birth"
               :max="minAge()"
               min="1950-01-01"
+              locale="ar-EG"
               @change="saveDate"
             ></v-date-picker>
           </v-menu>
