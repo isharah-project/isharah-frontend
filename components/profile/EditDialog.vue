@@ -75,7 +75,10 @@
   </v-card>
 </template>
 <script>
+import Loader from '~/components/generic/Loader'
+
 export default {
+  components: { Loader },
   props: {
     userClone: {
       type: Object,
@@ -89,7 +92,7 @@ export default {
       maxYear: 0,
       editErrors: [],
       menu: false,
-      loading: true
+      loading: false
     }
   },
   watch: {
@@ -106,8 +109,8 @@ export default {
       return `${this.maxYear}${this.today.substr(4, 6)}`
     },
     submitEdit () {
-      this.loading = true
       if (this.$refs.editForm.validate()) {
+        this.loading = true
         this.$axios.$put('auth', {
           'first_name': this.userClone.first_name,
           'last_name': this.userClone.last_name,
