@@ -117,12 +117,11 @@ export default {
           'first_name': this.userClone.first_name,
           'last_name': this.userClone.last_name,
           'date_of_birth': this.userClone.date_of_birth
-        }).then((r) => {
+        }).then((response) => {
           this.$store.commit('showSuccessMsg', {
             message: 'تم تعديل البيانات بنجاح'
           })
-          console.log(r)
-          this.$store.commit('setUser', deserialize(r))
+          this.$store.commit('setUser', deserialize(response))
           this.closeDialog()
           this.editErrors = []
         }).catch((e) => {
