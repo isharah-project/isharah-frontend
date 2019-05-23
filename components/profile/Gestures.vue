@@ -43,8 +43,14 @@ import VideoCardDialog from '~/components/profile/VideoCardDialog'
 import PageHeader from '~/components/generic/PageHeader'
 import Loader from '~/components/generic/Loader'
 import { deserialize } from 'jsonapi-deserializer'
+
 export default {
-  components: { VideoCard, PageHeader, VideoCardDialog, Loader },
+  components: {
+    VideoCard,
+    PageHeader,
+    VideoCardDialog,
+    Loader
+  },
   props: {
     icon: {
       type: String,
@@ -89,7 +95,7 @@ export default {
     fetchData (pageNumber) {
       this.loading = true
       this.page.current = pageNumber
-      this.$axios.get(`${this.url}?page=1&per_page=12`).then((response) => {
+      this.$axios.get(`${this.url}?page=${pageNumber}&per_page=12`).then((response) => {
         this.gestures = deserialize(response.data)
         this.page.total = response.data.page_meta.total_pages
       }).catch(() => {

@@ -144,7 +144,12 @@ import _ from 'lodash'
 import { deserialize } from 'jsonapi-deserializer'
 
 export default {
-  components: { PageHeader, EditDialog, ChangePasswordDialog, Gestures },
+  components: {
+    PageHeader,
+    EditDialog,
+    ChangePasswordDialog,
+    Gestures
+  },
   data () {
     return {
       defaultImage: image,
