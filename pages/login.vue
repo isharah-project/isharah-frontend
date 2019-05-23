@@ -156,6 +156,7 @@
                       v-model="user.date_of_birth"
                       :max="minAge()"
                       min="1950-01-01"
+                      locale="ar-EG"
                       @change="saveDate"
                     />
                   </v-menu>
@@ -229,8 +230,8 @@ export default {
           return `"${value}" ليست ضمن المحافظات`
         },
         passwordLengthCheck (value) {
-          if (value && value.length < 6) {
-            return 'الحد الادني لكلمة السر 6 خانات'
+          if (value && value.length < 8) {
+            return 'الحد الادني لكلمة السر 8 خانات'
           } else {
             return true
           }

@@ -2,13 +2,12 @@
   <v-container>
     <PageHeader icon="person" text="الصفحة الشخصية" />
     <v-layout row wrap class="justify-center">
-      <v-flex sm6 xs12 pr-2>
+      <v-flex xs12>
         <v-card class="light-box-shadow small-round-corners pa-4">
           <v-layout row wrap>
             <v-flex
-              lg2
-              md3
-              sm4
+              lg1
+              sm2
               xs4
               align-self-center
               class="text-xs-center"
@@ -21,21 +20,80 @@
               >
               </v-img>
             </v-flex>
-            <v-flex lg5 md4 sm8 xs8 :class="{ 'pb-1': $vuetify.breakpoint.smAndDown }">
-              <div class="headline font-weight-medium">
+            <v-flex lg2 md2 sm3 xs8>
+              <div class="headline font-weight-medium" :class="{'title': $vuetify.breakpoint.mdAndDown}">
                 {{ user.first_name }} {{ user.last_name }}
               </div>
               <v-card-text class="ma-0 pa-0 grey--text">
+                <div v-if="isUser(['User'])">
+                  "مشارك"
+                </div>
+                <div v-if="isUser(['Reviewer'])">
+                  "مراجع"
+                </div>
+                <div v-if="isUser(['Admin'])">
+                  "مشرف"
+                </div>
                 {{ user.email }}
-                <br />
-                {{ userFormattedDate }}
                 <br />
                 {{ user.city }} , {{ user.country }}
               </v-card-text>
             </v-flex>
-            <v-flex md5 xs12 align-self-end class="text-xs-center">
+            <v-flex lg7 md6 sm7 class="text-xs-center" :class="{ 'my-3': $vuetify.breakpoint.xsOnly }">
+              <v-layout
+                justify-space-between
+                row
+                fill-height
+                class="subheading"
+                :class="{ 'align-start': $vuetify.breakpoint.xsOnly, 'align-center': $vuetify.breakpoint.smAndUp }"
+              >
+                <v-flex xs6>
+                  <v-layout row wrap justify-center align-center>
+                    <v-flex lg3 sm5 xs12>
+                      <v-icon size="40px">
+                        video_library
+                      </v-icon>
+                      <div class="body-1" :class="{ 'font-weight-bold': $vuetify.breakpoint.xsOnly, 'caption': $vuetify.breakpoint.smOnly }">
+                        المشاركات
+                      </div>
+                    </v-flex>
+                    <v-divider v-if="$vuetify.breakpoint.smAndUp" vertical></v-divider>
+                    <v-flex lg4 sm6 xs12>
+                      <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
+                        {{ acceptedCount }} مقبول
+                      </div>
+                      <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
+                        {{ rejectedCount }} مرفوض
+                      </div>
+                      <div class="body-1" :class="{ 'caption': $vuetify.breakpoint.mdAndDown }">
+                        {{ pendingCount }} قيد المراجعة
+                      </div>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+                <v-flex xs6>
+                  <v-layout row wrap justify-center align-center>
+                    <v-flex lg3 sm4 xs12>
+                      <v-icon size="40px">
+                        event
+                      </v-icon>
+                      <div class="body-1" :class="{ 'font-weight-bold': $vuetify.breakpoint.xsOnly, 'caption': $vuetify.breakpoint.smOnly }">
+                        عضو منذ
+                      </div>
+                    </v-flex>
+                    <v-divider v-if="$vuetify.breakpoint.smAndUp" vertical></v-divider>
+                    <v-flex lg4 sm7 xs12>
+                      <div :class="{ 'body-2': $vuetify.breakpoint.mdAndDown }">
+                        {{ accountDate }}
+                      </div>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+            <v-flex md2 xs12 align-self-end class="text-xs-center" :class="{ 'mt-3': $vuetify.breakpoint.smOnly }">
               <v-btn
-                class="red-border-btn btn-shadow edit-btn-width"
+                class="blue-border-btn btn-shadow edit-btn-width"
                 flat
                 round
                 small
@@ -44,11 +102,11 @@
                 تعديل البيانات
               </v-btn>
               <v-btn
-                class="red-border-btn btn-shadow edit-btn-width"
+                class="blue-border-btn btn-shadow edit-btn-width"
                 flat
                 round
                 small
-                @click="changePasswordDialog = true"
+                @click="ChangePasswordDialog = true"
               >
                 تغيير كلمة السر
               </v-btn>
@@ -56,58 +114,21 @@
           </v-layout>
         </v-card>
       </v-flex>
-      <v-dialog v-model="editDialog" max-width="400px">
-        <editDialog :userClone="userClone" @closeDialog="editDialog = false"></editDialog>
+      <v-dialog v-model="EditDialog" max-width="400px">
+        <EditDialog :userClone="userClone" @closeDialog="EditDialog = false"></EditDialog>
       </v-dialog>
-      <v-dialog v-model="changePasswordDialog" max-width="400px">
-        <changePasswordDialog @closeDialog="changePasswordDialog = false"></changePasswordDialog>
+      <v-dialog v-model="ChangePasswordDialog" max-width="400px">
+        <ChangePasswordDialog @closeDialog="ChangePasswordDialog = false"></ChangePasswordDialog>
       </v-dialog>
-      <v-flex xs6 sm3 class="text-xs-center px-2" :class="{ 'btn-height my-2': $vuetify.breakpoint.xsOnly }">
-        <v-btn
-          :class="{ 'display-1':$vuetify.breakpoint.smAndUp, 'title': $vuetify.breakpoint.xsOnly }"
-          class="orange-gradient btn-shadow full-height small-round-corners ma-0"
-          height="100%"
-          large
-          block
-          flat
-          dark
-          @click="redirect('UPLOAD')"
-        >
-          ارفع
-        </v-btn>
-      </v-flex>
-      <v-flex xs6 sm3 class="text-xs-center pl-2" :class="{ 'btn-height my-2': $vuetify.breakpoint.xsOnly }">
-        <v-btn
-          :class="{ 'display-1':$vuetify.breakpoint.smAndUp, 'title': $vuetify.breakpoint.xsOnly }"
-          class="red-gradient btn-shadow full-height small-round-corners ma-0"
-          large
-          block
-          flat
-          dark
-          round
-          @click="redirect('RECORD')"
-        >
-          سجل
-        </v-btn>
-      </v-flex>
     </v-layout>
     <v-layout row wrap class="mt-2">
-      <v-flex
-        v-for="contribution in contributions"
-        :key="contribution.word.name"
-        xs12
-        sm6
-        md4
-        pa-2
-        clickable
-        @click="openGesturesDialog(contribution)"
-      >
-        <VideoCard :gesture="contribution">
-        </VideoCard>
+      <v-flex xs12 mt-3>
+        <v-card class="small-round-corners light-box-shadow">
+          <v-container>
+            <Gestures text="المشاركات" icon="videocam" url="/user/contributions"></Gestures>
+          </v-container>
+        </v-card>
       </v-flex>
-      <v-dialog v-model="wordDialog" max-width="500px">
-        <VideoCardDialog :gesture="viewedGesture" @closeDialog="wordDialog=false"></VideoCardDialog>
-      </v-dialog>
     </v-layout>
   </v-container>
 </template>
@@ -115,24 +136,29 @@
 <script>
 import image from '~/assets/images/placeholder-user.jpg'
 import PageHeader from '~/components/generic/PageHeader'
-import VideoCard from '~/components/profile/VideoCard'
-import VideoCardDialog from '~/components/profile/VideoCardDialog'
-import editDialog from '~/components/profile/editDialog'
-import changePasswordDialog from '~/components/profile/changePasswordDialog'
+import EditDialog from '~/components/profile/EditDialog'
+import ChangePasswordDialog from '~/components/profile/ChangePasswordDialog'
+import Gestures from '~/components/profile/Gestures'
 import moment from 'moment'
 import _ from 'lodash'
 import { deserialize } from 'jsonapi-deserializer'
 
 export default {
-  components: { PageHeader, VideoCard, VideoCardDialog, editDialog, changePasswordDialog },
+  components: {
+    PageHeader,
+    EditDialog,
+    ChangePasswordDialog,
+    Gestures
+  },
   data () {
     return {
       defaultImage: image,
-      contributions: [],
-      wordDialog: false,
-      editDialog: false,
-      changePasswordDialog: false,
-      viewedGesture: {},
+      accountDate: '',
+      pendingCount: 0,
+      acceptedCount: 0,
+      rejectedCount: 0,
+      EditDialog: false,
+      ChangePasswordDialog: false,
       userClone: {}
     }
   },
@@ -145,17 +171,18 @@ export default {
         return this.defaultImage
       }
       return this.user.image
-    },
-    userFormattedDate () {
-      return moment(this.user.date_of_birth).locale('ar').format('Do MMMM YYYY')
     }
   },
   async asyncData ({ app, $axios }) {
     try {
-      let contributions = deserialize((await $axios.get('/user/contributions')).data)
-      return { contributions }
+      let account = deserialize((await $axios.get('/user/')).data)
+      let pendingCount = account.pending_contributions_count.toLocaleString('ar-EG')
+      let rejectedCount = account.rejected_contributions_count.toLocaleString('ar-EG')
+      let acceptedCount = account.accepted_contributions_count.toLocaleString('ar-EG')
+      let accountDate = account.created_at
+      accountDate = moment(accountDate).locale('ar').format('Do MMMM YYYY')
+      return { accountDate, pendingCount, rejectedCount, acceptedCount }
     } catch (e) {
-      console.log(e)
       this.$store.commit('showErrorMsg', {
         message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
       })
@@ -164,14 +191,7 @@ export default {
   methods: {
     openEditDialog () {
       this.userClone = _.cloneDeep(this.user)
-      this.editDialog = true
-    },
-    openGesturesDialog (gesture) {
-      this.wordDialog = true
-      this.viewedGesture = gesture
-    },
-    redirect (state) {
-      this.$router.push({ name: 'contribute-add_gesture', params: { parentState: state } })
+      this.EditDialog = true
     }
   }
 }
@@ -180,12 +200,6 @@ export default {
 <style scoped>
 .user-image {
   border-radius: 50%;
-}
-.full-height {
-  height: 100%;
-}
-.btn-height {
-  height: 50px;
 }
 .edit-btn-width {
   width: 120px

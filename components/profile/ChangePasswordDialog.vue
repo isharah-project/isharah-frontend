@@ -13,47 +13,52 @@
           تغيير كلمة السر
         </h2>
       </v-card-text>
-      <v-form ref="passwordForm" @submit.prevent="changePassword">
-        <v-text-field
-          v-model="user.current_password"
-          label="كلمة السر الحالية"
-          type="password"
-          validate-on-blur
-          :rules="[...generalValidationRules.required, validationRules.passwordLengthCheck]"
-        ></v-text-field>
-        <v-text-field
-          v-model="user.password"
-          label="كلمة السر الجديدة"
-          type="password"
-          validate-on-blur
-          :rules="[...generalValidationRules.required, validationRules.passwordLengthCheck]"
-        ></v-text-field>
-        <v-text-field
-          v-model="user.password_confirmation"
-          label="تأكيد كلمة السر"
-          type="password"
-          validate-on-blur
-          :rules="[...generalValidationRules.required, validationRules.passwordConfirmation]"
-        ></v-text-field>
-        <v-btn
-          :ripple="false"
-          dark
-          flat
-          round
-          class="blue-cyan-gradient fixed-size-btn btn-shadow"
-          type="submit"
-        >
-          تغيير كلمة السر
-        </v-btn>
-        <div v-for="error in errors" :key="error" class="red--text">
-          - {{ error }}
-        </div>
-      </v-form>
+      <Loader :active="loading">
+        <v-form ref="passwordForm" @submit.prevent="changePassword">
+          <v-text-field
+            v-model="user.current_password"
+            label="كلمة السر الحالية"
+            type="password"
+            validate-on-blur
+            :rules="[...generalValidationRules.required, validationRules.passwordLengthCheck]"
+          ></v-text-field>
+          <v-text-field
+            v-model="user.password"
+            label="كلمة السر الجديدة"
+            type="password"
+            validate-on-blur
+            :rules="[...generalValidationRules.required, validationRules.passwordLengthCheck]"
+          ></v-text-field>
+          <v-text-field
+            v-model="user.password_confirmation"
+            label="تأكيد كلمة السر"
+            type="password"
+            validate-on-blur
+            :rules="[...generalValidationRules.required, validationRules.passwordConfirmation]"
+          ></v-text-field>
+          <v-btn
+            :ripple="false"
+            dark
+            flat
+            round
+            class="blue-cyan-gradient fixed-size-btn btn-shadow"
+            type="submit"
+          >
+            تغيير كلمة السر
+          </v-btn>
+          <div v-for="error in errors" :key="error" class="red--text">
+            - {{ error }}
+          </div>
+        </v-form>
+      </Loader>
     </v-container>
   </v-card>
 </template>
 <script>
+import Loader from '~/components/generic/Loader'
+
 export default {
+  components: { Loader },
   data () {
     return {
       errors: [],
@@ -61,7 +66,8 @@ export default {
         current_password: '',
         password: '',
         password_confirmation: ''
-      }
+      },
+      loading: false
     }
   },
   computed: {
@@ -92,6 +98,7 @@ export default {
   methods: {
     changePassword () {
       if (this.$refs.passwordForm.validate()) {
+        this.loading = true
         this.$axios.$put('auth', {
           'current_password': this.user.current_password,
           'password': this.user.password,
@@ -102,8 +109,11 @@ export default {
           })
           this.closeDialog()
           this.errors = []
-        }).catch(() => {
-          this.errors = ['كلمة السر الحالية غير صحيحة']
+        }).catch((e) => {
+          this.errors = []
+          this.errors.push(...e.response.data.errors.full_messages)
+        }).finally(() => {
+          this.loading = false
         })
       }
     },
