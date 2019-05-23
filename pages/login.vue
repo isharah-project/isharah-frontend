@@ -128,7 +128,7 @@
                     label="المحافظة"
                     :items="egyptGovernorate"
                     validate-on-blur
-                    :rules="[...generalValidationRules.required, validationRules.cityCheck]"
+                    :rules="generalValidationRules.required"
                   />
                 </v-flex>
                 <v-flex>
@@ -221,14 +221,7 @@ export default {
       return ''
     },
     validationRules () {
-      let self = this
       return {
-        cityCheck (value) {
-          if (self.egyptGovernorate.includes(value)) {
-            return true
-          }
-          return `"${value}" ليست ضمن المحافظات`
-        },
         passwordLengthCheck (value) {
           if (value && value.length < 8) {
             return 'الحد الادني لكلمة السر 8 خانات'
