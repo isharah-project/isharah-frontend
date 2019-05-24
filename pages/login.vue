@@ -327,7 +327,11 @@ export default {
           'expiry': query.expiry,
           'token-type': 'Bearer'
         }
+        // set token in the custom key in auth storage & also manually
+        // set token in default key as we are logged in now, needed to
+        // stay logged in in case of refresh
         this.$auth.$storage.setUniversal('fullToken', JSON.stringify(authHeaders))
+        this.$auth.setToken(this.$auth.$state.strategy, JSON.stringify(authHeaders))
         this.$axios.get('/auth/validate_token').then(() => {
           this.$router.push('/')
         }).catch(() => {
