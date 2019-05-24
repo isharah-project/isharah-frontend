@@ -102,6 +102,7 @@
                 تعديل البيانات
               </v-btn>
               <v-btn
+                v-if="user.provider == 'email'"
                 class="blue-border-btn btn-shadow edit-btn-width"
                 flat
                 round
@@ -167,7 +168,7 @@ export default {
       return this.$store.state.user
     },
     userImageSrc () {
-      if (!this.user.image) {
+      if (!this.user || !this.user.image) {
         return this.defaultImage
       }
       return this.user.image
