@@ -285,7 +285,11 @@ export default {
     },
     'videoEditor.range': {
       handler: function (toRange, fromRange) {
-        if (Number.isNaN(this.$refs.videoEditor.duration)) return
+        // check for initial unexpected values NaN, Infinity
+        if (
+          Number.isNaN(this.$refs.videoEditor.duration) ||
+          this.$refs.videoEditor.duration === Infinity
+        ) return
         let duration = this.$refs.videoEditor.duration
         this.$refs.videoEditor.pause()
         this.videoEditor.isPlaying = false
@@ -294,7 +298,7 @@ export default {
         if (toRange[0] !== fromRange[0]) {
           this.$refs.videoEditor.currentTime = toRange[0]
           this.videoEditor.seekPoint = toRange[0]
-          // if range end is modified then range start is modified
+          // when range end is modified then range start is modified
           // playNextTime is true, need to make it false
           this.videoEditor.playNextTime = false
         } else {
@@ -487,9 +491,15 @@ export default {
     submitVideo () {
       if (this.$refs.videoForm.validate() && this.videoBlob) {
         this.loading = true
+        let start = this.videoEditor.range[0]
+        let finish = this.videoEditor.range[1]
         let formData = new FormData()
         formData.append('word', this.word.name)
         formData.append('video', this.videoBlob)
+        if (start !== 0 || finish !== this.videoEditor.rangeMax) {
+          formData.append('start', start)
+          formData.append('finish', finish)
+        }
         this.$axios.post(this.submitEndPoint, formData).then(() => {
           this.setParentState(this.getParentState())
           this.resetComponentValues()

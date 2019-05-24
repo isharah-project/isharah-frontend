@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader v-if="$vuetify.breakpoint.mdAndUp" :text="text" :icon="icon">
+    <PageHeader :text="text" :icon="icon">
     </PageHeader>
     <Loader :active="loading">
       <div v-if="!gestures.length" class="headline text-xs-center">
