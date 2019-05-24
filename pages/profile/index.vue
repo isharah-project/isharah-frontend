@@ -107,7 +107,7 @@
                 flat
                 round
                 small
-                @click="ChangePasswordDialog = true"
+                @click="changePasswordDialog = true"
               >
                 تغيير كلمة السر
               </v-btn>
@@ -115,11 +115,11 @@
           </v-layout>
         </v-card>
       </v-flex>
-      <v-dialog v-model="EditDialog" max-width="400px">
-        <EditDialog :userClone="userClone" @closeDialog="EditDialog = false"></EditDialog>
+      <v-dialog v-model="editDialog" max-width="400px" @keydown.esc="editDialog = false">
+        <EditDialog :userClone="userClone" @closeDialog="editDialog = false"></EditDialog>
       </v-dialog>
-      <v-dialog v-model="ChangePasswordDialog" max-width="400px">
-        <ChangePasswordDialog @closeDialog="ChangePasswordDialog = false"></ChangePasswordDialog>
+      <v-dialog v-model="changePasswordDialog" max-width="400px" @keydown.esc="changePasswordDialog = false">
+        <ChangePasswordDialog @closeDialog="changePasswordDialog = false"></ChangePasswordDialog>
       </v-dialog>
     </v-layout>
     <v-layout row wrap class="mt-2">
@@ -158,8 +158,8 @@ export default {
       pendingCount: 0,
       acceptedCount: 0,
       rejectedCount: 0,
-      EditDialog: false,
-      ChangePasswordDialog: false,
+      editDialog: false,
+      changePasswordDialog: false,
       userClone: {}
     }
   },
@@ -192,7 +192,7 @@ export default {
   methods: {
     openEditDialog () {
       this.userClone = _.cloneDeep(this.user)
-      this.EditDialog = true
+      this.editDialog = true
     }
   }
 }
