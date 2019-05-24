@@ -34,20 +34,19 @@
                 </v-chip>
               </div>
             </v-layout>
-            <v-tooltip top>
+            <v-tooltip v-if="disableForm" top>
               <template v-slot:activator="{ on }">
-                <v-layout wrap class="form-wrapper" :class="{ 'disabled-form': disableForm }" v-on="on">
+                <v-layout wrap class="form-wrapper disabled-form" v-on="on">
                   <v-flex xs12>
-                    <v-textarea v-model="review.comment" :disabled="disableForm" label="تعليق" rows="2" no-resize />
+                    <v-textarea disabled label="تعليق" rows="2" no-resize />
                   </v-flex>
                   <v-flex class="px-1" xs6>
                     <v-btn
                       class="blue-cyan-gradient btn-shadow full-width ma-0 review-btn"
-                      :disabled="disableForm"
+                      disabled
                       round
                       dark
                       flat
-                      @click="submitReview(true)"
                     >
                       صحيحة
                       <v-icon class="mr-1">
@@ -58,11 +57,10 @@
                   <v-flex class="px-1" xs6>
                     <v-btn
                       class="red-gradient btn-shadow full-width ma-0 review-btn"
-                      :disabled="disableForm"
+                      disabled
                       round
                       dark
                       flat
-                      @click="submitReview(false)"
                     >
                       خاطئة
                       <v-icon class="mr-1">
@@ -74,6 +72,39 @@
               </template>
               <span>يجب أن تشاهد الإشارة لتتمكن من التقييم</span>
             </v-tooltip>
+            <v-layout v-else wrap class="form-wrapper">
+              <v-flex xs12>
+                <v-textarea v-model="review.comment" label="تعليق" rows="2" no-resize />
+              </v-flex>
+              <v-flex class="px-1" xs6>
+                <v-btn
+                  class="blue-cyan-gradient btn-shadow full-width ma-0 review-btn"
+                  round
+                  dark
+                  flat
+                  @click="submitReview(true)"
+                >
+                  صحيحة
+                  <v-icon class="mr-1">
+                    check
+                  </v-icon>
+                </v-btn>
+              </v-flex>
+              <v-flex class="px-1" xs6>
+                <v-btn
+                  class="red-gradient btn-shadow full-width ma-0 review-btn"
+                  round
+                  dark
+                  flat
+                  @click="submitReview(false)"
+                >
+                  خاطئة
+                  <v-icon class="mr-1">
+                    clear
+                  </v-icon>
+                </v-btn>
+              </v-flex>
+            </v-layout>
           </v-flex>
         </v-layout>
       </Loader>
