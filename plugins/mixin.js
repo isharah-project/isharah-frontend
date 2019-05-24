@@ -7,7 +7,7 @@ Vue.mixin({
       API_ENDPOINT: process.env.API_ENDPOINT,
       FRONTEND_URL: process.env.FRONTEND_URL,
       deserialize,
-      egyptGovernorate: [
+      egyptGovernorates: [
         'الإسكندرية', 'الإسماعيلية', 'أسوان', 'أسيوط', 'الأقصر',
         'البحر الأحمر', 'البحيرة', 'بني سويف', 'بورسعيد', 'جنوب سيناء',
         'الجيزة', 'الدقهلية', 'دمياط', 'سوهاج', 'السويس', 'الشرقية',
