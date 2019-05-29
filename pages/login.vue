@@ -147,7 +147,7 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="user.date_of_birth"
+                          v-model="arabicDOB"
                           label="تاريخ الميلاد"
                           prepend-icon="event"
                           readonly
@@ -240,6 +240,12 @@ export default {
             'كلمة السر يجب أن تحتوي على أحرف و أرقام'
         ]
       }
+    },
+    arabicDOB () {
+      if (this.user.date_of_birth) {
+        return moment(this.user.date_of_birth).locale('ar').format('Do MMMM YYYY')
+      }
+      return ''
     }
   },
   watch: {
