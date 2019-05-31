@@ -151,6 +151,7 @@
                   :apiEndPoint="autoCompleteEndPoint"
                   :selectable="true"
                   :rules="generalValidationRules.required"
+                  :queryMinCharsCount="1"
                   prependIcon=""
                   class="round-input light-shadow-input full-width"
                   @itemChanged="setSelectedWord"
