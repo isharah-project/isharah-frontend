@@ -1,7 +1,19 @@
 <template>
   <div class="content-wrapper">
-    <div v-if="active" class="spinner-container">
-      <div class="spinner"></div>
+    <div v-if="active" class="spinner-container medium-round-corners">
+      <v-progress-circular
+        v-if="$attrs.progress"
+        :rotate="-90"
+        :size="100"
+        :width="15"
+        :value="progressValue"
+        color="primary"
+      >
+        <b>
+          {{ `${progressValue} %` }}
+        </b>
+      </v-progress-circular>
+      <div v-else class="spinner"></div>
     </div>
     <slot></slot>
   </div>
@@ -13,6 +25,11 @@ export default {
     active: {
       type: Boolean,
       required: true
+    },
+    progressValue: {
+      type: Number,
+      required: false,
+      default: 0
     }
   }
 }
@@ -36,7 +53,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.65);
 }
 .spinner {
   width: 40px;
