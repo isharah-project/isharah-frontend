@@ -42,6 +42,16 @@
               </g>
             </svg>
           </v-btn>
+          <v-card-text small="less-font-size">
+            بتسجيل الدخول فإنك تقر بإنك قرأت و وافقت على
+            <br />
+            <nuxt-link to="/privacy-policy">
+              سياسة الخصوصية
+            </nuxt-link> و
+            <nuxt-link to="/terms-and-conditions">
+              الشروط واﻷحكام
+            </nuxt-link>
+          </v-card-text>
           <v-divider class="mb-3 mt-4" />
           <div class="or-divider">
             أو
@@ -365,7 +375,7 @@ export default {
 .or-divider {
   position: absolute;
   right: 50%;
-  top: 170px;
+  top: 243px;
   transform: translateX(50%);
   background: #fff;
   width: 30px;
@@ -374,5 +384,8 @@ export default {
   line-height: 26px;
   border-radius: 50%;
   /*border: 1px solid rgba(0,0,0,0.12);*/
+}
+.less-font-size {
+  font-size: 13px;
 }
 </style>
