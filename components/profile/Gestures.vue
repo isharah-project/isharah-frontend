@@ -6,7 +6,7 @@
       <div v-if="!gestures.length" class="headline text-xs-center">
         لم تقم بإضافة إشارات بعد.
         <br />
-        <v-btn flat round class="blue-cyan-gradient btn-shadow white--text" @click="redirect()">
+        <v-btn flat round class="blue-cyan-gradient btn-shadow white--text mt-3" @click="redirect()">
           اضف إشارة
         </v-btn>
       </div>
