@@ -232,7 +232,7 @@ export default {
   },
   data () {
     return {
-      VIDEO_MAX_SIZE: 5 * 1024 * 1024,
+      VIDEO_MAX_SIZE: 10 * 1024 * 1024,
       videoPlaceholder,
       videoEditor: {
         isPlaying: false,
