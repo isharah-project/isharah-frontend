@@ -4,7 +4,11 @@
     </PageHeader>
     <Loader :active="loading">
       <div v-if="!gestures.length" class="headline text-xs-center">
-        لا يوجد إشارات
+        لم تقم بإضافة إشارات بعد.
+        <br />
+        <v-btn flat round class="blue-cyan-gradient btn-shadow white--text mt-3" @click="redirect()">
+          اضف إشارة
+        </v-btn>
       </div>
       <v-layout row wrap class="mt-2">
         <v-flex
@@ -105,6 +109,9 @@ export default {
       }).finally(() => {
         this.loading = false
       })
+    },
+    redirect () {
+      this.$router.push({ path: '/contribute/add_gesture' })
     }
   }
 }

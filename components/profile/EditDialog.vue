@@ -30,6 +30,7 @@
           >
           </v-text-field>
           <v-menu
+            v-if="userClone.provider === 'email'"
             ref="menu"
             v-model="menu"
             :close-on-content-click="false"
@@ -39,7 +40,7 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                v-model="userClone.date_of_birth"
+                v-model="arabicDOB"
                 label="تاريخ الميلاد"
                 prepend-icon="event"
                 readonly
@@ -78,6 +79,7 @@
 <script>
 import Loader from '~/components/generic/Loader'
 import { deserialize } from 'jsonapi-deserializer'
+import moment from 'moment'
 
 export default {
   components: { Loader },
@@ -95,6 +97,11 @@ export default {
       editErrors: [],
       menu: false,
       loading: false
+    }
+  },
+  computed: {
+    arabicDOB () {
+      return moment(this.userClone.date_of_birth).locale('ar').format('Do MMMM YYYY')
     }
   },
   watch: {

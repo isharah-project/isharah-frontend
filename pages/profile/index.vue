@@ -36,7 +36,9 @@
                 </div>
                 {{ user.email }}
                 <br />
-                {{ user.city }} , {{ user.country }}
+                <div v-if="user.provider == 'email'">
+                  {{ user.city }} , {{ user.country }}
+                </div>
               </v-card-text>
             </v-flex>
             <v-flex lg7 md6 sm7 class="text-xs-center" :class="{ 'my-3': $vuetify.breakpoint.xsOnly }">
