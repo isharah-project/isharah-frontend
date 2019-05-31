@@ -255,7 +255,7 @@ export default {
   },
   created () {
     window.facebookLoginCB = this.facebookLogin
-    this.checkFacebookLoginQueryParams()
+    this.checkAuthQueryParams()
   },
   methods: {
     saveDate (date) {
@@ -324,11 +324,11 @@ export default {
       let redirectUrl = `${this.API_ENDPOINT}/auth/google_oauth2?auth_origin_url=${this.FRONTEND_URL}/login`
       window.location.assign(redirectUrl)
     },
-    checkFacebookLoginQueryParams () {
+    checkAuthQueryParams () {
       let query = this.$route.query
-      if (query.auth_token && query.uid && query.client_id && query.expiry) {
+      if ((query.auth_token || query['access-token']) && query.uid && query.client_id && query.expiry) {
         let authHeaders = {
-          'access-token': query.auth_token,
+          'access-token': query.auth_token || query['access-token'],
           'uid': query.uid,
           'client': query.client_id,
           'expiry': query.expiry,
