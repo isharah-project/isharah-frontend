@@ -65,7 +65,7 @@
               class="video-editor-wrapper medium-round-corners"
               dir="ltr"
             >
-              <video ref="videoEditor" class="full-width">
+              <video ref="videoEditor" muted class="full-width">
                 <source ref="videoEditorSrc" src="">
               </video>
               <div class="video-range-wrapper px-3">
@@ -91,13 +91,13 @@
                     class="video-seek ma-0"
                     color="green"
                     hide-details
-                    @change="updateCurrentTime"
+                    @change="setCurrentTime"
                   ></slider>
                 </div>
               </div>
             </div>
             <div v-show="isState([states.RECORD.LIVE_PREVIEW, states.RECORD.RECORDING])" class="medium-round-corners overflow-hidden">
-              <video ref="livePreview" class="full-width"></video>
+              <video ref="livePreview" muted class="full-width"></video>
             </div>
           </v-flex>
           <v-flex md4 lg4 xs12>
@@ -285,12 +285,7 @@ export default {
     },
     'videoEditor.range': {
       handler: function (toRange, fromRange) {
-        // check for initial unexpected values NaN, Infinity
-        if (
-          Number.isNaN(this.$refs.videoEditor.duration) ||
-          this.$refs.videoEditor.duration === Infinity
-        ) return
-        let duration = this.$refs.videoEditor.duration
+        let duration = this.videoEditor.rangeMax
         this.$refs.videoEditor.pause()
         this.videoEditor.isPlaying = false
         this.videoEditor.seekWidth = ((toRange[1] - toRange[0]) / duration) * 100
@@ -305,8 +300,7 @@ export default {
           this.$refs.videoEditor.currentTime = toRange[1]
           this.videoEditor.playNextTime = true
         }
-      },
-      deep: true
+      }
     }
   },
   created () {
@@ -421,7 +415,7 @@ export default {
       }
       this.videoEditor.seekPoint = this.$refs.videoEditor.currentTime
     },
-    updateCurrentTime (val) {
+    setCurrentTime (val) {
       this.$refs.videoEditor.currentTime = val
     },
     toggleVideoEditorState () {
@@ -488,18 +482,22 @@ export default {
       this.videoEditor.seekPoint = 0
       this.videoEditor.seekStartPosition = 0
     },
+    getFormData () {
+      let start = this.videoEditor.range[0]
+      let finish = this.videoEditor.range[1]
+      let formData = new FormData()
+      formData.append('word', this.word.name)
+      formData.append('video', this.videoBlob)
+      if (start !== 0 || finish !== Number(this.videoEditor.rangeMax)) {
+        formData.append('start', start)
+        formData.append('finish', finish)
+      }
+      return formData
+    },
     submitVideo () {
       if (this.$refs.videoForm.validate() && this.videoBlob) {
         this.loading = true
-        let start = this.videoEditor.range[0]
-        let finish = this.videoEditor.range[1]
-        let formData = new FormData()
-        formData.append('word', this.word.name)
-        formData.append('video', this.videoBlob)
-        if (start !== 0 || finish !== this.videoEditor.rangeMax) {
-          formData.append('start', start)
-          formData.append('finish', finish)
-        }
+        let formData = this.getFormData()
         this.$axios.post(this.submitEndPoint, formData).then(() => {
           this.setParentState(this.getParentState())
           this.resetComponentValues()
