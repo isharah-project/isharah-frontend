@@ -283,6 +283,7 @@ export default {
           'first_name': this.user.first_name,
           'last_name': this.user.last_name,
           'city': this.user.city,
+          'country': 'مصر',
           'date_of_birth': this.user.date_of_birth,
           'confirm_success_url': process.env.FRONTEND_URL + '/login'
         }).then(() => {
