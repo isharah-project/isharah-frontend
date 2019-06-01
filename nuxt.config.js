@@ -116,13 +116,15 @@ module.exports = {
         })
       }
     },
-    loaders: [{
-      test: /\.styl$/,
-      loader: 'css-loader!stylus-loader?paths=node_modules/bootstrap-stylus/stylus/'
-    },
-    {
-      test: /\.ts$/,
-      loader: 'ts-loader'
-    }]
+    loaders: [
+      {
+        test: /\.styl$/,
+        loader: 'css-loader!stylus-loader?paths=node_modules/bootstrap-stylus/stylus/'
+      },
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader'
+      }
+    ]
   }
 }

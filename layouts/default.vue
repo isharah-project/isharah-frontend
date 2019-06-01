@@ -4,8 +4,8 @@
       <v-toolbar flat>
         <v-list>
           <v-list-tile>
-            <v-list-tile-title class="title">
-              EgSl
+            <v-list-tile-title class="font-weight-bold">
+              إشارة
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -20,6 +20,7 @@
             v-if="!link.children"
             :key="link.path"
             :to="link.path"
+            class="grey-text"
             @click="setNavDrawer(false)"
           >
             <v-list-tile-action>
@@ -46,6 +47,7 @@
               v-for="(child, i) in link.children"
               :key="i"
               :to="child.path"
+              class="grey-text"
               @click="setNavDrawer(false)"
             >
               <v-list-tile-action>
@@ -60,9 +62,12 @@
 
     <v-toolbar class="app-toolbar" color="white" app>
       <v-toolbar-side-icon v-if="$vuetify.breakpoint.smAndDown" @click="setNavDrawer(true)"></v-toolbar-side-icon>
-      <v-toolbar-title>
-        EgSl
-      </v-toolbar-title>
+      <nuxt-link is="v-toolbar-title" to="/" class="font-weight-bold ml-5 logo grey-text">
+        إشارة
+      </nuxt-link>
+      <!--<v-toolbar-title class="font-weight-bold headline ml-5">-->
+      <!--إشارة-->
+      <!--</v-toolbar-title>-->
       <v-toolbar-items class="hidden-sm-and-down">
         <template v-for="link in shownLinks">
           <nuxt-link
@@ -71,6 +76,7 @@
             :key="link.path"
             :to="link.path"
             active-class="toolbar-btn-active"
+            class="grey-text"
             flat
           >
             {{ link.text }}
@@ -80,6 +86,7 @@
               <v-btn
                 flat
                 :class="{ 'toolbar-btn-active': chickChildrenPathsMatch(link) }"
+                class="grey-text"
                 v-on="on"
               >
                 {{ link.text }}
@@ -90,7 +97,7 @@
                 v-for="(child, i) in link.children"
                 :key="i"
               >
-                <nuxt-link is="v-btn" class="ma-0 small-round-corners" :to="child.path" flat>
+                <nuxt-link is="v-btn" class="ma-0 grey-text small-round-corners" :to="child.path" flat>
                   {{ child.text }}
                 </nuxt-link>
               </v-list-tile>
@@ -148,9 +155,9 @@
       </span>
     </v-snackbar>
     <v-content>
-      <v-container fluid>
-        <nuxt />
-      </v-container>
+      <!--<v-container fluid>-->
+      <nuxt />
+      <!--</v-container>-->
     </v-content>
   </v-app>
 </template>
@@ -169,7 +176,6 @@ export default {
   computed: {
     links () {
       return [
-        { path: '/', text: 'الرئيسية', icon: 'home' },
         { path: '/dictionary?page=1', text: 'القاموس', icon: 'library_books' },
         { path: '/contribute',
           text: 'شارك معنا',
@@ -237,5 +243,8 @@ export default {
 }
 .toolbar-btn-active {
   border-bottom: solid 2px $blue;
+}
+.logo {
+  font-size: 30px;
 }
 </style>

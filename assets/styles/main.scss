@@ -1,6 +1,7 @@
 @import "helpers/index";
 
 .app-toolbar .v-toolbar__content {
+  padding: 0;
   @media only screen and (min-width: 960px) {
     max-width: 900px;
     margin: auto;
