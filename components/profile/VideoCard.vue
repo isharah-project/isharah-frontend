@@ -1,6 +1,6 @@
 <template>
   <v-card hover class="small-round-corners">
-    <v-img :src="gesture.preview_url" aspect-ratio="1.5">
+    <v-img :src="gesture.preview_url" aspect-ratio="1.77">
       <v-container v-if="gesture.word.part_of_speech">
         <v-card flat class="absolute-position px-5 py-1 pos-card full-round-corners">
           {{ gesture.word.part_of_speech }}
@@ -12,7 +12,7 @@
         {{ gesture.word.name }}
       </h2>
     </v-card-title>
-    <v-card-text class="py-0 px-4">
+    <v-card-text v-if="showReviewText" class="py-0 px-4">
       <v-icon v-if="reviewState === REVIEW_STATES.ACCEPTED" color="green">
         check_circle
       </v-icon>
@@ -38,6 +38,11 @@ export default {
     gesture: {
       type: Object,
       required: true
+    },
+    showReviewText: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   data () {
