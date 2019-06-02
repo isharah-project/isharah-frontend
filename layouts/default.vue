@@ -182,7 +182,7 @@ export default {
           icon: 'accessibility',
           children: [
             { path: '/contribute/practice', text: 'تدرب على إشارة', icon: 'videocam' },
-            { path: '/contribute/add_gesture', text: 'اضف إشارة', icon: 'videocam' },
+            { path: '/contribute/add_gesture', text: 'أضف إشارة', icon: 'videocam' },
             { path: '/contribute/review', text: 'قيّم الإشارات', icon: 'rate_review', hidden: !this.isUser(['Admin', 'Reviewer']) }
           ]
         },
