@@ -11,6 +11,16 @@
               {{ headerText }}
             </h2>
           </v-card-text>
+          <v-card-text>
+            بالاستمرار فإنك تقر بأنك قرأت و وافقت على
+            <br />
+            <nuxt-link to="/privacy-policy">
+              سياسة الخصوصية
+            </nuxt-link> و
+            <nuxt-link to="/terms-and-conditions">
+              الشروط واﻷحكام
+            </nuxt-link>
+          </v-card-text>
           <v-btn flat round class="btn-shadow" @click="loginWithFacebook">
             تسجيل الدخول عن طريق فيسبوك
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="5 0 30 30" width="30px" height="25px">
@@ -42,16 +52,6 @@
               </g>
             </svg>
           </v-btn>
-          <v-card-text small="less-font-size">
-            بتسجيل الدخول فإنك تقر بإنك قرأت و وافقت على
-            <br />
-            <nuxt-link to="/privacy-policy">
-              سياسة الخصوصية
-            </nuxt-link> و
-            <nuxt-link to="/terms-and-conditions">
-              الشروط واﻷحكام
-            </nuxt-link>
-          </v-card-text>
           <v-divider class="mb-3 mt-4" />
           <div class="or-divider">
             أو
@@ -385,7 +385,7 @@ export default {
   border-radius: 50%;
   /*border: 1px solid rgba(0,0,0,0.12);*/
 }
-.less-font-size {
-  font-size: 13px;
+a {
+  text-decoration: none;
 }
 </style>

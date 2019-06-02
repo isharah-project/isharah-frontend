@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <PageHeader icon="videocam" text="اضف إشارة" class="mb-0" />
+    <PageHeader icon="videocam" text="أضف إشارة" class="mb-0" />
     <GestureUpload
       submitEndPoint="gestures"
       autoCompleteEndPoint="autocomplete/words"
