@@ -251,11 +251,16 @@ export default {
         ]
       }
     },
-    arabicDOB () {
-      if (this.user.date_of_birth) {
-        return moment(this.user.date_of_birth).locale('ar').format('Do MMMM YYYY')
+    arabicDOB: {
+      get () {
+        if (this.user.date_of_birth) {
+          return moment(this.user.date_of_birth).locale('ar').format('Do MMMM YYYY')
+        }
+        return ''
+      },
+      set () {
+        // left black on purpose
       }
-      return ''
     }
   },
   watch: {
