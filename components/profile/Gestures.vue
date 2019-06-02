@@ -7,7 +7,7 @@
         لم تقم بإضافة إشارات بعد.
         <br />
         <v-btn flat round class="blue-cyan-gradient btn-shadow white--text mt-3" @click="redirect()">
-          اضف إشارة
+          أضف إشارة
         </v-btn>
       </div>
       <v-layout row wrap class="mt-2">

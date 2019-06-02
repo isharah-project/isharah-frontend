@@ -11,6 +11,16 @@
               {{ headerText }}
             </h2>
           </v-card-text>
+          <v-card-text>
+            بالاستمرار فإنك تقر بأنك قرأت و وافقت على
+            <br />
+            <nuxt-link to="/privacy-policy">
+              سياسة الخصوصية
+            </nuxt-link> و
+            <nuxt-link to="/terms-and-conditions">
+              الشروط واﻷحكام
+            </nuxt-link>
+          </v-card-text>
           <v-btn flat round class="btn-shadow" @click="loginWithFacebook">
             تسجيل الدخول عن طريق فيسبوك
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="5 0 30 30" width="30px" height="25px">
@@ -241,11 +251,16 @@ export default {
         ]
       }
     },
-    arabicDOB () {
-      if (this.user.date_of_birth) {
-        return moment(this.user.date_of_birth).locale('ar').format('Do MMMM YYYY')
+    arabicDOB: {
+      get () {
+        if (this.user.date_of_birth) {
+          return moment(this.user.date_of_birth).locale('ar').format('Do MMMM YYYY')
+        }
+        return ''
+      },
+      set () {
+        // left black on purpose
       }
-      return ''
     }
   },
   watch: {
@@ -365,7 +380,7 @@ export default {
 .or-divider {
   position: absolute;
   right: 50%;
-  top: 170px;
+  top: 243px;
   transform: translateX(50%);
   background: #fff;
   width: 30px;
@@ -374,5 +389,8 @@ export default {
   line-height: 26px;
   border-radius: 50%;
   /*border: 1px solid rgba(0,0,0,0.12);*/
+}
+a {
+  text-decoration: none;
 }
 </style>
