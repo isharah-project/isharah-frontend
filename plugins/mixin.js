@@ -22,13 +22,13 @@ Vue.mixin({
         { text: 'حرف', value: 'حرف' }
       ],
       videoTypes: [
-        'video/webm', //      .webm
-        'video/x-flv', //     .flv
         'video/mp4', //       .mp4
-        'video/x-msvideo', // .avi
-        'video/mpeg', //      .m1v
-        'video/x-ms-wmv', //  .wmv
-        'video/quicktime' //  .mov
+        'video/webm', //      .webm
+        'video/quicktime' //  .mov,
+        // 'video/x-ms-wmv', //  .wmv
+        // 'video/x-msvideo', // .avi
+        // 'video/x-flv', //     .flv
+        // 'video/mpeg' //      .m1v
       ]
     }
   },

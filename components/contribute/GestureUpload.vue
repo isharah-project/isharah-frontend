@@ -1,60 +1,60 @@
 <template>
-  <v-layout row wrap>
-    <v-flex
-      v-if="$vuetify.breakpoint.lgAndUp"
-      xs12
-      class="text-xs-center"
-    >
-      <v-btn
-        class="orange-gradient video-method-btn btn-shadow title mx-2"
-        :class="{ 'btn-active': isParentState('UPLOAD') }"
-        flat
-        dark
-        round
-        @click="!isParentState('UPLOAD') ? setParentState('UPLOAD') : null"
+  <Loader :progress="true" :active="loading" :progressValue="progressValue">
+    <v-layout row wrap>
+      <v-flex
+        v-if="$vuetify.breakpoint.lgAndUp"
+        xs12
+        class="text-xs-center"
       >
-        رفع
-      </v-btn>
-      <v-btn
-        class="red-gradient video-method-btn btn-shadow title mx-2"
-        :class="{ 'btn-active': isParentState('RECORD') }"
-        flat
-        dark
-        round
-        @click="!isParentState('RECORD') ? setParentState('RECORD') : null"
+        <v-btn
+          class="orange-gradient video-method-btn btn-shadow title mx-2"
+          :class="{ 'btn-active': isParentState('UPLOAD') }"
+          flat
+          dark
+          round
+          @click="!isParentState('UPLOAD') ? setParentState('UPLOAD') : null"
+        >
+          رفع
+        </v-btn>
+        <v-btn
+          class="red-gradient video-method-btn btn-shadow title mx-2"
+          :class="{ 'btn-active': isParentState('RECORD') }"
+          flat
+          dark
+          round
+          @click="!isParentState('RECORD') ? setParentState('RECORD') : null"
+        >
+          تسجيل
+        </v-btn>
+      </v-flex>
+      <input ref="fileInput" type="file" :accept="videoTypes.join(',')" class="d-none">
+      <v-flex
+        ref="dragZone"
+        :class="{ 'expanded': isParentState('UPLOAD') && isState(states.UPLOAD.INIT) }"
+        class="text-xs-center drag-zone medium-round-corners mt-3"
+        xs12
+        @drag.prevent.stop
+        @dragstart.prevent.stop
+        @dragenter.prevent.stop="changeDragState(true)"
+        @dragover.prevent.stop="changeDragState(true)"
+        @dragleave.prevent.stop="changeDragState(false)"
+        @dragend.prevent.stop="changeDragState(false)"
+        @drop.prevent.stop="handleDroppedFiles($event)"
       >
-        تسجيل
-      </v-btn>
-    </v-flex>
-    <input ref="fileInput" type="file" :accept="videoTypes.join(',')" class="d-none">
-    <v-flex
-      ref="dragZone"
-      :class="{ 'expanded': isParentState('UPLOAD') && isState(states.UPLOAD.INIT) }"
-      class="text-xs-center drag-zone medium-round-corners mt-3"
-      xs12
-      @drag.prevent.stop
-      @dragstart.prevent.stop
-      @dragenter.prevent.stop="changeDragState(true)"
-      @dragover.prevent.stop="changeDragState(true)"
-      @dragleave.prevent.stop="changeDragState(false)"
-      @dragend.prevent.stop="changeDragState(false)"
-      @drop.prevent.stop="handleDroppedFiles($event)"
-    >
-      <p class="mt-4 drag-zone-phrase">
-        السحب والإسقاط في اي مكان للتحميل
-      </p>
-      <v-btn
-        class="orange-gradient btn-shadow fixed-size-btn upload-btn"
-        flat
-        dark
-        round
-        @click="triggerFileInput"
-      >
-        أو اختر الملف
-      </v-btn>
-    </v-flex>
-    <v-flex xs12 class="mt-3">
-      <Loader :active="loading">
+        <p class="mt-4 drag-zone-phrase">
+          السحب والإسقاط في اي مكان للتحميل
+        </p>
+        <v-btn
+          class="orange-gradient btn-shadow fixed-size-btn upload-btn"
+          flat
+          dark
+          round
+          @click="triggerFileInput"
+        >
+          أو اختر الملف
+        </v-btn>
+      </v-flex>
+      <v-flex xs12 class="mt-3 pb-5">
         <v-layout row wrap>
           <v-flex md8 lg8 xs12>
             <div v-show="isState([states.UPLOAD.INIT, states.RECORD.INIT])" class="">
@@ -65,7 +65,7 @@
               class="video-editor-wrapper medium-round-corners"
               dir="ltr"
             >
-              <video ref="videoEditor" class="full-width">
+              <video ref="videoEditor" muted class="full-width">
                 <source ref="videoEditorSrc" src="">
               </video>
               <div class="video-range-wrapper px-3">
@@ -91,13 +91,13 @@
                     class="video-seek ma-0"
                     color="green"
                     hide-details
-                    @change="updateCurrentTime"
+                    @change="setCurrentTime"
                   ></slider>
                 </div>
               </div>
             </div>
             <div v-show="isState([states.RECORD.LIVE_PREVIEW, states.RECORD.RECORDING])" class="medium-round-corners overflow-hidden">
-              <video ref="livePreview" class="full-width"></video>
+              <video ref="livePreview" muted class="full-width"></video>
             </div>
           </v-flex>
           <v-flex md4 lg4 xs12>
@@ -151,6 +151,7 @@
                   :apiEndPoint="autoCompleteEndPoint"
                   :selectable="true"
                   :rules="generalValidationRules.required"
+                  :queryMinCharsCount="1"
                   prependIcon=""
                   class="round-input light-shadow-input full-width"
                   @itemChanged="setSelectedWord"
@@ -186,9 +187,9 @@
             </v-form>
           </v-flex>
         </v-layout>
-      </Loader>
-    </v-flex>
-  </v-layout>
+      </v-flex>
+    </v-layout>
+  </Loader>
 </template>
 
 <script>
@@ -231,6 +232,7 @@ export default {
   },
   data () {
     return {
+      VIDEO_MAX_SIZE: 10 * 1024 * 1024,
       videoPlaceholder,
       videoEditor: {
         isPlaying: false,
@@ -272,7 +274,8 @@ export default {
       wordSearchResults: [],
       wordSearchQuery: null,
       validForm: false,
-      loading: false
+      loading: false,
+      progressValue: 0
     }
   },
   watch: {
@@ -285,12 +288,7 @@ export default {
     },
     'videoEditor.range': {
       handler: function (toRange, fromRange) {
-        // check for initial unexpected values NaN, Infinity
-        if (
-          Number.isNaN(this.$refs.videoEditor.duration) ||
-          this.$refs.videoEditor.duration === Infinity
-        ) return
-        let duration = this.$refs.videoEditor.duration
+        let duration = this.videoEditor.rangeMax
         this.$refs.videoEditor.pause()
         this.videoEditor.isPlaying = false
         this.videoEditor.seekWidth = ((toRange[1] - toRange[0]) / duration) * 100
@@ -305,8 +303,7 @@ export default {
           this.$refs.videoEditor.currentTime = toRange[1]
           this.videoEditor.playNextTime = true
         }
-      },
-      deep: true
+      }
     }
   },
   created () {
@@ -331,9 +328,15 @@ export default {
     addFileInputListener () {
       this.$refs.fileInput.onchange = (event) => {
         if (event.target.files && event.target.files[0]) {
-          this.state = this.states.UPLOAD.PLAYBACK
-          this.videoBlob = event.target.files[0]
-          this.setVideoEditorSrc()
+          if (event.target.files[0].size >= this.VIDEO_MAX_SIZE) {
+            this.$store.commit('showInfoMsg', {
+              message: `حجم الفيديو يجب الا يتعدى ${this.VIDEO_MAX_SIZE / (1024 * 1024)}mb `
+            })
+          } else {
+            this.state = this.states.UPLOAD.PLAYBACK
+            this.videoBlob = event.target.files[0]
+            this.setVideoEditorSrc()
+          }
         }
       }
     },
@@ -368,8 +371,14 @@ export default {
     stopRecording () {
       this.recorder.stopRecording(() => {
         this.videoBlob = this.recorder.getBlob()
-        this.setVideoEditorSrc()
-        this.state = this.states.RECORD.PLAYBACK
+        if (this.videoBlob.size >= this.VIDEO_MAX_SIZE) {
+          this.$store.commit('showInfoMsg', {
+            message: `حجم الفيديو يجب الا يتعدى ${this.VIDEO_MAX_SIZE / (1024 * 1024)}mb `
+          })
+        } else {
+          this.setVideoEditorSrc()
+          this.state = this.states.RECORD.PLAYBACK
+        }
       })
     },
     triggerFileInput () {
@@ -421,7 +430,7 @@ export default {
       }
       this.videoEditor.seekPoint = this.$refs.videoEditor.currentTime
     },
-    updateCurrentTime (val) {
+    setCurrentTime (val) {
       this.$refs.videoEditor.currentTime = val
     },
     toggleVideoEditorState () {
@@ -488,30 +497,40 @@ export default {
       this.videoEditor.seekPoint = 0
       this.videoEditor.seekStartPosition = 0
     },
+    updateProgressBar (event) {
+      this.progressValue = Math.round((event.loaded / event.total) * 100)
+    },
+    getFormData () {
+      let start = this.videoEditor.range[0]
+      let finish = this.videoEditor.range[1]
+      let formData = new FormData()
+      formData.append('word', this.word.name)
+      formData.append('video', this.videoBlob)
+      if (start !== 0 || finish !== Number(this.videoEditor.rangeMax)) {
+        formData.append('start', start)
+        formData.append('finish', finish)
+      }
+      return formData
+    },
     submitVideo () {
       if (this.$refs.videoForm.validate() && this.videoBlob) {
         this.loading = true
-        let start = this.videoEditor.range[0]
-        let finish = this.videoEditor.range[1]
-        let formData = new FormData()
-        formData.append('word', this.word.name)
-        formData.append('video', this.videoBlob)
-        if (start !== 0 || finish !== this.videoEditor.rangeMax) {
-          formData.append('start', start)
-          formData.append('finish', finish)
-        }
-        this.$axios.post(this.submitEndPoint, formData).then(() => {
+        let formData = this.getFormData()
+        this.$axios.post(this.submitEndPoint, formData, {
+          onUploadProgress: this.updateProgressBar
+        }).then(() => {
           this.setParentState(this.getParentState())
           this.resetComponentValues()
           this.$store.commit('showSuccessMsg', {
             message: 'تم رفع الاشارة بنجاح'
           })
-        }).catch((e) => {
+        }).catch(() => {
           this.$store.commit('showErrorMsg', {
             message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
           })
         }).finally(() => {
           this.loading = false
+          this.progressValue = 0
         })
       }
     }

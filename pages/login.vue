@@ -270,7 +270,7 @@ export default {
   },
   created () {
     window.facebookLoginCB = this.facebookLogin
-    this.checkFacebookLoginQueryParams()
+    this.checkAuthQueryParams()
   },
   methods: {
     saveDate (date) {
@@ -339,19 +339,19 @@ export default {
       let redirectUrl = `${this.API_ENDPOINT}/auth/google_oauth2?auth_origin_url=${this.FRONTEND_URL}/login`
       window.location.assign(redirectUrl)
     },
-    checkFacebookLoginQueryParams () {
+    checkAuthQueryParams () {
       let query = this.$route.query
-      if (query.auth_token && query.uid && query.client_id && query.expiry) {
+      if ((query.auth_token || query['access-token']) && query.uid && query.client_id && query.expiry) {
         let authHeaders = {
-          'access-token': query.auth_token,
+          'access-token': query.auth_token || query['access-token'],
           'uid': query.uid,
           'client': query.client_id,
           'expiry': query.expiry,
           'token-type': 'Bearer'
         }
-        // set token in the custom key in auth storage & also manually
-        // set token in default key as we are logged in now, needed to
-        // stay logged in in case of refresh
+        // set token in the custom key in $auth storage & manually set token
+        // in the default key as user is logged in now, this is needed for
+        // $auth to keep user logged in in case of a refresh
         this.$auth.$storage.setUniversal('fullToken', JSON.stringify(authHeaders))
         this.$auth.setToken(this.$auth.$state.strategy, JSON.stringify(authHeaders))
         this.$axios.get('/auth/validate_token').then(() => {

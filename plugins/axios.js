@@ -22,9 +22,9 @@ export default function ({ $axios, app, store }) {
       newerToken = false
     }
     if (Object.keys(authHeaders).length >= 4 && newerToken) {
-      // set token in the custom key in auth storage & also manually
-      // set token in default key as we are logged in now, needed to
-      // stay logged in in case of refresh
+      // set token in the custom key in $auth storage & manually set token
+      // in the default key as user is logged in now, this is needed for
+      // $auth to keep user logged in in case of a refresh
       app.$auth.$storage.setUniversal('fullToken', JSON.stringify(authHeaders))
       app.$auth.setToken(app.$auth.$state.strategy, JSON.stringify(authHeaders))
     }

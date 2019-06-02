@@ -30,7 +30,7 @@
           >
           </v-text-field>
           <v-menu
-            v-if="userClone.provider == 'email'"
+            v-if="userClone.provider === 'email'"
             ref="menu"
             v-model="menu"
             :close-on-content-click="false"
