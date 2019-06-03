@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mt-3">
     <PageHeader text="تدرب على إشارة" icon="videocam" />
   </v-container>
 </template>

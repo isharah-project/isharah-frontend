@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <PageHeader text="الشروط واﻷحكام" icon="assignment">
+  <v-container class="mt-3">
+    <PageHeader text="الشروط واﻷحكام" icon="assignment_turned_in">
     </PageHeader>
     <v-card flat class="small-round-corners light-box-shadow">
       <v-container>

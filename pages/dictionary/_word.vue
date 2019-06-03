@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mt-3">
     <v-layout row wrap justify-center>
       <v-flex xs12 class="medium-round-corners light-box-shadow video-container">
         <video class="full-width d-block" controls poster="">
@@ -27,7 +27,7 @@
     </v-layout>
     <v-layout>
       <v-btn
-        class="fixed-size-btn btn-shadow blue-cyan-gradient"
+        class="fixed-size-btn btn-shadow blue-gradient"
         dark
         flat
         round

@@ -1,15 +1,33 @@
 @import "helpers/index";
 
-.app-toolbar .v-toolbar__content {
-  @media only screen and (min-width: 960px) {
-    max-width: 900px;
-    margin: auto;
+.app-toolbar {
+  z-index: 3;
+
+  .v-toolbar__content {
+    padding: 0;
+
+    @media only screen and (min-width: 960px) {
+      max-width: 900px;
+      margin: auto;
+    }
+    @media only screen and (min-width: 1264px) {
+      max-width: 1185px;
+    }
   }
-  @media only screen and (min-width: 1264px) {
-    max-width: 1185px;
-  }
+
 }
 
 .v-messages {
   min-height: 14px;
+}
+
+.v-menu__content {
+  @extend .medium-round-corners, .btn-shadow;
+}
+.v-menu__content::-webkit-scrollbar {
+  width: 5px;
+}
+.v-menu__content::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border-radius: 10px;
 }
