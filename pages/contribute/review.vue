@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mt-3">
     <PageHeader id="pageHeader" text="قيّم الإشارات" icon="rate_review" />
     <v-layout v-if="!gestures">
       <v-flex>
@@ -113,7 +113,7 @@
       </h2>
       <Loader :active="reviewListLoading">
         <v-layout class="mt-">
-          <v-flex xs12 class="gestures-list-wrapper py-4 px-2">
+          <v-flex xs12 class="gestures-list-wrapper medium-round-corners py-4 px-2">
             <v-card
               v-for="gesture in gestures"
               :key="gesture.id"
@@ -259,6 +259,7 @@ export default {
 .gestures-list-wrapper {
   overflow-x: auto;
   white-space: nowrap;
+  background: #f7f7f7;
 }
 .gestures-list-wrapper::-webkit-scrollbar {
   height: 5px;

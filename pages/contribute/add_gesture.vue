@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mt-3">
     <PageHeader icon="videocam" text="أضف إشارة" class="mb-0" />
     <GestureUpload
       submitEndPoint="gestures"

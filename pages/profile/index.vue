@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mt-3">
     <PageHeader icon="person" text="الصفحة الشخصية" />
     <v-layout row wrap class="justify-center">
       <v-flex xs12>
@@ -95,7 +95,7 @@
             </v-flex>
             <v-flex md2 xs12 align-self-end class="text-xs-center" :class="{ 'mt-3': $vuetify.breakpoint.smOnly }">
               <v-btn
-                class="blue-border-btn btn-shadow edit-btn-width"
+                class="blue-border-btn edit-btn-width"
                 flat
                 round
                 small
@@ -105,7 +105,7 @@
               </v-btn>
               <v-btn
                 v-if="user.provider == 'email'"
-                class="blue-border-btn btn-shadow edit-btn-width"
+                class="blue-border-btn edit-btn-width"
                 flat
                 round
                 small

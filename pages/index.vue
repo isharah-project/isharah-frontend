@@ -12,12 +12,26 @@
           لوريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولايزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي أخذتها من نص، لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف.
         </p>
         <div class="mt-5">
-          <v-btn class="fixed-size-btn blue-gradient btn-shadow" flat round dark>
+          <nuxt-link
+            is="v-btn"
+            to="contribute/add_gesture"
+            class="fixed-size-btn blue-gradient btn-shadow"
+            flat
+            round
+            dark
+          >
             شارك
-          </v-btn>
-          <v-btn class="fixed-size-btn orange-gradient btn-shadow" flat round dark>
+          </nuxt-link>
+          <nuxt-link
+            is="v-btn"
+            to="contribute/add_gesture"
+            class="fixed-size-btn orange-gradient btn-shadow"
+            flat
+            round
+            dark
+          >
             القاموس
-          </v-btn>
+          </nuxt-link>
         </div>
       </div>
       <div class="head-visuals-wrapper">
@@ -52,7 +66,7 @@
         كلمات مضافة حديثًا
       </h1>
       <Loader :active="loading">
-        <v-layout :wrap="$vuetify.breakpoint.smAndDown">
+        <v-layout :wrap="$vuetify.breakpoint.smAndDown" justify-center>
           <v-flex
             v-for="gesture in dynamicGestures"
             :key="gesture.id"
@@ -60,8 +74,9 @@
             class="px-3"
             xs12
             sm6
-            md6
-            lg4
+            md4
+            lg3
+            @click="goToWord(gesture)"
           >
             <VideoCard :gesture="gesture" :showReviewText="false" />
           </v-flex>
@@ -103,7 +118,7 @@ export default {
   methods: {
     fetchGestures () {
       this.loading = true
-      this.$axios.get('gestures/unreviewed').then((response) => {
+      this.$axios.get('gestures/recently_added').then((response) => {
         this.mostRecentGestures = this.deserialize(response.data)
       }).finally(() => {
         this.loading = false
@@ -114,10 +129,8 @@ export default {
         this.$router.push(`dictionary?page=1&q=${this.searchQuery}`)
       }
     },
-    goToWord (word) {
-      if (word) {
-        this.$router.push(`dictionary/${word.name}`)
-      }
+    goToWord (gesture) {
+      this.$router.push(`dictionary/${gesture.word.name}`)
     }
   }
 }
@@ -132,6 +145,7 @@ export default {
   justify-content: space-between;
   padding-right: calc((100% - 1185px) / 2);
   padding-bottom: 10%;
+  margin-bottom: 130px;
 }
 .head-section .head-text {
   flex: 7;
@@ -180,6 +194,7 @@ export default {
     min-height: calc(100vh - 64px);
     flex-direction: column;
     justify-content: center;
+    margin-bottom: 80px;
   }
   .head-section .head-text {
     width: 75%;
@@ -204,7 +219,7 @@ export default {
     height: 100%;
     left: -30%;
     top: -17%;
-    opacity: 0.2;
+    opacity: 0.15;
   }
   .head-visuals {
     height: 100%;

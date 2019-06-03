@@ -1,8 +1,8 @@
 <template>
-  <v-card hover class="small-round-corners">
+  <v-card class="video-card-wrapper small-round-corners light-box-shadow">
     <v-img :src="gesture.preview_url" aspect-ratio="1.77">
       <v-container v-if="gesture.word.part_of_speech">
-        <v-card flat class="absolute-position px-5 py-1 pos-card full-round-corners">
+        <v-card flat class="absolute-position px-5 py-1 card-pos full-round-corners">
           {{ gesture.word.part_of_speech }}
         </v-card>
       </v-container>
@@ -12,7 +12,12 @@
         {{ gesture.word.name }}
       </h2>
     </v-card-title>
-    <v-card-text v-if="showReviewText" class="py-0 px-4">
+    <v-card-text v-if="hasCategories" class="text-xs-right py-0">
+      <v-chip v-for="category in gesture.word.categories" :key="category.id">
+        {{ category.name }}
+      </v-chip>
+    </v-card-text>
+    <v-card-text v-if="showReviewText" class="py-0 px-4" :class="{ 'pt-2': hasCategories }">
       <v-icon v-if="reviewState === REVIEW_STATES.ACCEPTED" color="green">
         check_circle
       </v-icon>
@@ -86,12 +91,19 @@ export default {
         default:
           return 'قيد المراجعة'
       }
+    },
+    hasCategories () {
+      return this.gesture.word.categories && this.gesture.word.categories.length
     }
   }
 }
 </script>
 <style>
-.pos-card {
+.video-card-wrapper:hover {
+  cursor: pointer;
+  box-shadow: 0 5px 35px rgba(0, 0, 0, 0.3) !important;
+}
+.card-pos {
   opacity: 0.65
 }
 </style>

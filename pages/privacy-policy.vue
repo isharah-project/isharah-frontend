@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mt-3">
     <PageHeader text="سياسة الخصوصية" icon="assignment">
     </PageHeader>
     <v-card flat class="small-round-corners light-box-shadow">
