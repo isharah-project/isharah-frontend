@@ -20,7 +20,9 @@
           </v-btn>
         </div>
       </div>
-      <div class="head-visuals-wrapper pt-5 pl-5">
+      <div class="head-visuals-wrapper">
+        <!-- eslint-disable-next-line -->
+        <HeadVisuals class="head-visuals" />
       </div>
       <div v-if="$vuetify.breakpoint.mdAndDown" class="head-overlay"></div>
     </section>
@@ -72,11 +74,13 @@
 <script>
 import Loader from '~/components/generic/Loader'
 import VideoCard from '~/components/profile/VideoCard'
+import HeadVisuals from '~/assets/images/home-visuals-full.svg'
 
 export default {
   components: {
     Loader,
-    VideoCard
+    VideoCard,
+    HeadVisuals
   },
   data () {
     return {
@@ -126,8 +130,6 @@ export default {
 .head-section {
   display: flex;
   justify-content: space-between;
-  background: url("../assets/images/home-visuals-background.svg") no-repeat -117% 120%;
-  background-size: 80%;
   padding-right: calc((100% - 1185px) / 2);
   padding-bottom: 10%;
 }
@@ -146,24 +148,30 @@ export default {
   color: rgba(64, 64, 64, 0.6);
 }
 .head-visuals-wrapper {
-  background: url("../assets/images/home-visuals.svg") no-repeat 50% 50%;
-  background-size: contain;
   flex: 8;
+}
+.head-visuals {
+  transform: scale(2) translateX(-115px) translateY(-10px);
+}
+
+@media screen and (max-width: 1400px){
+  .head-visuals {
+    transform: scale(1.9) translateX(-105px) translateY(0);
+  }
 }
 
 @media screen and (max-width: 1264px) {
   .head-section {
-    background-position: -110% 120%;
     padding-right: calc((100% - 900px) / 2);
-  }
-  .head-section .head-text {
-    padding-top: calc(20vh - 64px);
   }
   .head-section .head-text h1 {
     font-size: 50px;
   }
   .head-section .head-slogan {
     font-size: 24px;
+  }
+  .head-visuals {
+    transform: scale(1.9) translateX(-75px) translateY(-5px);
   }
 }
 @media screen and (max-width: 960px) {
@@ -172,27 +180,41 @@ export default {
     min-height: calc(100vh - 64px);
     flex-direction: column;
     justify-content: center;
-    background-position: 150% 100%;
-    background-size: 1000px;
   }
   .head-section .head-text {
+    width: 75%;
     position: relative;
     z-index: 2;
     padding: 0 16px;
     text-align: center;
     flex: none;
+    margin: 0 auto;
+  }
+  .head-section .head-slogan {
+    text-shadow: 0 0 25px rgba(0, 0, 0, 0.2)
   }
   .head-section .head-description {
     width: 100%;
+    text-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
   }
   .head-visuals-wrapper {
     position: absolute;
     z-index: 1;
     width: 100%;
-    height: 90%;
-    top: 5%;
-    left: 50%;
-    transform: translateX(-50%);
+    height: 100%;
+    left: -30%;
+    top: -17%;
+    opacity: 0.2;
+  }
+  .head-visuals {
+    height: 100%;
+    width: 100%;
+    transform: scale(1.5);
+  }
+}
+@media screen and (max-width: 450px) {
+  .head-section .head-text {
+    width: 95%;
   }
 }
 </style>
