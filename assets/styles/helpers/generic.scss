@@ -62,12 +62,16 @@ $btn-shadow: 0 3px 10px rgba(0, 0, 0, 0.11);
   color: $dark-grey-text !important;
 }
 
+.red-text {
+  color: $red !important;
+}
+
 /***********************/
 /******* SHADOWS *******/
 /***********************/
 
 .toolbar-shadow {
-  background: $toolbar-shadow !important;
+  box-shadow: $toolbar-shadow !important;
 }
 .btn-shadow {
   box-shadow: $btn-shadow !important;

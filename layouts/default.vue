@@ -159,6 +159,35 @@
       <nuxt />
       <!--</v-container>-->
     </v-content>
+    <v-footer class="app-footer white grey-text py-3" height="">
+      <ul class=" mx-auto pl-0 pb-3">
+        <li class="mx-2">
+          <nuxt-link to="/privacy-policy" class="grey-text">
+            سياسة الخصوصية
+          </nuxt-link>
+        </li>
+        <li class="mx-2">
+          <nuxt-link to="/terms-and-conditions" class="grey-text">
+            الشروط والأحكام
+          </nuxt-link>
+        </li>
+        <li class="mx-2">
+          <nuxt-link to="/contact-us" class="grey-text">
+            تواصل معنا
+          </nuxt-link>
+        </li>
+      </ul>
+      <p class="mb-2">
+        جميع الحقوق محفوظة  &copy; لموقع إشارة
+      </p>
+      <p class="mb-2">
+        صنع بكل
+        <v-icon class="heart red-text">
+          favorite
+        </v-icon>
+        بواسطة فريق إشارة
+      </p>
+    </v-footer>
   </v-app>
 </template>
 
@@ -246,5 +275,36 @@ export default {
 }
 .logo {
   font-size: 30px;
+}
+.app-footer {
+  flex-direction: column;
+  box-shadow: 0 -3px 46px rgba(0, 0, 0, 0.06);
+}
+.app-footer ul li {
+  display: inline-block;
+}
+.app-footer ul li a {
+  text-decoration: none;
+}
+.app-footer .heart {
+  animation: heart-beat infinite 1.5s;
+}
+
+@keyframes heart-beat {
+  0% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(1.15);
+  }
+  25% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>
