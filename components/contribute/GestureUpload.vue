@@ -101,7 +101,7 @@
             </div>
           </v-flex>
           <v-flex md4 lg4 xs12>
-            <v-form ref="videoForm" v-model="validForm" class="px-2 word-data-form" @submit.prevent="submitVideo">
+            <v-form ref="videoForm" class="px-2 word-data-form" @submit.prevent="submitVideo">
               <transition name="small-slide">
                 <div
                   v-if="isParentState('UPLOAD') && isState(states.UPLOAD.PLAYBACK)"
@@ -150,7 +150,6 @@
                   :deserializeResults="autoCompleteDeserializeResults"
                   :apiEndPoint="autoCompleteEndPoint"
                   :selectable="true"
-                  :rules="generalValidationRules.required"
                   :queryMinCharsCount="1"
                   prependIcon=""
                   class="round-input light-shadow-input full-width"
@@ -181,7 +180,7 @@
                   flat
                   dark
                 >
-                  حفظ
+                  إضافة
                 </v-btn>
               </div>
             </v-form>
@@ -273,9 +272,13 @@ export default {
       },
       wordSearchResults: [],
       wordSearchQuery: null,
-      validForm: false,
       loading: false,
       progressValue: 0
+    }
+  },
+  computed: {
+    validForm () {
+      return Boolean(this.word.name)
     }
   },
   watch: {

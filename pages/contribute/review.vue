@@ -1,7 +1,7 @@
 <template>
   <v-container class="mt-3">
     <PageHeader id="pageHeader" text="قيّم الإشارات" icon="rate_review" />
-    <v-layout v-if="!gestures">
+    <v-layout v-if="!gestures.length" class="white light-box-shadow small-round-corners pa-2 mt-4">
       <v-flex>
         <div class="headline text-xs-center">
           لا توجد إشارات للتقييم الآن..
@@ -200,6 +200,7 @@ export default {
       })
     },
     submitReview (value) {
+      if (!this.validateSubmission(value)) return
       this.pageLoading = true
       let postData = {
         accepted: value,
@@ -226,6 +227,15 @@ export default {
       }).finally(() => {
         this.pageLoading = false
       })
+    },
+    validateSubmission (value) {
+      if (!value && !this.review.comment) {
+        this.$store.commit('showInfoMsg', {
+          message: 'يجب كتابة تعليق في حالة رفض الإشارة'
+        })
+        return false
+      }
+      return true
     },
     enableButtons () {
       this.disableForm = false

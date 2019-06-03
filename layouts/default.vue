@@ -177,10 +177,10 @@
           </nuxt-link>
         </li>
       </ul>
-      <p class="mb-2">
+      <p class="mb-2 grey--text text--darken-1">
         جميع الحقوق محفوظة  &copy; لموقع إشارة
       </p>
-      <p class="mb-0">
+      <p class="mb-0 grey--text text--darken-1">
         صنع بكل
         <v-icon class="heart red-text">
           favorite
