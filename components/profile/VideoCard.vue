@@ -1,6 +1,16 @@
 <template>
   <v-card class="video-card-wrapper small-round-corners light-box-shadow">
     <v-img :src="gesture.preview_url" aspect-ratio="1.77">
+      <template v-slot:placeholder>
+        <v-layout
+          fill-height
+          align-center
+          justify-center
+          ma-0
+        >
+          <v-progress-circular indeterminate color="grey" size="48"></v-progress-circular>
+        </v-layout>
+      </template>
       <v-container v-if="gesture.word.part_of_speech">
         <v-card flat class="absolute-position px-5 py-1 card-pos full-round-corners">
           {{ gesture.word.part_of_speech }}
