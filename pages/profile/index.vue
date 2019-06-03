@@ -21,7 +21,7 @@
               </v-img>
             </v-flex>
             <v-flex lg2 md2 sm3 xs8>
-              <div class="headline font-weight-medium" :class="{'title': $vuetify.breakpoint.mdAndDown}">
+              <div class="headline font-weight-medium" :class="{'title mb-1': $vuetify.breakpoint.mdAndDown}">
                 {{ user.first_name }} {{ user.last_name }}
               </div>
               <v-card-text class="ma-0 pa-0 grey--text">
@@ -36,7 +36,7 @@
                 </div>
                 {{ user.email }}
                 <br />
-                <div v-if="user.provider == 'email'">
+                <div v-if="user.provider === 'email'">
                   {{ user.city }} , {{ user.country }}
                 </div>
               </v-card-text>
