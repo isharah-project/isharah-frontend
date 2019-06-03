@@ -1,7 +1,9 @@
 @import "helpers/index";
 
 .app-toolbar {
-  z-index: 3;
+  &.v-toolbar--fixed {
+    z-index: 3;
+  }
 
   .v-toolbar__content {
     padding: 0;
