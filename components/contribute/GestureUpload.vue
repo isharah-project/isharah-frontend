@@ -331,11 +331,10 @@ export default {
     addFileInputListener () {
       this.$refs.fileInput.onchange = (event) => {
         if (event.target.files && event.target.files[0]) {
-          if (event.target.files[0].size >= this.VIDEO_MAX_SIZE) {
-            this.$store.commit('showInfoMsg', {
-              message: `حجم الفيديو يجب الا يتعدى ${this.VIDEO_MAX_SIZE / (1024 * 1024)}mb `
-            })
-          } else {
+          if (
+            this.validateBlobSize(event.target.files[0]) &&
+            this.validateBlobType(event.target.files[0])
+          ) {
             this.state = this.states.UPLOAD.PLAYBACK
             this.videoBlob = event.target.files[0]
             this.setVideoEditorSrc()
@@ -396,14 +395,10 @@ export default {
       dragZone.classList.remove('is-dragging')
       if (event.dataTransfer && event.dataTransfer.files.length) {
         let file = event.dataTransfer.files[0]
-        if (this.videoTypes.indexOf(file.type) !== -1) {
+        if (this.validateBlobType(file)) {
           this.state = this.states.UPLOAD.PLAYBACK
           this.videoBlob = file
           this.setVideoEditorSrc()
-        } else {
-          this.$store.commit('showInfoMsg', {
-            message: 'هذا النوع من الوسائط غير مدعوم'
-          })
         }
       } else {
         this.$store.commit('showInfoMsg', {
@@ -435,6 +430,24 @@ export default {
     },
     setCurrentTime (val) {
       this.$refs.videoEditor.currentTime = val
+    },
+    validateBlobType (blob) {
+      if (this.videoTypes.indexOf(blob.type) !== -1) {
+        return true
+      } else {
+        this.$store.commit('showInfoMsg', {
+          message: 'هذا النوع من الوسائط غير مدعوم'
+        })
+      }
+    },
+    validateBlobSize (blob) {
+      if (blob.size < this.VIDEO_MAX_SIZE) {
+        return true
+      } else {
+        this.$store.commit('showInfoMsg', {
+          message: `حجم الفيديو يجب الا يتعدى ${this.VIDEO_MAX_SIZE / (1024 * 1024)}mb `
+        })
+      }
     },
     toggleVideoEditorState () {
       if (this.videoEditor.isPlaying) {
