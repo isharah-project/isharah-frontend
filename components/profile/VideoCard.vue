@@ -1,6 +1,6 @@
 <template>
   <v-card class="video-card-wrapper small-round-corners light-box-shadow">
-    <v-img :src="gesture.preview_url" aspect-ratio="1.77">
+    <v-img :src="imgSrc" aspect-ratio="1.77">
       <template v-slot:placeholder>
         <v-layout
           fill-height
@@ -45,7 +45,7 @@
   </v-card>
 </template>
 <script>
-import image from '~/assets/images/card_placeholder.jpg'
+import placeholder from '~/assets/images/video-card-placeholder.jpg'
 import moment from 'moment'
 
 export default {
@@ -62,7 +62,7 @@ export default {
   },
   data () {
     return {
-      image: image,
+      placeholder: placeholder,
       REVIEW_STATES: {
         ACCEPTED: 0,
         REJECTED: 1,
@@ -71,6 +71,9 @@ export default {
     }
   },
   computed: {
+    imgSrc () {
+      return this.gesture.preview_url || placeholder
+    },
     formattedDate () {
       let diff = moment().diff(this.gesture.created_at, 'days')
       if (diff < 7) {
