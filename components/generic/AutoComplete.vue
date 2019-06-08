@@ -153,6 +153,11 @@ export default {
     getItemText (item) {
       if (this.itemText) return item[this.itemText]
       else return item
+    },
+    setItem (item) {
+      this.selectedItem = item
+      this.$refs.autocomplete.cachedItems.push(item)
+      this.$refs.autocomplete.selectItem(item)
     }
   }
 }

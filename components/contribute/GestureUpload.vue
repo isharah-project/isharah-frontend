@@ -145,6 +145,7 @@
               </transition>
               <div>
                 <AutoComplete
+                  ref="autocomplete"
                   :label="autoCompleteLabel"
                   :itemText="autoCompleteItemText"
                   :deserializeResults="autoCompleteDeserializeResults"
@@ -317,6 +318,7 @@ export default {
   mounted () {
     this.initVideoEditor()
     this.addFileInputListener()
+    this.checkWordInQuery()
     this.state = this.states.UPLOAD.INIT
   },
   beforeDestroy () {
@@ -548,6 +550,11 @@ export default {
           this.loading = false
           this.progressValue = 0
         })
+      }
+    },
+    checkWordInQuery () {
+      if (this.$route.params.word) {
+        this.$refs.autocomplete.setItem(this.$route.params.word)
       }
     }
   }

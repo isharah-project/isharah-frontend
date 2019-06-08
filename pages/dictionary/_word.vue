@@ -25,7 +25,8 @@
         </v-chip>
       </div>
     </v-layout>
-    <v-layout>
+    <!--<v-divider></v-divider>-->
+    <v-layout justify-space-between wrap class="pt-2">
       <v-btn
         class="fixed-size-btn btn-shadow blue-gradient"
         dark
@@ -33,9 +34,21 @@
         round
         @click="goToPracticePage"
       >
-        تدرب على الكلمة
+        تدرب على الإشارة
         <v-icon class="mx-1">
           videocam
+        </v-icon>
+      </v-btn>
+      <v-btn
+        class="btn-shadow orange-gradient"
+        dark
+        flat
+        round
+        @click="goToAddGesturePage"
+      >
+        شارك بإضافة هذه الإشارة في مجموعة البيانات
+        <v-icon class="mx-1">
+          layers
         </v-icon>
       </v-btn>
     </v-layout>
@@ -63,6 +76,14 @@ export default {
   methods: {
     goToPracticePage () {
       this.$router.push({ path: `/contribute/practice?word=${this.word.name}` })
+    },
+    goToAddGesturePage () {
+      this.$router.push({
+        name: 'contribute-add_gesture',
+        params: {
+          word: this.word
+        }
+      })
     }
   }
 }
