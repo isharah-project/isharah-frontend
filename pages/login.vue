@@ -3,6 +3,9 @@
     <v-card class="py-4 light-box-shadow text-xs-center card-size small-round-corners">
       <v-card-text v-if="state === 'email-confirmation'">
         تم ارسال رسالة على البريد الالكتروني لتأكيد حسابك
+        <v-btn class="blue-gradient btn-shadow mt-3" round dark @click="state = 'signin'">
+          الرجوع
+        </v-btn>
       </v-card-text>
       <div v-else>
         <Loader :active="loading">
@@ -280,12 +283,12 @@ export default {
       let maxYear = moment().subtract(18, 'years')
       return moment(maxYear).format('YYYY-MM-DD')
     },
-    changeState (page) {
+    changeState (state) {
       this.errors = []
-      this.state = page
-      if (page === 'signup') {
+      this.state = state
+      if (state === 'signup') {
         this.$refs.loginForm.reset()
-      } else if (page === 'signin') {
+      } else if (state === 'signin') {
         this.$refs.signupForm.reset()
       }
     },
