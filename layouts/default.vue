@@ -172,7 +172,7 @@
           </nuxt-link>
         </li>
         <li class="mx-2">
-          <nuxt-link to="/contact-us" class="grey-text">
+          <nuxt-link to="/contact_us" class="grey-text">
             تواصل معنا
           </nuxt-link>
         </li>
