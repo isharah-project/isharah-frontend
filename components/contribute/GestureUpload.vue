@@ -360,6 +360,10 @@ export default {
           this.$store.commit('showInfoMsg', {
             message: 'لتتمكن من التسجيل يجب السماح بالوصول الى الكاميرا'
           })
+        } else {
+          this.$store.commit('showErrorMsg', {
+            message: 'متصفحك لا يدعم التسجيل برجاء رفع الفيديو'
+          })
         }
       })
     },
@@ -369,8 +373,14 @@ export default {
       }
     },
     startRecording () {
-      this.recorder.startRecording()
-      this.state = this.states.RECORD.RECORDING
+      try {
+        this.recorder.startRecording()
+        this.state = this.states.RECORD.RECORDING
+      } catch {
+        this.$store.commit('showErrorMsg', {
+          message: 'متصفحك لا يدعم التسجيل برجاء رفع الفيديو'
+        })
+      }
     },
     stopRecording () {
       this.recorder.stopRecording(() => {
