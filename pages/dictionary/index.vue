@@ -225,33 +225,39 @@ export default {
   methods: {
     fetchCategories () {
       this.loading = true
-      return this.$axios.get('/categories').then((response) => {
-        return this.$store.state.deserialize(response.data)
-      }).catch(() => {
-        this.$store.commit('showErrorMsg', {
-          message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+      return this.$axios.get('/categories')
+        .then((response) => {
+          return this.$store.state.deserialize(response.data)
         })
-      }).finally(() => {
-        this.loading = false
-      })
+        .catch(() => {
+          this.$store.commit('showErrorMsg', {
+            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+          })
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     fetchData (query = '') {
       if (query === this.lastQuery) return
       this.loading = true
       this.lastQuery = query
-      this.$axios.$get(`/words${query}`).then((response) => {
-        if (this.page.current > response.page_meta.total_pages) {
-          this.replaceRouterPage(1)
-        }
-        this.words = this.deserialize(response)
-        this.page.total = response.page_meta.total_pages || 1
-      }).catch(() => {
-        this.$store.commit('showErrorMsg', {
-          message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+      this.$axios.$get(`/words${query}`)
+        .then((response) => {
+          if (this.page.current > response.page_meta.total_pages) {
+            this.replaceRouterPage(1)
+          }
+          this.words = this.deserialize(response)
+          this.page.total = response.page_meta.total_pages || 1
         })
-      }).finally(() => {
-        this.loading = false
-      })
+        .catch(() => {
+          this.$store.commit('showErrorMsg', {
+            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+          })
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     buildApiQuery () {
       let result = '?'

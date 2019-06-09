@@ -283,24 +283,28 @@ export default {
     register () {
       if (this.$refs.signupForm.validate()) {
         this.loading = true
-        this.$axios.$post('auth', {
-          'email': this.user.email,
-          'password': this.user.password,
-          'first_name': this.user.first_name,
-          'last_name': this.user.last_name,
-          'city': this.user.city,
-          'country': 'مصر',
-          'date_of_birth': this.user.date_of_birth,
-          'confirm_success_url': process.env.FRONTEND_URL + '/login'
-        }).then(() => {
-          this.errors = []
-          this.changeState('email-confirmation')
-        }).catch((e) => {
-          this.errors = []
-          this.errors.push(...e.response.data.errors.full_messages)
-        }).finally(() => {
-          this.loading = false
-        })
+        this.$axios.$post('auth',
+          {
+            'email': this.user.email,
+            'password': this.user.password,
+            'first_name': this.user.first_name,
+            'last_name': this.user.last_name,
+            'city': this.user.city,
+            'country': 'مصر',
+            'date_of_birth': this.user.date_of_birth,
+            'confirm_success_url': process.env.FRONTEND_URL + '/login'
+          })
+          .then(() => {
+            this.errors = []
+            this.changeState('email-confirmation')
+          })
+          .catch((e) => {
+            this.errors = []
+            this.errors.push(...e.response.data.errors.full_messages)
+          })
+          .finally(() => {
+            this.loading = false
+          })
       }
     },
     login () {
@@ -345,13 +349,15 @@ export default {
         // $auth to keep user logged in in case of a refresh
         this.$auth.$storage.setUniversal('fullToken', JSON.stringify(authHeaders))
         this.$auth.setToken(this.$auth.$state.strategy, JSON.stringify(authHeaders))
-        this.$axios.get('/auth/validate_token').then(() => {
-          this.$router.push('/')
-        }).catch(() => {
-          this.$store.commit('showErrorMsg', {
-            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+        this.$axios.get('/auth/validate_token')
+          .then(() => {
+            this.$router.push('/')
           })
-        })
+          .catch(() => {
+            this.$store.commit('showErrorMsg', {
+              message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+            })
+          })
       }
     }
   }

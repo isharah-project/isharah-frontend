@@ -181,17 +181,20 @@ export default {
   methods: {
     fetchGestures (page, callback, loadingType) {
       if (loadingType) this[loadingType] = true
-      this.$axios.get(`gestures/unreviewed?page=${page}&per_page=4`).then((response) => {
-        this.page.total = response.data.page_meta.total_pages
-        this.gestures = this.deserialize(response.data)
-        if (callback) callback()
-      }).catch((e) => {
-        this.$store.commit('showErrorMsg', {
-          message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+      this.$axios.get(`gestures/unreviewed?page=${page}&per_page=10`)
+        .then((response) => {
+          this.page.total = response.data.page_meta.total_pages
+          this.gestures = this.deserialize(response.data)
+          if (callback) callback()
         })
-      }).finally(() => {
-        if (loadingType) this[loadingType] = false
-      })
+        .catch((e) => {
+          this.$store.commit('showErrorMsg', {
+            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+          })
+        })
+        .finally(() => {
+          if (loadingType) this[loadingType] = false
+        })
     },
     submitReview (value) {
       if (!this.validateSubmission(value)) return
@@ -200,27 +203,30 @@ export default {
         accepted: value,
         comment: this.review.comment
       }
-      this.$axios.post(`gestures/${this.selectedGesture.id}/review`, postData).then(() => {
-        this.fetchGestures(this.page.current, () => {
-          if (this.gestures.length === 0 && this.page.current !== 1) {
-            // last gesture in a page, need to request previous page
-            this.fetchGestures(--this.page.current, () => {
+      this.$axios.post(`gestures/${this.selectedGesture.id}/review`, postData)
+        .then(() => {
+          this.fetchGestures(this.page.current, () => {
+            if (this.gestures.length === 0 && this.page.current !== 1) {
+              // last gesture in a page, need to request previous page
+              this.fetchGestures(--this.page.current, () => {
+                this.selectGesture(this.gestures.length ? this.gestures[0] : null)
+              }, 'reviewListLoading')
+            } else {
               this.selectGesture(this.gestures.length ? this.gestures[0] : null)
-            }, 'reviewListLoading')
-          } else {
-            this.selectGesture(this.gestures.length ? this.gestures[0] : null)
-          }
-        }, 'reviewListLoading')
-        this.$store.commit('showSuccessMsg', {
-          message: 'تم تقييم اﻹشارة بنجاح'
+            }
+          }, 'reviewListLoading')
+          this.$store.commit('showSuccessMsg', {
+            message: 'تم تقييم اﻹشارة بنجاح'
+          })
         })
-      }).catch(() => {
-        this.$store.commit('showErrorMsg', {
-          message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+        .catch(() => {
+          this.$store.commit('showErrorMsg', {
+            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+          })
         })
-      }).finally(() => {
-        this.pageLoading = false
-      })
+        .finally(() => {
+          this.pageLoading = false
+        })
     },
     validateSubmission (value) {
       if (!value && !this.review.comment) {

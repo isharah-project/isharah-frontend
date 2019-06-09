@@ -76,20 +76,23 @@ export default {
   methods: {
     fetchWord () {
       this.loading = true
-      this.$axios.get(`words/${this.$route.params.word}`).then((response) => {
-        this.word = this.$store.state.deserialize(response.data)
-      }).catch((e) => {
-        if (e.response.status === 404) {
-          /* eslint-disable-next-line */
-          this.$nuxt.error({ statusCode: 404 })
-        } else {
-          this.$store.commit('showErrorMsg', {
-            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
-          })
-        }
-      }).finally(() => {
-        this.loading = false
-      })
+      this.$axios.get(`words/${this.$route.params.word}`)
+        .then((response) => {
+          this.word = this.$store.state.deserialize(response.data)
+        })
+        .catch((e) => {
+          if (e.response.status === 404) {
+            /* eslint-disable-next-line */
+            this.$nuxt.error({ statusCode: 404 })
+          } else {
+            this.$store.commit('showErrorMsg', {
+              message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+            })
+          }
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     goToPracticePage () {
       this.$router.push({ path: `/contribute/practice?word=${this.word.name}` })

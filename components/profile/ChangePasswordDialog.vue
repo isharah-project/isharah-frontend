@@ -99,22 +99,26 @@ export default {
     changePassword () {
       if (this.$refs.passwordForm.validate()) {
         this.loading = true
-        this.$axios.$put('auth', {
-          'current_password': this.user.current_password,
-          'password': this.user.password,
-          'password_confirmation': this.password_confirmation
-        }).then(() => {
-          this.$store.commit('showSuccessMsg', {
-            message: 'تم تغيير كلمة السر بنجاح'
+        this.$axios.$put('auth',
+          {
+            'current_password': this.user.current_password,
+            'password': this.user.password,
+            'password_confirmation': this.password_confirmation
           })
-          this.closeDialog()
-          this.errors = []
-        }).catch((e) => {
-          this.errors = []
-          this.errors.push(...e.response.data.errors.full_messages)
-        }).finally(() => {
-          this.loading = false
-        })
+          .then(() => {
+            this.$store.commit('showSuccessMsg', {
+              message: 'تم تغيير كلمة السر بنجاح'
+            })
+            this.closeDialog()
+            this.errors = []
+          })
+          .catch((e) => {
+            this.errors = []
+            this.errors.push(...e.response.data.errors.full_messages)
+          })
+          .finally(() => {
+            this.loading = false
+          })
       }
     },
     closeDialog () {

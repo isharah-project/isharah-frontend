@@ -534,22 +534,26 @@ export default {
       if (this.$refs.videoForm.validate() && this.videoBlob) {
         this.loading = true
         let formData = this.getFormData()
-        this.$axios.post(this.submitEndPoint, formData, {
-          onUploadProgress: this.updateProgressBar
-        }).then(() => {
-          this.setParentState(this.getParentState())
-          this.resetComponentValues()
-          this.$store.commit('showSuccessMsg', {
-            message: 'تم رفع الاشارة بنجاح'
+        this.$axios.post(this.submitEndPoint, formData,
+          {
+            onUploadProgress: this.updateProgressBar
           })
-        }).catch(() => {
-          this.$store.commit('showErrorMsg', {
-            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+          .then(() => {
+            this.setParentState(this.getParentState())
+            this.resetComponentValues()
+            this.$store.commit('showSuccessMsg', {
+              message: 'تم رفع الاشارة بنجاح'
+            })
           })
-        }).finally(() => {
-          this.loading = false
-          this.progressValue = 0
-        })
+          .catch(() => {
+            this.$store.commit('showErrorMsg', {
+              message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+            })
+          })
+          .finally(() => {
+            this.loading = false
+            this.progressValue = 0
+          })
       }
     },
     checkWordInQuery () {

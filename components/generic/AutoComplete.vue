@@ -136,19 +136,22 @@ export default {
     fetchItems (query) {
       this.loading = true
       this.$axios.get(`${this.apiEndPoint}?q=${query}`,
-        { progress: false }).then((response) => {
-        this.loading = false
-        if (this.deserializeResults) {
-          this.items = this.deserialize(response.data)
-        } else {
-          this.items = response.data
-        }
-      }).catch((e) => {
-        this.loading = false
-        this.$store.commit('showErrorMsg', {
-          message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+        { progress: false })
+        .then((response) => {
+          if (this.deserializeResults) {
+            this.items = this.deserialize(response.data)
+          } else {
+            this.items = response.data
+          }
         })
-      })
+        .catch(() => {
+          this.$store.commit('showErrorMsg', {
+            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+          })
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     getItemText (item) {
       if (this.itemText) return item[this.itemText]

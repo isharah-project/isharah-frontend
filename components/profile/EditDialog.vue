@@ -120,23 +120,27 @@ export default {
     submitEdit () {
       if (this.$refs.editForm.validate()) {
         this.loading = true
-        this.$axios.$put('auth', {
-          'first_name': this.userClone.first_name,
-          'last_name': this.userClone.last_name,
-          'date_of_birth': this.userClone.date_of_birth
-        }).then((response) => {
-          this.$store.commit('showSuccessMsg', {
-            message: 'تم تعديل البيانات بنجاح'
+        this.$axios.$put('auth',
+          {
+            'first_name': this.userClone.first_name,
+            'last_name': this.userClone.last_name,
+            'date_of_birth': this.userClone.date_of_birth
           })
-          this.$store.commit('setUser', deserialize(response))
-          this.closeDialog()
-          this.editErrors = []
-        }).catch((e) => {
-          this.editErrors = []
-          this.editErrors.push(...e.response.data.errors.full_messages)
-        }).finally(() => {
-          this.loading = false
-        })
+          .then((response) => {
+            this.$store.commit('showSuccessMsg', {
+              message: 'تم تعديل البيانات بنجاح'
+            })
+            this.$store.commit('setUser', deserialize(response))
+            this.closeDialog()
+            this.editErrors = []
+          })
+          .catch((e) => {
+            this.editErrors = []
+            this.editErrors.push(...e.response.data.errors.full_messages)
+          })
+          .finally(() => {
+            this.loading = false
+          })
       }
     },
     closeDialog () {

@@ -99,16 +99,19 @@ export default {
     fetchData (pageNumber) {
       this.loading = true
       this.page.current = pageNumber
-      this.$axios.get(`${this.url}?page=${pageNumber}&per_page=12`).then((response) => {
-        this.gestures = deserialize(response.data)
-        this.page.total = response.data.page_meta.total_pages
-      }).catch(() => {
-        this.$store.commit('showErrorMsg', {
-          message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+      this.$axios.get(`${this.url}?page=${pageNumber}&per_page=12`)
+        .then((response) => {
+          this.gestures = deserialize(response.data)
+          this.page.total = response.data.page_meta.total_pages
         })
-      }).finally(() => {
-        this.loading = false
-      })
+        .catch(() => {
+          this.$store.commit('showErrorMsg', {
+            message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+          })
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     redirect () {
       this.$router.push({ path: '/contribute/add_gesture' })

@@ -118,11 +118,13 @@ export default {
   methods: {
     fetchGestures () {
       this.loading = true
-      this.$axios.get('gestures/recently_added').then((response) => {
-        this.mostRecentGestures = this.deserialize(response.data)
-      }).finally(() => {
-        this.loading = false
-      })
+      this.$axios.get('gestures/recently_added')
+        .then((response) => {
+          this.mostRecentGestures = this.deserialize(response.data)
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     dictionarySearch () {
       if (this.searchQuery) {
