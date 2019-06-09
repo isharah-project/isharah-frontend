@@ -144,7 +144,6 @@ import ChangePasswordDialog from '~/components/profile/ChangePasswordDialog'
 import Gestures from '~/components/profile/Gestures'
 import moment from 'moment'
 import _ from 'lodash'
-import { deserialize } from 'jsonapi-deserializer'
 
 export default {
   components: {
@@ -156,10 +155,6 @@ export default {
   data () {
     return {
       defaultImage: image,
-      accountDate: '',
-      pendingCount: 0,
-      acceptedCount: 0,
-      rejectedCount: 0,
       editDialog: false,
       changePasswordDialog: false,
       userClone: {}
@@ -174,21 +169,18 @@ export default {
         return this.defaultImage
       }
       return this.user.image
-    }
-  },
-  async asyncData ({ app, $axios }) {
-    try {
-      let account = deserialize((await $axios.get('/user/')).data)
-      let pendingCount = account.pending_contributions_count.toLocaleString('ar-EG')
-      let rejectedCount = account.rejected_contributions_count.toLocaleString('ar-EG')
-      let acceptedCount = account.accepted_contributions_count.toLocaleString('ar-EG')
-      let accountDate = account.created_at
-      accountDate = moment(accountDate).locale('ar').format('Do MMMM YYYY')
-      return { accountDate, pendingCount, rejectedCount, acceptedCount }
-    } catch (e) {
-      this.$store.commit('showErrorMsg', {
-        message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
-      })
+    },
+    pendingCount () {
+      return this.user.pending_contributions_count
+    },
+    rejectedCount () {
+      return this.user.rejected_contributions_count
+    },
+    acceptedCount () {
+      return this.user.accepted_contributions_count
+    },
+    accountDate () {
+      return moment(this.user.created_at).locale('ar').format('Do MMMM YYYY')
     }
   },
   methods: {

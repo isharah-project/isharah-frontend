@@ -1,7 +1,7 @@
 <template>
   <v-container class="mt-3">
     <PageHeader id="pageHeader" text="قيّم الإشارات" icon="rate_review" />
-    <v-layout v-if="!gestures.length" class="white light-box-shadow small-round-corners pa-2 mt-4">
+    <v-layout v-if="!pageLoading && !gestures.length" class="white light-box-shadow small-round-corners pa-2 mt-4">
       <v-flex>
         <div class="headline text-xs-center">
           لا توجد إشارات للتقييم الآن..
@@ -12,14 +12,14 @@
       <Loader :active="pageLoading">
         <v-layout justify-center>
           <v-flex xs12 sm10 md8>
-            <v-layout justify-center>
+            <v-layout v-if="selectedGesture" justify-center>
               <v-flex class="medium-round-corners light-box-shadow video-container">
                 <video ref="review-video" class="d-block full-width" controls @ended="enableButtons">
                   <source :src="selectedGesture.video_url">
                 </video>
               </v-flex>
             </v-layout>
-            <v-layout justify-space-between align-center>
+            <v-layout v-if="selectedGesture" justify-space-between align-center>
               <v-layout justify-start align-baseline>
                 <h2 class="display-2 py-4 pl-2 grey-text">
                   {{ selectedGesture.word.name }}
@@ -137,7 +137,7 @@
               class="round-pagination"
               :length="page.total"
               :total-visible="$vuetify.breakpoint.xsOnly ? 4 : 6"
-              @input="fetchGestures($event)"
+              @input="fetchGestures($event, null, 'reviewListLoading')"
             />
           </v-flex>
         </v-layout>
@@ -157,37 +157,31 @@ export default {
   },
   data () {
     return {
-      gestures: null,
+      gestures: [],
       selectedGesture: null,
       review: {
         comment: null
       },
-      page: null,
+      page: {
+        current: 1,
+        total: null
+      },
       disableForm: true,
       pageLoading: false,
       reviewListLoading: false
     }
   },
-  async asyncData ({ store, $axios }) {
-    try {
-      let response = (await $axios.get('gestures/unreviewed?page=1&per_page=10')).data
-      let gestures = store.state.deserialize(response)
-      let selectedGesture = gestures.length ? gestures[0] : null
-      let page = {
-        current: 1,
-        total: response.page_meta.total_pages
-      }
-      return { gestures, selectedGesture, page }
-    } catch (e) {
-      store.commit('showErrorMsg', {
-        message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
-      })
-    }
+  created () {
+    this.fetchGestures(
+      1,
+      () => { this.selectedGesture = this.gestures.length ? this.gestures[0] : null },
+      'pageLoading'
+    )
   },
   methods: {
     fetchGestures (page, callback, loadingType) {
       if (loadingType) this[loadingType] = true
-      this.$axios.get(`gestures/unreviewed?page=${page}&per_page=10`).then((response) => {
+      this.$axios.get(`gestures/unreviewed?page=${page}&per_page=4`).then((response) => {
         this.page.total = response.data.page_meta.total_pages
         this.gestures = this.deserialize(response.data)
         if (callback) callback()
@@ -209,7 +203,7 @@ export default {
       this.$axios.post(`gestures/${this.selectedGesture.id}/review`, postData).then(() => {
         this.fetchGestures(this.page.current, () => {
           if (this.gestures.length === 0 && this.page.current !== 1) {
-            // last gesture in a page, need to request last page
+            // last gesture in a page, need to request previous page
             this.fetchGestures(--this.page.current, () => {
               this.selectGesture(this.gestures.length ? this.gestures[0] : null)
             }, 'reviewListLoading')
