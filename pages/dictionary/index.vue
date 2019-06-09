@@ -86,7 +86,7 @@
                   </v-btn>
                 </v-flex>
                 <v-flex xs12>
-                  <v-btn class="red-gradient" dark round block @click="removeFirstLetterFilter()">
+                  <v-btn class="red-gradient" dark round block @click="setFirstLetterFilter(null)">
                     إلغاء
                   </v-btn>
                 </v-flex>
@@ -161,7 +161,7 @@ export default {
         q: null
       },
       page: {
-        perPage: 30,
+        perPage: 60,
         current: 1,
         total: null
       },
@@ -202,29 +202,39 @@ export default {
       deep: true
     }
   },
-  async asyncData ({ app, $axios, store }) {
+  async created () {
     try {
-      let response = await $axios.get('/categories')
-      let categories = store.state.deserialize(response.data)
-      return { categories }
-    } catch (e) {
-      store.commit('showErrorMsg', {
+      // To make sure all is blocked until categories are fetched
+      // needed to validate categories in url query
+      this.categories = await this.fetchCategories()
+      if (!this.$route.query.page) {
+        this.replaceRouterPage(1)
+      }
+      this.cloneRouteQuery()
+      this.validateQueryParams()
+      if (!Object.keys(this.$route.query).length) {
+        // No query so query watcher will not get triggered
+        this.fetchData(this.buildApiQuery())
+      }
+    } catch {
+      this.$store.commit('showErrorMsg', {
         message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
       })
     }
   },
-  created () {
-    if (!this.$route.query.page) {
-      this.replaceRouterPage(1)
-    }
-    this.cloneRouteQuery()
-    this.validateQueryParams()
-    if (!Object.keys(this.$route.query).length) {
-      // No query so query watcher will not get triggered
-      this.fetchData(this.buildApiQuery())
-    }
-  },
   methods: {
+    fetchCategories () {
+      this.loading = true
+      return this.$axios.get('/categories').then((response) => {
+        return this.$store.state.deserialize(response.data)
+      }).catch(() => {
+        this.$store.commit('showErrorMsg', {
+          message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+        })
+      }).finally(() => {
+        this.loading = false
+      })
+    },
     fetchData (query = '') {
       if (query === this.lastQuery) return
       this.loading = true
@@ -290,14 +300,20 @@ export default {
       }
     },
     validateQueryParams () {
-      if (this.query.part_of_speech &&
-        !this.assertValueInList(this.query.part_of_speech, this.partOfSpeechTypes, 'value')) {
+      if (
+        this.query.part_of_speech &&
+        !this.assertValueInList(this.query.part_of_speech, this.partOfSpeechTypes, 'value')
+      ) {
         this.query.part_of_speech = null
       }
-      if (this.query.category &&
-        !this.assertSubsetOfList(this.query.category, this.categories, 'name')) {
+      if (this.query.category && this.query.category.length) {
+        this.query.category = this.query.category.filter((categoryName) => {
+          return this.assertValueInList(categoryName, this.categories, 'name')
+        })
+      } else {
         this.query.category = null
       }
+      // FIRST LETTER SEARCH
       // if (this.query.q &&
       //   !this.assertValueInList(this.query.q, this.arabicLetters)) {
       //   this.query.q = null
@@ -307,12 +323,6 @@ export default {
       if (!list || !list.length) return false
       return list.some((listValue) => {
         return prop ? listValue[prop] === value : listValue === value
-      })
-    },
-    assertSubsetOfList (subsetList, fullList, prop = null) {
-      if (!subsetList || !subsetList.length) return false
-      return subsetList.every((listItem) => {
-        return this.assertValueInList(listItem, fullList, prop)
       })
     },
     setQueryAndFetchData () {
@@ -330,20 +340,18 @@ export default {
       query.page = pageNumber
       this.$router.replace({ query })
     },
-    resetPagination () {
-      this.page.current = 1
-    },
+    // resetPagination () {
+    //   this.page.current = 1
+    // },
     goToWord (word) {
       if (word) {
         this.$router.push({ path: `dictionary/${word.name}` })
       }
-    },
-    setFirstLetterFilter (letter) {
-      this.query.q = letter
-    },
-    removeFirstLetterFilter () {
-      this.query.q = null
     }
+    // FIRST LETTER SEARCH
+    // setFirstLetterFilter (letter) {
+    //   this.query.q = letter
+    // },
   }
 }
 </script>

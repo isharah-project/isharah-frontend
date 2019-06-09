@@ -46,7 +46,7 @@
         round
         @click="goToAddGesturePage"
       >
-        شارك بإضافة هذه الإشارة في مجموعة البيانات
+        شارك بإضافة إشارة للكلمة في مجموعة البيانات
         <v-icon class="mx-1">
           layers
         </v-icon>
