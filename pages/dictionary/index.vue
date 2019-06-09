@@ -351,7 +351,7 @@ export default {
     // },
     goToWord (word) {
       if (word) {
-        this.$router.push({ path: `dictionary/${word.name}` })
+        this.$router.push({ path: `/dictionary/${word.name}` })
       }
     }
     // FIRST LETTER SEARCH

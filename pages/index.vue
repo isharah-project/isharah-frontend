@@ -128,11 +128,11 @@ export default {
     },
     dictionarySearch () {
       if (this.searchQuery) {
-        this.$router.push(`dictionary?page=1&q=${this.searchQuery}`)
+        this.$router.push(`/dictionary?page=1&q=${this.searchQuery}`)
       }
     },
     goToWord (gesture) {
-      this.$router.push(`dictionary/${gesture.word.name}`)
+      this.$router.push(`/dictionary/${gesture.word.name}`)
     }
   }
 }
