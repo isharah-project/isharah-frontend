@@ -1,6 +1,6 @@
 <template>
-  <v-layout row wrap class="justify-center py-4 mt-4">
-    <v-card class="py-4 light-box-shadow text-xs-center card-size small-round-corners">
+  <v-layout column align-center wrap class="py-4 mt-4">
+    <v-card class="py-4 light-box-shadow text-xs-center login-card small-round-corners">
       <v-card-text v-if="state === 'email-confirmation'">
         تم ارسال رسالة على البريد الالكتروني لتأكيد حسابك
         <v-btn class="blue-gradient btn-shadow mt-3" round dark @click="state = 'signin'">
@@ -14,15 +14,8 @@
               {{ headerText }}
             </h2>
           </v-card-text>
-          <v-card-text>
-            بالاستمرار فإنك تقر بأنك قرأت و وافقت على
-            <br />
-            <nuxt-link to="/privacy-policy">
-              سياسة الخصوصية
-            </nuxt-link> و
-            <nuxt-link to="/terms-and-conditions">
-              الشروط واﻷحكام
-            </nuxt-link>
+          <v-card-text class="subheading d-block pt-0">
+            سجل الدخول الآن لتستطيع مشاركة فيديوهاتك ومساعدة المتعلمين والباحثين بلغة الإشارة المصرية.
           </v-card-text>
           <v-btn flat round class="btn-shadow" @click="loginWithFacebook">
             تسجيل الدخول عن طريق فيسبوك
@@ -39,6 +32,16 @@
             تسجيل الدخول عن طريق جوجل
             <GoogleLogo />
           </v-btn>
+          <v-card-text>
+            بالاستمرار فإنك تقر بأنك قرأت و وافقت على
+            <br />
+            <nuxt-link to="/privacy-policy">
+              سياسة الخصوصية
+            </nuxt-link> و
+            <nuxt-link to="/terms-and-conditions">
+              الشروط واﻷحكام
+            </nuxt-link>
+          </v-card-text>
           <v-divider class="mb-3 mt-4" />
           <div class="or-divider">
             أو
@@ -374,14 +377,17 @@ export default {
   transform: translateX(10px);
   opacity: 0;
 }
+.login-card {
+  width: 400px;
+}
 .or-divider {
   position: absolute;
   right: 50%;
-  top: 243px;
+  top: 307px;
   transform: translateX(50%);
   background: #fff;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   text-align: center;
   line-height: 26px;
   border-radius: 50%;
@@ -389,5 +395,11 @@ export default {
 }
 a {
   text-decoration: none;
+}
+
+@media screen and (max-width: 400px) {
+  .login-card {
+    width: 90%;
+  }
 }
 </style>

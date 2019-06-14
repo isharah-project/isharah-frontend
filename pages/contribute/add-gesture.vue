@@ -1,6 +1,11 @@
 <template>
   <v-container class="mt-3">
-    <PageHeader icon="videocam" text="أضف إشارة" class="mb-0" />
+    <PageHeader icon="videocam" text="أضف إشارة" mb="mb-2" />
+    <p class="subheading pb-3 pr-5">
+      قم باختيار كلمة ثم قم برفع أو تسجيل فيديو تقوم فيه بأداء الإشارة لهذه الكلمة.
+      <br>
+      في كل مرة تضيف فيها فيديو، تساعد على رفع مستوى البحث العلمي وبناء التطبيقات لمجتمع الصم في مصر.
+    </p>
     <GestureUpload
       submitEndPoint="gestures"
       autoCompleteEndPoint="autocomplete/words"

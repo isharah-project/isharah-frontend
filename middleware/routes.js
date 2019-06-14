@@ -8,7 +8,7 @@ export default function ({ store, route, redirect }) {
   if (route.name === 'contribute-practice' && !store.state.user) {
     redirect('/login')
   }
-  if (route.name === 'contribute-add_gesture' && !store.state.user) {
+  if (route.name === 'contribute-add-gesture' && !store.state.user) {
     redirect('/login')
   }
   if (route.name === 'contribute-review' && !isUser(store.state.user, ['Admin', 'Reviewer'])) {

@@ -99,7 +99,7 @@ export default {
     },
     goToAddGesturePage () {
       this.$router.push({
-        name: 'contribute-add_gesture',
+        name: 'contribute-add-gesture',
         params: {
           word: this.word
         }

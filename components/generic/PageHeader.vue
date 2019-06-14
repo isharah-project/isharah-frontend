@@ -1,5 +1,5 @@
 <template>
-  <v-layout class="mb-4">
+  <v-layout :class="mb">
     <v-flex>
       <h1 class="display-1 font-weight-medium d-inline-flex">
         <v-icon class="heading-icon mx-2">
@@ -21,6 +21,11 @@ export default {
     text: {
       type: String,
       required: true
+    },
+    mb: {
+      type: String,
+      required: false,
+      default: 'mb-4'
     }
   }
 }

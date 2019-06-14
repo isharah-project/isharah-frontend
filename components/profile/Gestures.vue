@@ -114,7 +114,7 @@ export default {
         })
     },
     redirect () {
-      this.$router.push({ path: '/contribute/add_gesture' })
+      this.$router.push({ path: '/contribute/add-gesture' })
     }
   }
 }

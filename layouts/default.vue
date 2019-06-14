@@ -172,7 +172,7 @@
           </nuxt-link>
         </li>
         <li class="mx-2">
-          <nuxt-link to="/contact_us" class="grey-text">
+          <nuxt-link to="/contact-us" class="grey-text">
             تواصل معنا
           </nuxt-link>
         </li>
@@ -207,11 +207,9 @@ export default {
       return [
         { path: '/dictionary?page=1', text: 'القاموس', icon: 'library_books' },
         { path: '/contribute/practice', text: 'تدرب على إشارة', icon: 'videocam' },
-        { path: '/contribute/add_gesture', text: 'أضف إشارة', icon: 'videocam' },
+        { path: '/contribute/add-gesture', text: 'أضف إشارة', icon: 'videocam' },
         { path: '/contribute/review', text: 'قيّم الإشارات', icon: 'rate_review', hidden: !this.isUser(['Admin', 'Reviewer']) },
-        // { path: '/contribute', text: 'شارك معنا', icon: 'accessibility' },
-        // { path: '/contact_us', text: 'تواصل معنا', icon: 'contact_mail' },
-        { path: '/for_developers', text: 'للمطورين', icon: 'code' }
+        { path: '/about-us', text: 'عن إشارة', icon: 'code' }
       ]
     },
     snackbarState: {
@@ -245,7 +243,7 @@ export default {
       return this.shownToolbarLinks.concat([
         { path: '/privacy-policy', text: 'سياسة الخصوصية', icon: 'assignment' },
         { path: '/terms-and-conditions', text: 'الشروط والأحكام', icon: 'assignment_turned_in' },
-        { path: '/contact_us', text: 'تواصل معنا', icon: 'contact_mail' }
+        { path: '/contact-us', text: 'تواصل معنا', icon: 'contact_mail' }
       ])
     }
   },
