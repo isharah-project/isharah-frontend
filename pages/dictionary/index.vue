@@ -1,121 +1,135 @@
 <template>
   <v-container class="mt-3">
     <PageHeader icon="library_books" text="القاموس" />
-    <v-layout row wrap justify-space-between>
-      <v-flex xs12 sm5 md5 lg2>
-        <v-select
-          v-model="query.part_of_speech"
-          :items="partOfSpeechTypes"
-          class="round-input light-shadow-input"
-          menu-props="auto"
-          label="إختر نوع الكلمة"
-          hide-details
-          single-line
-          clearable
-          solo
-        ></v-select>
-      </v-flex>
-      <v-flex xs12 sm5 md5 lg2 :class="{ 'mt-2': $vuetify.breakpoint.xsOnly }">
-        <v-select
-          v-model="query.category"
-          :items="categories"
-          :multiple="true"
-          item-text="name"
-          item-value="name"
-          class="round-input light-shadow-input"
-          menu-props="auto"
-          label="إختر فئة الكلمة"
-          hide-details
-          single-line
-          chips
-          solo
-        >
-          <template v-slot:selection="{ item, index }">
-            <v-chip v-if="index === 0">
-              <span>{{ item.name }}</span>
-            </v-chip>
-            <span
-              v-if="index === 1"
-              class="grey--text caption"
-            >(+{{ query.category.length - 1 }} أخرى)</span>
-          </template>
-        </v-select>
-      </v-flex>
-      <v-flex
-        xs12
-        sm12
-        md12
-        lg7
-        class="d-flex align-center white light-box-shadow small-round-corners"
-        :class="{ 'flex-wrap': $vuetify.breakpoint.xsOnly,
-                  'my-2 pa-1': $vuetify.breakpoint.mdAndDown }"
-      >
-        <!-- FIRST LETTER SEARCH -->
-        <!-- <v-flex xs12>
-          <v-menu
-            v-model="menu"
-            offset-y
-            :nudge-left="105"
-            :nudge-bottom="10"
-          >
-            <template v-slot:activator="{ on }">
-              <v-btn
-                :class="{ 'full-width': $vuetify.breakpoint.xsOnly }"
-                class="ma-0 small-round-corners"
-                flat
-                v-on="on"
-              >
-                الأبجدية
-                <span v-if="arabicLetters.includes(query.q)" class="font-weight-bold">
-                  &nbsp; {{ `(${query.q})` }}
-                </span>
-                <v-icon>filter_list</v-icon>
-              </v-btn>
-            </template>
-
-            <v-card>
-              <v-layout row wrap class="pa-1 arabic-letters-container">
-                <v-flex v-for="letter in arabicLetters" :key="letter" class="text-xs-center" xs2>
-                  <v-btn
-                    :color="letter === query.q ? 'primary' : ''"
-                    icon
-                    class="title pa-0 ma-0"
-                    @click="setFirstLetterFilter(letter)"
-                  >
-                    {{ letter }}
-                  </v-btn>
-                </v-flex>
-                <v-flex xs12>
-                  <v-btn class="red-gradient" dark round block @click="setFirstLetterFilter(null)">
-                    إلغاء
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-            </v-card>
-          </v-menu>
-        </v-flex> -->
-        <v-flex xs12>
-          <v-text-field
-            v-model="query.q"
-            class="search-input input-hidden-underline ma-0 pt-0 pr-2"
-            placeholder="البحث عن الكلمة.."
-            prepend-icon="search"
+    <div>
+      <v-layout row wrap justify-space-between>
+        <v-flex xs12 sm5 md5 lg2>
+          <DictionaryLoader v-if="loading">
+          </DictionaryLoader>
+          <v-select
+            v-else
+            v-model="query.part_of_speech"
+            :items="partOfSpeechTypes"
+            class="round-input light-shadow-input"
+            menu-props="auto"
+            label="إختر نوع الكلمة"
             hide-details
-          />
+            single-line
+            clearable
+            solo
+          ></v-select>
         </v-flex>
-        <v-flex xs12 class="text-xs-center">
-          <v-pagination
-            v-model="page.current"
-            class="flat-pagination round-pagination"
-            :length="page.total"
-            :total-visible="paginationVisibleCount"
-            @input="changeCurrentPage($event)"
-          />
+        <v-flex xs12 sm5 md5 lg2 :class="{ 'mt-2': $vuetify.breakpoint.xsOnly }">
+          <DictionaryLoader v-if="loading">
+          </DictionaryLoader>
+          <v-select
+            v-else
+            v-model="query.category"
+            :items="categories"
+            :multiple="true"
+            item-text="name"
+            item-value="name"
+            class="round-input light-shadow-input"
+            menu-props="auto"
+            label="إختر فئة الكلمة"
+            hide-details
+            single-line
+            chips
+            solo
+          >
+            <template v-slot:selection="{ item, index }">
+              <v-chip v-if="index === 0">
+                <span>{{ item.name }}</span>
+              </v-chip>
+              <span
+                v-if="index === 1"
+                class="grey--text caption"
+              >(+{{ query.category.length - 1 }} أخرى)</span>
+            </template>
+          </v-select>
         </v-flex>
-      </v-flex>
-    </v-layout>
-    <Loader :active="loading">
-      <v-layout row wrap class="white light-box-shadow small-round-corners pa-2 mt-4">
+        <v-flex
+          xs12
+          sm12
+          md12
+          lg7
+          class="d-flex align-center white light-box-shadow small-round-corners"
+          :class="{ 'flex-wrap': $vuetify.breakpoint.xsOnly,
+                    'my-2 pa-1': $vuetify.breakpoint.mdAndDown }"
+        >
+          <!-- FIRST LETTER SEARCH -->
+          <!-- <v-flex xs12>
+            <v-menu
+              v-model="menu"
+              offset-y
+              :nudge-left="105"
+              :nudge-bottom="10"
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  :class="{ 'full-width': $vuetify.breakpoint.xsOnly }"
+                  class="ma-0 small-round-corners"
+                  flat
+                  v-on="on"
+                >
+                  الأبجدية
+                  <span v-if="arabicLetters.includes(query.q)" class="font-weight-bold">
+                    &nbsp; {{ `(${query.q})` }}
+                  </span>
+                  <v-icon>filter_list</v-icon>
+                </v-btn>
+              </template>
+
+              <v-card>
+                <v-layout row wrap class="pa-1 arabic-letters-container">
+                  <v-flex v-for="letter in arabicLetters" :key="letter" class="text-xs-center" xs2>
+                    <v-btn
+                      :color="letter === query.q ? 'primary' : ''"
+                      icon
+                      class="title pa-0 ma-0"
+                      @click="setFirstLetterFilter(letter)"
+                    >
+                      {{ letter }}
+                    </v-btn>
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-btn class="red-gradient" dark round block @click="setFirstLetterFilter(null)">
+                      إلغاء
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-card>
+            </v-menu>
+          </v-flex> -->
+          <v-flex xs12>
+            <DictionaryLoader v-if="loading">
+            </DictionaryLoader>
+            <v-text-field
+              v-else
+              v-model="query.q"
+              class="search-input input-hidden-underline ma-0 pt-0 pr-2"
+              placeholder="البحث عن الكلمة.."
+              prepend-icon="search"
+              hide-details
+            />
+          </v-flex>
+          <v-flex xs12 class="text-xs-center">
+            <DictionaryLoader v-if="loading">
+            </DictionaryLoader>
+            <v-pagination
+              v-else
+              v-model="page.current"
+              class="flat-pagination round-pagination"
+              :length="page.total"
+              :total-visible="paginationVisibleCount"
+              @input="changeCurrentPage($event)"
+            />
+          </v-flex>
+        </v-flex>
+      </v-layout>
+      <DictionaryLoader v-if="loading" class="small-round-corners pa-2 mt-4">
+      </DictionaryLoader>
+      <v-layout v-else row wrap class="white light-box-shadow small-round-corners pa-2 mt-4">
         <v-flex
           v-for="word in words"
           :key="word.name"
@@ -138,19 +152,19 @@
           </div>
         </v-flex>
       </v-layout>
-    </Loader>
+    </div>
   </v-container>
 </template>
 
 <script>
 import _ from 'lodash'
 import PageHeader from '~/components/generic/PageHeader'
-import Loader from '~/components/generic/Loader'
+import DictionaryLoader from '~/pages/dictionary/DictionaryLoader'
 
 export default {
   components: {
     PageHeader,
-    Loader
+    DictionaryLoader
   },
   data () {
     return {

@@ -171,13 +171,13 @@ export default {
       return this.user.image
     },
     pendingCount () {
-      return this.user.pending_contributions_count
+      return this.user.pending_contributions_count.toLocaleString('ar-EG')
     },
     rejectedCount () {
-      return this.user.rejected_contributions_count
+      return this.user.rejected_contributions_count.toLocaleString('ar-EG')
     },
     acceptedCount () {
-      return this.user.accepted_contributions_count
+      return this.user.accepted_contributions_count.toLocaleString('ar-EG')
     },
     accountDate () {
       return moment(this.user.created_at).locale('ar').format('Do MMMM YYYY')
