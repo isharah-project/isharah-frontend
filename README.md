@@ -1,6 +1,6 @@
-# egsl-website-frontend
+# Isharah-frontend
 
-> front end for EgSL website
+> front end for Isharah website
 
 ## Dev Setup
 install [yarn package manager](https://yarnpkg.com/lang/en/docs/install/)
