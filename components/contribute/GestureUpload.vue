@@ -563,6 +563,7 @@ export default {
           .finally(() => {
             this.loading = false
             this.progressValue = 0
+            this.$store.dispatch('fetchUserAndUpdate')
           })
       }
     },

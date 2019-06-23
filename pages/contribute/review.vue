@@ -1,6 +1,6 @@
 <template>
   <v-container class="mt-3">
-    <PageHeader id="pageHeader" text="قيّم الإشارات" icon="rate_review" />
+    <PageHeader id="page-header" text="قيّم الإشارات" icon="rate_review" />
     <v-layout v-if="!pageLoading && !gestures.length" class="white light-box-shadow small-round-corners pa-2 mt-4">
       <v-flex>
         <div class="headline text-xs-center">
@@ -248,7 +248,7 @@ export default {
         this.$nextTick(() => {
           this.$refs['review-video'].load()
           this.$refs['review-video'].play()
-          this.$vuetify.goTo('#pageHeader')
+          this.$vuetify.goTo('#page-header')
         })
       }
     }

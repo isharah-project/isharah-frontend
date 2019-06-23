@@ -39,3 +39,9 @@ export const mutations = {
     state.snackbar.color = 'blue'
   }
 }
+
+export const actions = {
+  fetchUserAndUpdate () {
+    return this.$axios.get('auth/validate_token')
+  }
+}

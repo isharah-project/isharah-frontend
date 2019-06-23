@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="gestures-container">
     <PageHeader :text="text" :icon="icon">
     </PageHeader>
     <Loader :active="loading">
@@ -35,7 +35,7 @@
         class="flat-pagination round-pagination"
         :length="page.total"
         :total-visible="paginationVisibleCount"
-        @input="fetchData($event)"
+        @input="fetchData($event, true)"
       >
       </v-pagination>
     </v-layout>
@@ -86,20 +86,23 @@ export default {
       if (this.$vuetify.breakpoint.xsOnly) return 4
       else if (this.$vuetify.breakpoint.smAndDown) return 5
       else return 6
+    },
+    perPage () {
+      return this.$vuetify.breakpoint.xsOnly ? 6 : 12
     }
   },
   created () {
-    this.fetchData(1)
+    this.fetchData(1, false)
   },
   methods: {
     openGesturesDialog (gesture) {
       this.wordDialog = true
       this.viewedGesture = gesture
     },
-    fetchData (pageNumber) {
+    fetchData (pageNumber, scrollUp) {
       this.loading = true
       this.page.current = pageNumber
-      this.$axios.get(`${this.url}?page=${pageNumber}&per_page=12`)
+      this.$axios.get(`${this.url}?page=${pageNumber}&per_page=${6}`)
         .then((response) => {
           this.gestures = deserialize(response.data)
           this.page.total = response.data.page_meta.total_pages
@@ -111,6 +114,9 @@ export default {
         })
         .finally(() => {
           this.loading = false
+          if (scrollUp) {
+            this.$vuetify.goTo('#gestures-container')
+          }
         })
     },
     redirect () {

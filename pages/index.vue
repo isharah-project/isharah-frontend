@@ -162,6 +162,7 @@ export default {
   font-size: 30px;
 }
 .head-section .head-description {
+  font-size: 16px;
   width: 90%;
   color: rgba(64, 64, 64, 0.6);
 }
@@ -234,6 +235,10 @@ export default {
 @media screen and (max-width: 450px) {
   .head-section .head-text {
     width: 95%;
+  }
+  .head-section .head-description {
+    font-size: 14px;
+    color: rgba(64, 64, 64, 0.8);
   }
 }
 </style>
