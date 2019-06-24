@@ -1,7 +1,7 @@
 {
-  "name": "egsl-website-frontend",
+  "name": "isharah",
   "version": "1.0.0",
-  "description": "front end module for EgSL website",
+  "description": "قاموس لغة الإشارة مفتوحة المصدر للمتعلمين والباحثين",
   "author": "tarekalqaddy",
   "private": true,
   "scripts": {

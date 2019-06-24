@@ -1,6 +1,6 @@
 import MomentLocalesPlugin from 'moment-locales-webpack-plugin'
 import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
-const pkg = require('./package')
+// const pkg = require('./package')
 require('dotenv').config({ path: './.env' })
 
 module.exports = {
@@ -18,7 +18,14 @@ module.exports = {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'بيانات لغة الإشارة مفتوحة المصدر للمتعلمين والصناع' }
+      { hid: 'title', name: 'title', content: 'إشارة' },
+      { hid: 'description', name: 'description', content: 'قاموس لغة الإشارة مفتوحة المصدر للمتعلمين والباحثين' },
+      { hid: 'og:title', name: 'og:title', content: 'إشارة' },
+      { hid: 'og:description', name: 'og:description', content: 'قاموس لغة الإشارة مفتوحة المصدر للمتعلمين والباحثين' },
+      { hid: 'og:image', name: 'og:image', property: 'og:image', content: '/meta-image.png' },
+      { hid: 'twitter:title', name: 'twitter:title', content: 'إشارة' },
+      { hid: 'twitter:description', name: 'twitter:description', content: 'قاموس لغة الإشارة مفتوحة المصدر للمتعلمين والباحثين' },
+      { hid: 'twitter:image', name: 'twitter:image', property: 'twitter:image', content: '/meta-image.png' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
