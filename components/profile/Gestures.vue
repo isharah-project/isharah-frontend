@@ -102,7 +102,7 @@ export default {
     fetchData (pageNumber, scrollUp) {
       this.loading = true
       this.page.current = pageNumber
-      this.$axios.get(`${this.url}?page=${pageNumber}&per_page=${6}`)
+      this.$axios.get(`${this.url}?page=${pageNumber}&per_page=${this.perPage}`)
         .then((response) => {
           this.gestures = deserialize(response.data)
           this.page.total = response.data.page_meta.total_pages

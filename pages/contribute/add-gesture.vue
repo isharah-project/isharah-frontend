@@ -6,13 +6,53 @@
       <br>
       في كل مرة تضيف فيها فيديو، تساعد على رفع مستوى البحث العلمي وبناء التطبيقات لمجتمع الصم في مصر.
     </p>
-    <GestureUpload
-      submitEndPoint="gestures"
-      autoCompleteEndPoint="autocomplete/words"
-      autoCompleteItemText="name"
-      autoCompleteLabel="اختر الكلمة"
-      :autoCompleteDeserializeResults="true"
-    />
+    <Loader :progress="true" :active="loading" :progressValue="progressValue">
+      <GestureUpload ref="gestureUpload" submitEndPoint="gestures">
+        <v-form ref="videoForm" class="form-wrapper" @submit.prevent="submitVideo">
+          <div>
+            <AutoComplete
+              ref="autocomplete"
+              label="اختر الكلمة"
+              itemText="name"
+              apiEndPoint="autocomplete/words"
+              :deserializeResults="true"
+              :selectable="true"
+              :queryMinCharsCount="1"
+              prependIcon=""
+              class="round-input light-shadow-input full-width"
+              @itemChanged="setSelectedWord"
+            />
+            <transition name="big-slide">
+              <div v-if="word.name" class="hidden-overflow">
+                <div class="mt-3">
+                  <h3>نوع الكلمة</h3>
+                  <v-chip>{{ word.part_of_speech }}</v-chip>
+                </div>
+                <div class="mt-3">
+                  <h3>فئات الكلمة</h3>
+                  <v-chip v-for="category in word.categories" :key="category.name">
+                    {{ category.name }}
+                  </v-chip>
+                </div>
+              </div>
+            </transition>
+          </div>
+          <div class="mt-2">
+            <v-btn
+              type="submit"
+              class="orange-gradient btn-shadow fixed-size-btn"
+              :class="{ 'my-3': $vuetify.breakpoint.smAndDown }"
+              :disabled="!validForm || !$refs.gestureUpload.videoBlob"
+              round
+              flat
+              dark
+            >
+              إضافة
+            </v-btn>
+          </div>
+        </v-form>
+      </GestureUpload>
+    </Loader>
     <v-dialog v-model="instructionsDialog" width="600" persistent>
       <v-card class="medium-round-corners">
         <v-card-title class="justify-center">
@@ -56,35 +96,130 @@
 <script>
 import PageHeader from '~/components/generic/PageHeader'
 import GestureUpload from '~/components/contribute/GestureUpload'
+import AutoComplete from '~/components/generic/AutoComplete'
+import Loader from '~/components/generic/Loader'
 import localStorage from 'local-storage'
 import VideoTrimmer from '~/assets/images/video-trimmer.png'
 
 export default {
   components: {
     PageHeader,
-    GestureUpload
+    GestureUpload,
+    AutoComplete,
+    Loader
   },
   data () {
     return {
       VideoTrimmer,
       instructionsDialog: true,
-      dontShowInstructions: false
+      dontShowInstructions: false,
+      progressValue: 0,
+      loading: false,
+      word: {
+        name: '',
+        part_of_speech: null,
+        categories: null
+      }
+    }
+  },
+  computed: {
+    validForm () {
+      return Boolean(this.word.name)
     }
   },
   created () {
     this.instructionsDialog = !localStorage.get('addGesture.dontShowInstructions')
   },
+  mounted () {
+    this.checkWordInQuery()
+  },
   methods: {
     saveSettings () {
       localStorage.set('addGesture.dontShowInstructions', this.dontShowInstructions)
       this.instructionsDialog = false
+    },
+    setSelectedWord (word) {
+      if (word) {
+        this.word = word
+      } else {
+        this.word = {
+          name: null,
+          part_of_speech: null,
+          categories: null
+        }
+        this.$refs.videoForm.reset()
+      }
+    },
+    getFormData () {
+      let { start, finish, rangeMax, blob } = this.$refs.gestureUpload.getGestureData()
+      let formData = new FormData()
+      formData.append('word', this.word.name)
+      formData.append('video', blob)
+      if (start !== 0 || finish !== Number(rangeMax)) {
+        formData.append('start', start)
+        formData.append('finish', finish)
+      }
+      return formData
+    },
+    updateProgressBar (event) {
+      this.progressValue = Math.round((event.loaded / event.total) * 100)
+    },
+    submitVideo () {
+      if (this.$refs.videoForm.validate() && this.$refs.gestureUpload.videoBlob) {
+        this.loading = true
+        let formData = this.getFormData()
+        this.$axios.post('gestures', formData,
+          {
+            onUploadProgress: this.updateProgressBar
+          })
+          .then(() => {
+            this.$refs.gestureUpload.setParentState(this.$refs.gestureUpload.getParentState())
+            this.$refs.gestureUpload.resetComponentValues()
+            this.$refs.videoForm.reset()
+            this.$store.commit('showSuccessMsg', {
+              message: 'تم رفع الاشارة بنجاح'
+            })
+          })
+          .catch((e) => {
+            console.log(e)
+            this.$store.commit('showErrorMsg', {
+              message: 'حدث خطأ ما, الرجاء المحاولة مرة اخرى'
+            })
+          })
+          .finally(() => {
+            this.loading = false
+            this.progressValue = 0
+            this.$store.dispatch('fetchUserAndUpdate')
+          })
+      }
+    },
+    checkWordInQuery () {
+      if (this.$route.params.word) {
+        this.$refs.autocomplete.setItem(this.$route.params.word)
+      }
     }
   }
 }
 </script>
 
 <style>
+.hidden-overflow {
+  overflow: hidden;
+}
 .justify-center {
   justify-content: center;
+}
+.big-slide-enter-active,
+.big-slide-leave-active {
+  transform-origin: top;
+  transition: max-height .7s;
+}
+.big-slide-enter,
+.big-slide-leave-to {
+  max-height: 0;
+}
+.big-slide-leave,
+.big-slide-enter-to {
+  max-height: 250px;
 }
 </style>
