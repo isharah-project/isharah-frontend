@@ -13,6 +13,7 @@
           <v-flex xs12 sm12 md6>
             <v-text-field
               v-model="contactForm.name"
+              name="name"
               label="الاسم"
               type="text"
               :rules="generalValidationRules.required"
@@ -23,6 +24,7 @@
               v-model="contactForm.email"
               label="البريد الإلكتروني"
               type="email"
+              name="email"
               :rules="[...generalValidationRules.required, ...generalValidationRules.email]"
             />
           </v-flex>
@@ -30,6 +32,7 @@
             <v-textarea
               v-model="contactForm.message"
               label="الرسالة"
+              name="message"
               :rules="generalValidationRules.required"
             />
           </v-flex>

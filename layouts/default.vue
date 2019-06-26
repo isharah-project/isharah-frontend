@@ -172,6 +172,11 @@
           </nuxt-link>
         </li>
         <li class="mx-2">
+          <nuxt-link to="/about-us" class="grey-text">
+            عن إشارة
+          </nuxt-link>
+        </li>
+        <li class="mx-2">
           <nuxt-link to="/contact-us" class="grey-text">
             تواصل معنا
           </nuxt-link>
@@ -209,7 +214,7 @@ export default {
         { path: '/contribute/practice', text: 'تدرب على إشارة', icon: 'videocam' },
         { path: '/contribute/add-gesture', text: 'أضف إشارة', icon: 'videocam' },
         { path: '/contribute/review', text: 'قيّم الإشارات', icon: 'rate_review', hidden: !this.isUser(['Admin', 'Reviewer']) },
-        { path: '/about-us', text: 'عن إشارة', icon: 'code' }
+        { path: '/for-developers', text: 'للمطورين', icon: 'code' }
       ]
     },
     snackbarState: {

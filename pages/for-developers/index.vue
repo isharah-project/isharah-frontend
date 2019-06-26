@@ -2,26 +2,19 @@
   <v-container class="mt-3">
     <PageHeader text="للمطورين" icon="contact_mail" />
     <v-card class="medium-round-corners light-box-shadow pa-4">
-      <p class="body-2">
-        لوريم ايبسوم دولار سيت أميت ,كونسيكتيتور أدايبا يسكينج أليايت,سيت دو أيوسمود تيمبور
-
-        أنكايديديونتيوت لابوري ات دولار ماجنا أليكيوا . يوت انيم أد مينيم فينايم,كيواس نوستريد
-
-        أكسير سيتاشن يللأمكو لابورأس نيسي يت أليكيوب أكس أيا كوممودو كونسيكيوات . ديواس
-
-        أيوتي أريري دولار إن ريبريهينديرأيت فوليوبتاتي فيلايت أيسسي كايلليوم دولار أيو فيجايت
-
-        نيولا باراياتيور. أيكسسيبتيور ساينت أوككايكات كيوبايداتات نون بروايدينت ,سيونت ان كيولبا
-
-        كيو أوفيسيا ديسيريونتموليت انيم أيدي ايست لابوريوم.
-      </p>
-      <v-form ref="requestForm" @submit.prevent="submitRequest">
+      <v-form
+        ref="requestForm"
+        method="POST"
+        action="https://formspree.io/ishara.developers.2019@gmail.com"
+        @submit.prevent="submitRequest"
+      >
         <v-layout wrap>
           <v-flex xs12 sm12 md6>
             <v-text-field
               v-model="requestData.name"
               label="الاسم"
               type="text"
+              name="name"
               :rules="generalValidationRules.required"
             />
           </v-flex>
@@ -30,6 +23,7 @@
               v-model="requestData.email"
               label="البريد الإلكتروني"
               type="email"
+              name="email"
               :rules="[...generalValidationRules.required, ...generalValidationRules.email]"
             />
           </v-flex>
@@ -37,6 +31,7 @@
             <v-textarea
               v-model="requestData.purpose"
               label="الغرض"
+              name="purpose"
               :rules="generalValidationRules.required"
             />
           </v-flex>
@@ -70,7 +65,7 @@ export default {
   methods: {
     submitRequest () {
       if (this.$refs.requestForm.validate()) {
-        // TODO: send request
+        this.$refs.requestForm.$el.submit()
       }
     }
   }
