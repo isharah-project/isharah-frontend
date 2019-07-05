@@ -23,10 +23,10 @@ module.exports = {
       { hid: 'description', name: 'description', content: 'قاموس لغة الإشارة مفتوحة المصدر للمتعلمين والباحثين' },
       { hid: 'og:title', name: 'og:title', content: 'إشارة' },
       { hid: 'og:description', name: 'og:description', content: 'قاموس لغة الإشارة مفتوحة المصدر للمتعلمين والباحثين' },
-      { hid: 'og:image', name: 'og:image', property: 'og:image', content: '/meta-image.png' },
+      { hid: 'og:image', name: 'og:image', property: 'og:image', content: '/meta-image.jpg' },
       { hid: 'twitter:title', name: 'twitter:title', content: 'إشارة' },
       { hid: 'twitter:description', name: 'twitter:description', content: 'قاموس لغة الإشارة مفتوحة المصدر للمتعلمين والباحثين' },
-      { hid: 'twitter:image', name: 'twitter:image', property: 'twitter:image', content: '/meta-image.png' }
+      { hid: 'twitter:image', name: 'twitter:image', property: 'twitter:image', content: '/meta-image.jpg' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
