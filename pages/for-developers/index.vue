@@ -2,7 +2,7 @@
   <v-container class="mt-3">
     <PageHeader text="للمطورين" icon="contact_mail" />
     <v-card class="medium-round-corners light-box-shadow pa-4">
-	يمكنك الحصول على مجموعة البيانات المجمعة بواسطة موقع إشارة عن طريق ملء البيانات بالأسفل
+      يمكنك الحصول على مجموعة البيانات المجمعة بواسطة موقع إشارة عن طريق ملء البيانات بالأسفل
       <v-form
         ref="requestForm"
         method="POST"

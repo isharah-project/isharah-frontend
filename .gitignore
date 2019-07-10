@@ -85,3 +85,5 @@ sw.*
 
 # Mac File System
 *.DS_Store
+
+/nvm

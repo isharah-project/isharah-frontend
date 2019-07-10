@@ -29,7 +29,7 @@
         </p>
         <p class="subheading font-weight-bold">
           إذا كنت مطور، يمكنك المشاركة في تحسين الموقع على
-          <a class="grey-text" href="https://github.com/isharah-web-app">github</a>
+          <a class="grey-text" href="https://github.com/isharah-project">github</a>
         </p>
       </section>
       <section class="mb-2">

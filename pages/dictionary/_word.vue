@@ -29,6 +29,7 @@
       <v-layout v-if="word" justify-space-between wrap class="pt-2">
         <v-btn
           class="fixed-size-btn btn-shadow blue-gradient"
+          :class="{ 'mr-0': $vuetify.breakpoint.xsOnly }"
           dark
           flat
           round
@@ -41,6 +42,7 @@
         </v-btn>
         <v-btn
           class="btn-shadow orange-gradient"
+          :class="{ 'mr-0': $vuetify.breakpoint.xsOnly }"
           dark
           flat
           round

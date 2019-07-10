@@ -248,6 +248,7 @@ export default {
       return this.shownToolbarLinks.concat([
         { path: '/privacy-policy', text: 'سياسة الخصوصية', icon: 'assignment' },
         { path: '/terms-and-conditions', text: 'الشروط والأحكام', icon: 'assignment_turned_in' },
+        { path: '/about-us', text: 'عن إشارة', icon: 'info' },
         { path: '/contact-us', text: 'تواصل معنا', icon: 'contact_mail' }
       ])
     }
